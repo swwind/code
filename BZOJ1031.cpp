@@ -9,37 +9,37 @@ inline int read(){
 	return f?-x:x;
 }
 char s[N<<1];
-int n, len, sa[N], rk[N], tmp[N], top[N];
+int sa[N], rk[N], tmp[N], top[N], n, len;
 void build_sa(){
-	int m = 128;
+	int m = 128; // maxnum
 	int *x = rk, *y = tmp;
-	memset(top, 0, sizeof top);
-	for(int i = 0; i < n; i++) top[x[i]=s[i]]++;
-	for(int i = 1; i < m; i++) top[i] += top[i-1];
-	for(int i = n-1; ~i; i--) sa[--top[x[i]]] = i;
-	for(int k = 1; k <= n; k <<= 1){
+	for(int i = 1; i <= m; i++) top[i] = 0;
+	for(int i = 1; i <= n; i++) top[x[i]=s[i]]++;
+	for(int i = 1; i <= m; i++) top[i] += top[i-1];
+	for(int i = n; i; i--) sa[top[x[i]]--] = i;
+	for(int k = 1; k < n; k <<= 1){
 		int p = 0;
-		for(int i = n-k; i < n; i++) y[p++] = i;
-		for(int i = 0; i < n; i++) if(sa[i] >= k) y[p++] = sa[i]-k;
-		memset(top, 0, sizeof top);
-		for(int i = 0; i < n; i++) top[x[y[i]]]++;
-		for(int i = 1; i < m; i++) top[i] += top[i-1];
-		for(int i = n-1; ~i; i--) sa[--top[x[y[i]]]] = y[i];
+		for(int i = n; i > n-k; i--) y[++p] = i;
+		for(int i = 1; i <= n; i++) if(sa[i] > k) y[++p] = sa[i]-k;
+		for(int i = 1; i <= m; i++) top[i] = 0;
+		for(int i = 1; i <= n; i++) top[x[y[i]]]++;
+		for(int i = 1; i <= m; i++) top[i] += top[i-1];
+		for(int i = n; i; i--) sa[top[x[y[i]]]--] = y[i];
 		swap(x, y);
-		p = 1; x[sa[0]] = 0;
-		for(int i = 1; i < n; i++)
-			if(y[sa[i-1]] == y[sa[i]] && y[sa[i-1]+k] == y[sa[i]+k]) x[sa[i]] = p-1;
-			else x[sa[i]] = p++;
+		p = 1; x[sa[1]] = 1;
+		for(int i = 2; i <= n; i++)
+			if(y[sa[i-1]] == y[sa[i]] && y[sa[i-1]+k] == y[sa[i]+k]) x[sa[i]] = p;
+			else x[sa[i]] = ++p;
 		if(p >= n) break; m = p;
 	}
 }
+
 int main(){
-	scanf("%s", s);
-	len = strlen(s);
-	for(int i = 0; i < len; i++) s[i+len] = s[i];
+	scanf("%s", s+1);
+	len = strlen(s+1);
+	for(int i = 1; i <= len; i++) s[i+len] = s[i];
 	n = len<<1; build_sa();
-	for(int i = 1; i < n; i++)
-		if(sa[i] < len) putchar(s[sa[i]+len-1]);
-	puts("");
+	for(int i = 1; i <= n; i++)
+		if(sa[i] <= len) putchar(s[sa[i]+len-1]);puts("");
 	return 0;
 }
