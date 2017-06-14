@@ -1,66 +1,88 @@
-#include<iostream>  
-#include<cstdio>  
-#include<cstring>  
-#include<algorithm>  
-#include<cmath>  
-#define N 1000003  
-#define LL long long  
-using namespace std;  
-int n,m,cnt,root,last,np,nq,p,q;  
-int ch[N][30],fa[N],l[N],a[N],v[N],r[N],pos[N];  
-LL sum[N];  
-char s[N];  
-void extend(int x)  
-{  
-    int c=a[x];  
-    p=last; np=++cnt; last=np;  
-    l[np]=x;  
-    for (;p&&!ch[p][c];p=fa[p]) ch[p][c]=np;  
-    if (!p) fa[np]=root;  
-    else {  
-        q=ch[p][c];  
-        if (l[q]==l[p]+1) fa[np]=q;  
-        else {  
-            nq=++cnt; l[nq]=l[p]+1;  
-            memcpy(ch[nq],ch[q],sizeof ch[nq]);  
-            fa[nq]=fa[q];  
-            fa[q]=fa[np]=nq;  
-            for (;ch[p][c]==q;p=fa[p]) ch[p][c]=nq;  
-        }  
-    }  
-}  
-int main()  
-{  
-    // freopen("a.in","r",stdin);  
-    // freopen("my.out","w",stdout);  
-    scanf("%s",s+1);  
-    n=strlen(s+1);  
-    last=root=++cnt;  
-    for (int i=1;i<=n;i++) a[n-i+1]=s[i]-'a';  
-    for (int i=1;i<=n;i++) extend(i);  
-    for (int i=1;i<=cnt;i++) v[l[i]]++;  
-    for (int i=1;i<=n;i++) v[i]+=v[i-1];  
-    for (int i=1;i<=cnt;i++) pos[v[l[i]]--]=i;  
-    p=1;   
-    for (int i=1;i<=n;i++) {  
-        p=ch[p][a[i]]; r[p]++; sum[p]++;  
-    }  
-    for (int i=cnt;i;i--){  
-        int t=pos[i];  
-        r[fa[t]]+=r[t];  
-    }  
-    /*for (int i=1;i<=cnt;i++) cout<<r[i]<<" "; 
-    cout<<endl; 
-    for (int i=1;i<=cnt;i++) cout<<l[i]<<" "; 
-    cout<<endl; 
-    for (int i=1;i<=cnt;i++) cout<<pos[i]<<" "; 
-    cout<<endl;*/  
-    LL ans=0;  
-    for (int i=cnt;i>=1;i--){  
-        int t=pos[i];  
-        ans+=(LL)l[fa[t]]*(LL)r[t]*(LL)sum[fa[t]];  
-        sum[fa[t]]+=(LL)r[t];  
-    }  
-//  cout<<ans<<endl;  
-    printf("%I64d\n",(LL)(n+1)*(LL)n/2*(LL)(n-1)-2*ans);  
-}  
+#include <set>
+#include <map>
+#include <ctime>
+#include <queue>
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#define ll long long 
+using namespace std;
+int T,n,K;
+char ch[500005];
+struct sam{
+	int last,cnt;
+	int a[1000005][26],fa[1000005],mx[1000005],val[1000005],sum[1000005];
+	int v[500005],q[1000005];
+	sam(){
+		last=++cnt;
+	}
+	void extend(int c){
+		int p=last,np=last=++cnt;
+		mx[np]=mx[p]+1;val[np]=1;
+		while(!a[p][c]&&p)a[p][c]=np,p=fa[p];
+		if(!p)fa[np]=1;
+		else 
+		{
+			int q=a[p][c];
+			if(mx[p]+1==mx[q])fa[np]=q;
+			else 
+			{
+				int nq=++cnt;mx[nq]=mx[p]+1;
+				memcpy(a[nq],a[q],sizeof(a[q]));
+				fa[nq]=fa[q];
+				fa[np]=fa[q]=nq;
+				while(a[p][c]==q)a[p][c]=nq,p=fa[p];
+			}
+		}
+	}
+	void pre(){
+		for(int i=1;i<=cnt;i++)v[mx[i]]++;
+		for(int i=1;i<=n;i++)v[i]+=v[i-1];
+		for(int i=cnt;i;i--)q[v[mx[i]]--]=i;
+		for(int i=cnt;i;i--)
+		{
+			int t=q[i];
+			if(T==1)val[fa[t]]+=val[t];
+			else val[t]=1;
+		}
+		val[1]=0;
+		for(int i=cnt;i;i--)
+		{
+			int t=q[i];sum[t]=val[t];
+			for(int j=0;j<26;j++)
+				sum[t]+=sum[a[t][j]];
+		}
+	}
+	void dfs(int x,int K){
+		if(K<=val[x])return;
+		K-=val[x];
+		for(int i=0;i<26;i++)
+			if(int t=a[x][i])
+			{
+				if(K<=sum[t])
+				{
+					putchar(i+'a');
+					dfs(t,K);
+					return;
+				}
+				K-=sum[t];
+			}
+	}
+}sam;
+int main()
+{
+	scanf("%s",ch+1);
+	n=strlen(ch+1);
+	scanf("%d%d",&T,&K);
+	for(int i=1;i<=n;i++)
+		sam.extend(ch[i]-'a');
+	printf("%d\n", sam.cnt);
+	sam.pre();
+	if(K>sam.sum[1])puts("-1");
+	else sam.dfs(1,K);
+	return 0;
+}

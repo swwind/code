@@ -2,13 +2,11 @@
 #define N 233
 class SAM{
 public:
-	int ch[N][30], fa[N], l[N], p, np, last, cnt, rt, q, nq;
-	char s[N], c;
-	void extend(int x){
-		p = last;
-		c = s[l[last=np=++cnt]=x]-'a';
+	int ch[N][30], fa[N], l[N], p, np, last, cnt, q, nq;
+	void extend(int c){
+		p = last; l[last=np=++cnt]=l[p]+1;
 		for(;p&&!ch[p][c];p=fa[p]) ch[p][c] = np;
-		if(!p) fa[np] = rt;
+		if(!p) fa[np] = 1;
 		else{
 			q = ch[p][c];
 			if(l[q] == l[p]+1) fa[np] = q;
@@ -21,6 +19,6 @@ public:
 			}
 		}
 	}
-	SAM(){sam.last = sam.rt = ++cnt;}
+	SAM(){last = ++cnt;}
 }sam;
 int main(){}

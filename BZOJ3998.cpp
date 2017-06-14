@@ -1,7 +1,5 @@
-// RE...
-
 #include <bits/stdc++.h>
-#define N 100020
+#define N 1000020
 #define ll long long
 using namespace std;
 inline int read(){
@@ -10,38 +8,58 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=(x<<1)+(x<<3)+ch-'0';ch=getchar();}
 	return f?-x:x;
 }
-int ch[N*10][26], tot, cnt[2], val[N], st[2][N];
-char str[N];
-int dfs(int x){
-	for(int i = 0; i < 26; i++)
-		if(ch[x][i]) val[x] += dfs(ch[x][i]);
-	return val[x];
-}
-void find(int x, int k){
-	if(k <= 0) return;
-	for(int i = 0; i < 26; i++)if(ch[x][i]){
-		if(k <= val[ch[x][i]]){
-			putchar(i+'a');
-			return find(ch[x][i], k-1);
+int ch[N][30], fa[N], l[N], p, np, last, cnt, q, nq, val[N];
+void extend(int c){
+	p = last; l[last=np=++cnt]=l[p]+1; val[np] = 1;
+	for(;p&&!ch[p][c];p=fa[p]) ch[p][c] = np;
+	if(!p) fa[np] = 1;
+	else{
+		q = ch[p][c];
+		if(l[q] == l[p]+1) fa[np] = q;
+		else{
+			l[nq=++cnt] = l[p]+1;
+			memcpy(ch[nq], ch[q], sizeof ch[p]);
+			fa[nq] = fa[q];
+			fa[q] = fa[np] = nq;
+			for(;ch[p][c]==q;p=fa[p]) ch[p][c] = nq;
 		}
-		k -= val[ch[x][i]];
+	}
+}
+int c[N], sz[N], rk[N];
+char str[N];
+void dfs(int x, int k){
+	if(k <= val[x]) return;
+	k -= val[x];
+	for(int i = 0; i < 26; i++)if(ch[x][i]){
+		if(k <= sz[ch[x][i]]){
+			putchar(i+'a');
+			return dfs(ch[x][i], k);
+		}
+		k -= sz[ch[x][i]];
 	}
 }
 int main(){
 	scanf("%s", str+1);
-	int len = strlen(str+1), t = read(), k = read();
-	cnt[1] = 1;
-	for(int i = 1; i <= len; i++){
-		cnt[~i&1] = 1;
-		for(int j = 1; j <= cnt[i&1]; j++){
-			int &rp = ch[st[i&1][j]][str[i]-'a'];
-			if(!rp) rp = ++tot;
-			if(t) val[rp]++;
-			else val[rp]=1;
-			st[~i&1][++cnt[~i&1]] = rp;
-		}
+	last = ++cnt;
+	int T = read(), k = read();
+	int n = strlen(str+1);
+	for(int i = 1; i <= n; i++) extend(str[i]-'a');
+	// printf("%d\n", cnt);
+	for(int i = 1; i <= cnt; i++) c[l[i]]++;
+	for(int i = 1; i <= n; i++) c[i]+=c[i-1];
+	for(int i = cnt; i; i--) rk[c[l[i]]--] = i;
+	for(int i = cnt; i; i--){
+		int t = rk[i];
+		if(T) val[fa[t]] += val[t];
+		else val[t] = 1;
 	}
-	dfs(0);//printf("%d\n", val[0]);
-	if(k > val[0]) return puts("-1")&0;
-	find(0, k);puts("");
+	val[1] = 0;
+	for(int i = cnt; i; i--){
+		int t = rk[i]; sz[t] = val[t];
+		for(int j = 0; j < 26; j++)
+			sz[t] += sz[ch[t][j]];
+	}
+	if(k > sz[1]) puts("-1");
+	else dfs(1, k);
+	return 0;
 }
