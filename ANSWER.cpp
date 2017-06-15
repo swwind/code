@@ -1,88 +1,90 @@
-#include <set>
-#include <map>
-#include <ctime>
-#include <queue>
-#include <cmath>
-#include <cstdio>
-#include <vector>
-#include <cstring>
-#include <cstdlib>
 #include <iostream>
+#include <cstring>
 #include <algorithm>
-#define ll long long 
+#include <cstdio>
+#include <cstdlib>
+#define M 200005
 using namespace std;
-int T,n,K;
-char ch[500005];
-struct sam{
-	int last,cnt;
-	int a[1000005][26],fa[1000005],mx[1000005],val[1000005],sum[1000005];
-	int v[500005],q[1000005];
-	sam(){
-		last=++cnt;
+int num=0,ans=0,n,m,tot,h[M],f[M],low[M],dfn[M],q[M],a[M],fa[M];
+struct edge
+{
+	int y,ne;
+}e[M];
+void Addedge(int x,int y)
+{
+	tot++;
+	e[tot].y=y;
+	e[tot].ne=h[x];
+	h[x]=tot;
+}
+void dp(int x,int y)
+{
+	printf("%d %d\n", x,y);
+	int m=0;
+	while (y!=x)
+	{
+		a[++m]=f[y];
+		y=fa[y];
 	}
-	void extend(int c){
-		int p=last,np=last=++cnt;
-		mx[np]=mx[p]+1;val[np]=1;
-		while(!a[p][c]&&p)a[p][c]=np,p=fa[p];
-		if(!p)fa[np]=1;
-		else 
+	a[++m]=f[x];
+	for (int i=1;i<m;i++)
+		a[m+i]=a[i];
+	int l,r;
+	int p=m/2;
+	q[l=r=1]=1;
+	for (int i=2;i<=m+p;i++)
+	{
+		while (l<=r&&i-q[l]>p)
+			l++;
+		ans=max(ans,a[q[l]]+a[i]+i-q[l]);
+		while (l<=r&&a[q[r]]+i-q[r]<=a[i])
+			r--;
+		q[++r]=i;
+	}
+	for (int i=1;i<m;i++)
+		f[x]=max(f[x],a[i]+min(i,m-i));
+}
+void tarjan(int x)
+{
+	printf("%d\n", x);
+	dfn[x]=low[x]=++num;
+	for (int i=h[x];i;i=e[i].ne)
+		if (fa[x]!=e[i].y)
 		{
-			int q=a[p][c];
-			if(mx[p]+1==mx[q])fa[np]=q;
-			else 
+			if (!dfn[e[i].y])
 			{
-				int nq=++cnt;mx[nq]=mx[p]+1;
-				memcpy(a[nq],a[q],sizeof(a[q]));
-				fa[nq]=fa[q];
-				fa[np]=fa[q]=nq;
-				while(a[p][c]==q)a[p][c]=nq,p=fa[p];
-			}
-		}
-	}
-	void pre(){
-		for(int i=1;i<=cnt;i++)v[mx[i]]++;
-		for(int i=1;i<=n;i++)v[i]+=v[i-1];
-		for(int i=cnt;i;i--)q[v[mx[i]]--]=i;
-		for(int i=cnt;i;i--)
-		{
-			int t=q[i];
-			if(T==1)val[fa[t]]+=val[t];
-			else val[t]=1;
-		}
-		val[1]=0;
-		for(int i=cnt;i;i--)
-		{
-			int t=q[i];sum[t]=val[t];
-			for(int j=0;j<26;j++)
-				sum[t]+=sum[a[t][j]];
-		}
-	}
-	void dfs(int x,int K){
-		if(K<=val[x])return;
-		K-=val[x];
-		for(int i=0;i<26;i++)
-			if(int t=a[x][i])
-			{
-				if(K<=sum[t])
+				int y=e[i].y;
+				fa[y]=x;
+				tarjan(y);
+				low[x]=min(low[x],low[y]);
+				if (dfn[x]<low[y])
 				{
-					putchar(i+'a');
-					dfs(t,K);
-					return;
+					ans=max(ans,f[x]+f[y]+1);
+					f[x]=max(f[x],f[y]+1);
 				}
-				K-=sum[t];
 			}
-	}
-}sam;
+			else low[x]=min(low[x],dfn[e[i].y]);
+		}
+	for (int i=h[x];i;i=e[i].ne)
+		if (fa[e[i].y]!=x&&dfn[x]<dfn[e[i].y])
+			dp(x,e[i].y);
+		printf("%d\n", ans);
+}
 int main()
 {
-	scanf("%s",ch+1);
-	n=strlen(ch+1);
-	scanf("%d%d",&T,&K);
-	for(int i=1;i<=n;i++)
-		sam.extend(ch[i]-'a');
-	printf("%d\n", sam.cnt);
-	sam.pre();
-	if(K>sam.sum[1])puts("-1");
-	else sam.dfs(1,K);
+		scanf("%d%d",&n,&m);
+	for (int i=1;i<=m;i++)
+	{
+		int k,x,y;
+		scanf("%d%d",&k,&x);
+		for (int j=1;j<k;j++)
+		{
+			scanf("%d",&y);
+			Addedge(x,y),Addedge(y,x);
+			x=y;
+		}
+	}
+	tarjan(1);
+	cout<<ans<<endl;
 	return 0;
 }
