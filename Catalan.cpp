@@ -1,4 +1,4 @@
-//Cn%p
+//C_n(mod p)
 
 #include <bits/stdc++.h>
 #define ll long long

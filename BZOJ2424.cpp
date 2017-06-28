@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define N 605
+#define N 60
 #define M 100020
 #define ll long long
 using namespace std;
@@ -62,4 +62,14 @@ namespace MCMF{
 	}
 };
 using namespace MCMF;
-int main(){}
+int main(){
+	int n = read(), m = read(), S = read();
+	st = 0; ed = n+1;
+	for(int i = 1; i <= n; i++)
+		ins(i, ed, read(), 0);
+	for(int i = 1; i <= n; i++)
+		ins(st, i, 1<<30, read());
+	for(int i = 1; i < n; i++)
+		ins(i, i+1, S, m);
+	printf("%d\n", zkw());
+}

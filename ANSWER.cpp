@@ -1,54 +1,75 @@
-#include<iostream>
-#include<cstdio>
-#define min(a,b) ((a) < (b) ? (a) : (b))
-using namespace std;
-
-const int maxn = 1E5 + 10;
-typedef long long LL;
-const LL INF = 1E16;
-
-int n;
-LL u[maxn],d[maxn],g[maxn],f[maxn][2];
-
-inline int getint()
-{
-    char ch = getchar(); int ret = 0;
-    while (ch < '0' || '9' < ch) ch = getchar();
-    while ('0' <= ch && ch <= '9')
-        ret = ret * 10 + ch - '0',ch = getchar();
-    return ret;
-}
-
-int main()
-{
-    #ifdef DMC
-        freopen("DMC.txt","r",stdin);
-    #endif
-
-    n = getint();
-    for (int i = 1; i <= n; i++) u[i] = getint();
-    for (int i = 1; i <= n; i++) d[i] = getint(),g[i] = u[i] - d[i];
-    for (int i = 2; i <= n; i++)
-    {
-        if (u[i - 1] > u[i] && d[i - 1] < d[i]) {puts("-1"); return 0;}
-        if (u[i] <= d[i - 1] || d[i] >= u[i - 1]) {puts("-1"); return 0;}
-    }
-
-    f[1][1] = INF;
-    for (int i = 2; i <= n; i++)
-    {
-        f[i][0] = f[i][1] = INF;
-        if (f[i - 1][0] != INF)
-        {
-            if (d[i - 1] >= d[i]) f[i][0] = min(f[i][0],f[i - 1][0]);
-            if (u[i - 1] <= u[i]) f[i][1] = min(f[i][1],f[i - 1][0] + g[i - 1]);
-        }
-        if (f[i - 1][1] != INF)
-        {
-            if (u[i - 1] <= u[i]) f[i][1] = min(f[i][1],f[i - 1][1]);
-            if (d[i - 1] >= d[i]) f[i][0] = min(f[i][0],f[i - 1][1] + g[i - 1]);
-        }
-    }
-    cout << min(f[n][0],f[n][1] + g[n]) << endl;
-    return 0;
-}
+#include <cstdio>  
+#include <cstring>  
+#include <iostream>  
+#include <algorithm>  
+#define MOD 1000000007  
+using namespace std;  
+typedef long long ll;  
+struct Matrix{  
+    ll xx[2][2];  
+    Matrix(ll _,ll __,ll ___,ll ____)  
+    {  
+        xx[0][0]=_;  
+        xx[0][1]=__;  
+        xx[1][0]=___;  
+        xx[1][1]=____;  
+    }  
+    ll* operator [] (int x)  
+    {  
+        return xx[x];  
+    }  
+};  
+ll f[70],g[70];  
+void operator *= (Matrix &x,Matrix &y)  
+{  
+    int i,j,k;  
+    Matrix z(0,0,0,0);  
+    for(i=0;i<2;i++)  
+        for(j=0;j<2;j++)  
+            for(k=0;k<2;k++)  
+                z[i][j]+=x[i][k]*y[k][j],z[i][j]%=MOD;  
+    x=z;  
+}  
+ll Digital_DP(ll x)  
+{  
+    int i,temp=0;  
+    long long re=0;  
+    for(i=0;1ll<<i<=x;i++);  
+    for(;i;i--)  
+    {  
+        if( x&(1ll<<i-1) )  
+        {  
+            re+=f[i];  
+            if(temp) return re-1;  
+            temp=1;  
+        }  
+        else  
+            temp=0;  
+    }  
+    return re-1;  
+}  
+ll Matrix_Mutiplication(ll y)  
+{  
+    Matrix a(1,0,0,1),x(0,1,1,1);  
+    while(y)  
+    {  
+        if(y&1) a*=x;  
+        x*=x;  
+        y>>=1;  
+    }  
+    printf("%lld %lld %lld %lld\n", a[0][0], a[0][1], a[1][0], a[1][1]);
+    return (a[0][1]+a[1][1])%MOD;  
+}  
+int main()  
+{  
+    int T,i;ll x;  
+    f[0]=1;  
+    for(i=1;i<=63;i++)  
+        f[i]=f[i-1]+g[i-1],g[i]=f[i-1];  
+    for(cin>>T;T;T--)  
+    {  
+        scanf("%lld",&x);  
+        printf("%lld\n", Digital_DP(x+1) );  
+        printf("%lld\n", Matrix_Mutiplication(x) );  
+    }  
+}  

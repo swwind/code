@@ -18,16 +18,8 @@ struct Matrix{
 	}
 	friend Matrix operator ^ (Matrix a, ll b){
 		Matrix c(true);
-		for(;b;b/=2,a=a*a)if(b&1)c=c*a;
+		for(;b;b>>=1,a=a*a)if(b&1)c=c*a;
 		return c;
 	}
 };
-int main(){
-	ll n;
-	scanf("%lld", &n);
-	Matrix ans;
-	ans[0][0] = 2;
-	ans[1][1] = ans[1][0] = ans[0][1] = 1;
-	ans = ans^n;
-	printf("%d\n", ans[0][0]);
-}
+int main(){}
