@@ -1,4 +1,3 @@
-rm *.exe
-rm *.out
-rm *.o
-rm *.in
+for /r %%s in (*.exe,*.out,*.o,*.in) do (
+	erase %%s
+)

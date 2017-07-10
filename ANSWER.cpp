@@ -1,75 +1,61 @@
-#include <cstdio>  
-#include <cstring>  
-#include <iostream>  
-#include <algorithm>  
-#define MOD 1000000007  
-using namespace std;  
-typedef long long ll;  
-struct Matrix{  
-    ll xx[2][2];  
-    Matrix(ll _,ll __,ll ___,ll ____)  
-    {  
-        xx[0][0]=_;  
-        xx[0][1]=__;  
-        xx[1][0]=___;  
-        xx[1][1]=____;  
-    }  
-    ll* operator [] (int x)  
-    {  
-        return xx[x];  
-    }  
-};  
-ll f[70],g[70];  
-void operator *= (Matrix &x,Matrix &y)  
-{  
-    int i,j,k;  
-    Matrix z(0,0,0,0);  
-    for(i=0;i<2;i++)  
-        for(j=0;j<2;j++)  
-            for(k=0;k<2;k++)  
-                z[i][j]+=x[i][k]*y[k][j],z[i][j]%=MOD;  
-    x=z;  
-}  
-ll Digital_DP(ll x)  
-{  
-    int i,temp=0;  
-    long long re=0;  
-    for(i=0;1ll<<i<=x;i++);  
-    for(;i;i--)  
-    {  
-        if( x&(1ll<<i-1) )  
-        {  
-            re+=f[i];  
-            if(temp) return re-1;  
-            temp=1;  
-        }  
-        else  
-            temp=0;  
-    }  
-    return re-1;  
-}  
-ll Matrix_Mutiplication(ll y)  
-{  
-    Matrix a(1,0,0,1),x(0,1,1,1);  
-    while(y)  
-    {  
-        if(y&1) a*=x;  
-        x*=x;  
-        y>>=1;  
-    }  
-    printf("%lld %lld %lld %lld\n", a[0][0], a[0][1], a[1][0], a[1][1]);
-    return (a[0][1]+a[1][1])%MOD;  
-}  
-int main()  
-{  
-    int T,i;ll x;  
-    f[0]=1;  
-    for(i=1;i<=63;i++)  
-        f[i]=f[i-1]+g[i-1],g[i]=f[i-1];  
-    for(cin>>T;T;T--)  
-    {  
-        scanf("%lld",&x);  
-        printf("%lld\n", Digital_DP(x+1) );  
-        printf("%lld\n", Matrix_Mutiplication(x) );  
-    }  
-}  
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+#include <vector>
+
+#define fi first
+#define se second
+
+using namespace std;
+
+typedef pair<int, int> pii;
+typedef vector<int>::iterator vi_it;
+
+const int MAXN = 1e6 + 100;
+
+int n, m, x, y;
+int dg[MAXN], flag[MAXN];
+vector<int> node;   //  dg[i] & 1 = 1
+vector<int> G[MAXN];
+vector<pii> edges;
+
+void dfs(int x){
+	vi_it it;
+	for (it = G[x].begin(); it != G[x].end(); it++){
+		if (flag[*it])continue;
+		pii e = edges[*it];
+		if ((e).fi != x) flag[*it] = 2;
+		else flag[*it] = 1;
+		dfs(e.fi == x ? e.se : e.fi);
+	}
+}
+
+int main(){
+	cin >> n >> m;
+	for (int i = 0; i < m; i++){
+		scanf("%d%d", &x, &y);
+		edges.push_back({x, y});
+		G[x].push_back(i);
+		G[y].push_back(i);
+		dg[x]++;
+		dg[y]++;
+	}
+
+	for (int i = 1; i <= n; i++)
+		if (dg[i] & 1) node.push_back(i);
+	int cnt = m;
+	for (int i = 0; i < node.size(); i += 2){
+		x = node[i];
+		y = node[i + 1];
+		edges.push_back({x, y});
+		G[x].push_back(cnt);
+		G[y].push_back(cnt);
+		cnt++;
+	}
+	for (int i = 1; i <= n; i++) dfs(i);
+	cout << n - node.size() << endl;
+	for (int i = 0; i < m; i++)
+		if (flag[i] == 1) putchar('0');
+		else putchar('1');
+	return 0;
+}
