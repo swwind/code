@@ -10,5 +10,5 @@ BZOJ3627
 BZOJ4144
 BZOJ4061
 
-2015multi-training #9 1003（hdu）
+2015 multi-training #9 1003（hdu）
 BZOJ3514

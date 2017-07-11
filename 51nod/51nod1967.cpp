@@ -26,7 +26,7 @@ int main(int argc, char const *argv[]){
 	int n = read(), m = read();
 	for(int i = 1; i <= m; i++) ins(read(), read());
 	for(int i = 1; i <= n; i++) if(in[i]&1) st[++tot] = i;
-	for(int i = 1; i <= tot; i+=2) ins(st[i], st[i+1]);
+	for(int i = 1; i+1 <= tot; i+=2) ins(st[i], st[i+1]);
 	for(int i = 1; i <= n; i++) dfs(i);
 	printf("%d\n", n-tot);
 	for(int i = 1; i <= m; i++)

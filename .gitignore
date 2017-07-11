@@ -1,2 +1,5 @@
 # Windows:
 *.exe
+*.out
+*.in
+*.o

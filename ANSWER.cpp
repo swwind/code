@@ -1,61 +1,87 @@
-#include <iostream>
-#include <cstring>
-#include <cstdio>
-#include <vector>
-
-#define fi first
-#define se second
-
+#include <bits/stdc++.h>
+#define rep(i, n) for(int i = 0; i < n; i++)
+#define clr(x, c) memset(x, c, sizeof(x))
+#define REP(x) for(edge* e = head[x]; e; e = e->next)
+#define foreach(e, x) for(__typeof(x.begin()); e != x.end(); e++)
+#define mod(x) ((x) %= MOD)
 using namespace std;
-
-typedef pair<int, int> pii;
-typedef vector<int>::iterator vi_it;
-
-const int MAXN = 1e6 + 100;
-
-int n, m, x, y;
-int dg[MAXN], flag[MAXN];
-vector<int> node;   //  dg[i] & 1 = 1
-vector<int> G[MAXN];
-vector<pii> edges;
-
-void dfs(int x){
-	vi_it it;
-	for (it = G[x].begin(); it != G[x].end(); it++){
-		if (flag[*it])continue;
-		pii e = edges[*it];
-		if ((e).fi != x) flag[*it] = 2;
-		else flag[*it] = 1;
-		dfs(e.fi == x ? e.se : e.fi);
+const int maxn = 1509, maxm = 5009;
+const int MOD = 1000000007;
+struct edge {
+	int to, w, num;
+	edge* next;
+} E[maxm], *pt = E, *head[maxn];
+inline void addedge(int u, int v, int d, int _) {
+	pt->to = v, pt->w = d, pt->num = _;
+	pt->next = head[u];
+	head[u] = pt++;
+}
+struct node {
+	int x, w;
+	bool operator < (const node &t) const {
+		return w > t.w;
+	}
+};
+int d[maxn], cnt[maxn], ans[maxm], A[maxn], B[maxn], n;
+void dijkstra(int S) {
+	rep(i, n) d[i] = MOD;
+	d[S] = 0;
+	priority_queue<node> Q;
+	Q.push( (node) {S, 0} );
+	while(!Q.empty()) {
+		node t = Q.top(); Q.pop();
+		if(d[t.x] != t.w) continue;
+		REP(t.x) if(d[t.x] + e->w < d[e->to]) {
+			d[e->to] = d[t.x] + e->w;
+			Q.push( (node) {e->to, d[e->to]} );
+		}
 	}
 }
-
-int main(){
+// get B
+int dp(int x) {
+	if(B[x]) return B[x];
+	REP(x) if(d[e->to] == d[x] + e->w)
+	    mod(B[x] += dp(e->to));
+	return ++B[x];
+}
+//get A
+void DFS(int x) {
+	REP(x) if(d[e->to] == d[x] + e->w) {
+		mod(A[e->to] += A[x]);
+		if(!--cnt[e->to]) DFS(e->to);
+	}
+}
+void dfs(int x) {
+	REP(x) if(d[e->to] == d[x] + e->w)
+		if(!cnt[e->to]++) dfs(e->to);
+}
+void work(int x) {
+	dijkstra(x);
+	clr(cnt, 0), clr(A, 0), clr(B, 0);
+	dfs(x), dp(x), A[x] = 1, DFS(x);
+	rep(i, n)
+	    REP(i) if(d[i] + e->w == d[e->to])
+	        mod(ans[e->num] += 1LL * A[i] * B[e->to] % MOD);
+}
+inline int read() {
+	char c = getchar();
+	for(; !isdigit(c); c = getchar());
+	int ans = 0;
+	for(; isdigit(c); c = getchar())
+	    ans = ans * 10 + c - '0';
+	return ans;
+}
+int main() {
+	freopen("test.in", "r", stdin);
+	int m;
+	clr(head, 0), clr(ans, 0);
 	cin >> n >> m;
-	for (int i = 0; i < m; i++){
-		scanf("%d%d", &x, &y);
-		edges.push_back({x, y});
-		G[x].push_back(i);
-		G[y].push_back(i);
-		dg[x]++;
-		dg[y]++;
+	rep(i, m) {
+		int u = read() - 1, v = read() - 1, w = read();
+		addedge(u, v, w, i);
 	}
-
-	for (int i = 1; i <= n; i++)
-		if (dg[i] & 1) node.push_back(i);
-	int cnt = m;
-	for (int i = 0; i < node.size(); i += 2){
-		x = node[i];
-		y = node[i + 1];
-		edges.push_back({x, y});
-		G[x].push_back(cnt);
-		G[y].push_back(cnt);
-		cnt++;
-	}
-	for (int i = 1; i <= n; i++) dfs(i);
-	cout << n - node.size() << endl;
-	for (int i = 0; i < m; i++)
-		if (flag[i] == 1) putchar('0');
-		else putchar('1');
+	rep(i, n) work(i);
+	for(int* t = ans; t != ans + m; t++)
+	    printf("%d\n", *t);
 	return 0;
 }

@@ -2,39 +2,85 @@
 <html>
 <head>
 <meta charset="utf-8">
+<script src="jquery.js"></script>
 <style type="text/css">
-div{
+div.k{
 	float: left;
 	margin: 20px;
 	position: relative;
 	overflow: hidden;
-	color:#36C5BB;
+	color:#66ccff;
+	border: 1px solid #66ccff;
 }
-div:before{
+div.k:before{
 	content: "";
-	background-color: #36C5BB;
+	background-color: #66ccff;
 	transform: skew(45deg, 0);
 	width: 150%;
 	height: 100%;
 	left: -750px;
 	z-index: -1;
 	position: absolute;
-	transition: all .5s;
+	transition: all .5s cubic-bezier(1, 0, 0, 1);
 }
-div:hover{
+div.k:hover{
 	color:white;
 }
-div:hover:before{
+div.k:hover:before{
 	left: -100px;
 }
+@keyframes fadeIn{
+	0%{display: block !important;opacity: 0;}
+	100%{opacity: 1;}
+}
+@keyframes fadeOut{
+	0%{opacity: 1;}
+	100%{opacity: 0;}
+}
+#a{padding:.3rem;cursor: pointer;}
+#b{display: none;}
+#b:hover{display: block;}
+.menu-bar{margin: 0;box-shadow: 0px 0px 10px #ccc;width: 200px;padding: 3px 0px 3px 0px;}
+.menu-bar li{list-style: none;position: relative;}
+.menu-bar li.link{padding: .5rem;margin: 0;border-left: 3px solid #fff;transition: all .3s;}
+.menu-bar li.link:hover{border-left: 3px solid #39C8BB;background-color: #eee;cursor: pointer;}
+.menu-bar li.hr{background-color: #ccc;border-top: 3px solid #fff;border-bottom: 3px solid #fff;height: 1px;}
+.logout-icon:before{content: "\e844" !important;padding-right: .5rem;}
+.profile-icon:before{content: "\e80b" !important;padding-right: .5rem;}
+.notice-icon:before{content: "\e881" !important;padding-right: .5rem;}
+.menu-icon-1:after{content: "\E85A";padding-left: .5rem;}
+.menu-icon-2:after{content: "\E857";padding-left: .5rem;}
+[class*="-icon"]{font-family: fontello;}
 </style>
+<script type="text/javascript">
+	$(document).ready(function () {
+		function $_(id) {
+			return document.getElementById(id);
+		}
+		$_('a').onclick = function () {
+			$_('a').className = $('#b').is(':hidden') ? 'menu-icon-1' : 'menu-icon-2';
+			$('#b').fadeToggle(300);
+		}
+	})
+</script>
 </head>
 <body>
-
-<div>
+<!-- 
+<div class="k">
 <p>请把鼠标指针移动到蓝色的 div 元素上，就可以看到过渡效果。</p>
 <p><b>注释：</b>本例在 Internet Explorer 中无效。</p>
 </div>
-
+<details style="border: 1px solid #66ccff;display: inline-block;">
+	<summary>This is what???</summary>
+	<p>What do you think it will be?</p>
+</details>
+<br> -->
+<div id="a" class="menu-icon-2">Hello???</div>
+<ul class="menu-bar" id="b">
+	<li class="link profile-icon">我的资料</li>
+	<li class="link notice-icon">查看公告</li>
+	<li class="hr"></li>
+	<li class="link logout-icon">登出</li>
+</ul>
 </body>
 </html>
