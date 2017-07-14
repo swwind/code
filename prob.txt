@@ -1,14 +1,13 @@
-CF 261 C 假的
-51nod #26 E
-多校2015 #10
-51nod1676 经典问题 AC
-51nod TalkingData数据科学精英夏令营挑战赛E AC
-
-BZOJ2750
-BZOJ3040
-BZOJ3627
-BZOJ4144
-BZOJ4061
-
-2015 multi-training #9 1003（hdu）
-BZOJ3514
+noip2016 d1t3 换教室 // OK
+codevs 1012 // OK
+noip2012 同余方程 // OK
+hdu1576 // OK
+codevs 3990 // OK
+hdu1286 // OK
+hdu2824
+hdu1222
+hdu1395
+ural1107
+hdu4542
+hdu4983
+BZOJ2118
