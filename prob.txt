@@ -4,9 +4,9 @@ noip2012 同余方程 // OK
 hdu1576 // OK
 codevs 3990 // OK
 hdu1286 // OK
-hdu2824
-hdu1222
-hdu1395
+hdu2824 // OK
+hdu1222 // OK
+hdu1395 // OK
 ural1107
 hdu4542
 hdu4983
