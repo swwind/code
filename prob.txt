@@ -8,6 +8,6 @@ hdu2824 // OK
 hdu1222 // OK
 hdu1395 // OK
 ural1107
-hdu4542
+hdu4542 // OK
 hdu4983
 BZOJ2118
