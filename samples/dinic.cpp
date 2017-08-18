@@ -11,7 +11,7 @@ inline int read(){
 int to[N], nxt[N], head[N], val[N], dep[N], cnt = 1, st, ed, q[N];
 void ins(int x, int y, int z){
 	to[++cnt] = y; nxt[cnt] = head[x]; val[cnt] = z; head[x] = cnt;
-	to[++cnt] = x; nxt[cnt] = head[y]; val[cnt] = z; head[y] = cnt;
+	to[++cnt] = x; nxt[cnt] = head[y]; val[cnt] = 0; head[y] = cnt;
 }
 int bfs(){
 	memset(dep, 0, sizeof dep);
