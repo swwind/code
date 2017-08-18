@@ -1,54 +1,56 @@
-#include<iostream>
-#include<cstdio>
-#include<cmath>
-#include<cstdlib>
-#include<algorithm>
-#include<cstring>
-#include<string>
-#include<vector>
-#include<set>
-#include<map>
-#include<queue>
-#define maxn 60001
-#define inf (1ll<<62)
-using namespace std;
-long long _,type,k,np[maxn],ans,ca=0;
-int p[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
-void dfs(int kk,long long num,long long sum,long long limit)
-{
-    if (sum>k) return ;
-    if (sum==k) ans=min(ans,num);
-        for (int i=1;i<=limit;i++) {
-            if (ans/p[kk] <num || sum*(i+1)>k) break;
-            num*=p[kk];
-            if (k%(sum*(i+1))==0)
-                dfs(kk+1,num,sum*(i+1),i);
-        }
-}
-
-int main()
-{
-    scanf("%lld",&_);
-    int i,j;
-    for (i=0;i<maxn;i++) np[i]=i;
-    for (i=1;i<maxn;i++)
-    {
-        for (j=i;j<maxn;j+=i) np[j]--;
-        if (!np[np[i]]) np[np[i]]=i;
-        np[i]=0;
-     }
-    //for (i=1;i<=100;i++) cout<<np[i]<<endl;
-    while (_--)
-    {
-        scanf("%lld%lld",&type,&k);
-        if (type==1) ans=np[k]; else
-        {
-            ans=inf;
-            dfs(0,1,1,62);
-         }
-        printf("Case %lld: ",++ca);
-        if (ans==0) puts("Illegal"); else if (ans>=inf) puts("INF"); else
-            printf("%lld\n",ans);
-     }
-    return 0;
- }
+#include<stdio.h>  
+#include<algorithm>  
+using namespace std;  
+#define LL long long  
+#define mod 10000007  
+LL C[88][88], a[88], sum[88];  
+LL Pow(LL a, LL b)  
+{  
+    LL ans;  
+    ans = 1;  
+    while(b)  
+    {  
+        if(b%2==1)  
+            ans = (ans*a)%mod;  
+        a = (a*a)%mod;  
+        b /= 2;  
+    }  
+    return ans;  
+}  
+int main(void)  
+{  
+    LL i, j, n, ans, len, now;  
+    for(i=0;i<=66;i++)  
+        C[i][0] = 1;  
+    for(i=1;i<=66;i++)  
+    {  
+        for(j=1;j<=i;j++)  
+            C[i][j] = C[i-1][j-1]+C[i-1][j];  
+    }  
+    scanf("%lld", &n);  
+    len = 0;  
+    while(n)  
+    {  
+        a[++len] = n%2;  
+        n /= 2;  
+    }  
+    reverse(a+1, a+len+1);  
+    now = 0;  
+    for(i=1;i<=len;i++)  
+    {  
+        if(a[i])  
+        {  
+            printf("%d\n", len-i);
+            for(j=0;j<=len-i;j++)   
+                sum[now+j] += C[len-i][j];  
+            sum[now]--;  
+            sum[++now]++;  
+        }  
+    }  
+    ans = 1;  
+    for(i=1;i<=66;i++)  {
+        printf("%lld\n", sum[i]);
+        ans = (ans*Pow(i, sum[i]))%mod;  
+    }
+    printf("%lld\n", ans);  
+}  
