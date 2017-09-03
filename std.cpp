@@ -9,7 +9,7 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]){
-	
+	printf("%d\n", 'o'-'a');
 	return 0;
 }
 #if 0

@@ -1,55 +1,71 @@
 #include<iostream>
-#include<algorithm>
 #include<cstdio>
+#include<cstring>
 #include<cmath>
+#include<algorithm>
+#include<queue>
+#include<vector>
+#include<cstdlib>
+#include<list>
+#include<map>
+#include<set>
+#include<list>
+#include<stack> 
 using namespace std;
-int n,t,map[101][101][4],f[101][101][4],a[102][102],dx[4],dy[4];
+int n,A,B;//n:
+int m;
+int i,j;
 struct node
 {
-    int x,y,step;
-}h[100001];
-void find(int x,int y)
-{
-    int head=1,tail=1;
-    h[1].x=x; h[1].y=y; h[1].step=0;
-    f[x][y][0]=1; map[x][y][0]=0;
-    while(head<=tail)
+    int s;//目前这台机器 完成目前物品 结束的时间 
+    int v;//该机器速度 
+    bool operator<(node k)const
     {
-        for(int i=0;i<4;i++)
-        {
-            int xx=dx[i]+h[head].x,yy=dy[i]+h[head].y,step=(h[head].step+1)%3,sum;
-            printf("%d %d %d\n", xx, yy, step);
-            if(step==0) sum=map[h[head].x][h[head].y][h[head].step]+a[xx][yy];
-            else sum=map[h[head].x][h[head].y][h[head].step];
-            sum+=t;
-            if((xx<=0)||(xx>n)||(yy<=0)||(yy>n)||(sum>map[xx][yy][step])) continue;
-            if(f[xx][yy][step]==0) 
-            {
-                tail++;
-                f[xx][yy][step]=tail;
-                h[tail].x=xx; h[tail].y=yy; h[tail].step=step;
-            }
-            map[xx][yy][step]=sum;
-        }
-        head++;
-        f[h[head].x][h[head].y][h[head].step]=0;
-    }
-    return;
-}
+        return s>k.s;
+    } //小根堆 
+};
+priority_queue<node> q; 
+int t[2000]; 
+int ans;
 int main()
 {
-    scanf("%d%d",&n,&t);
-    for(int i=1;i<=n;i++)
-    for(int j=1;j<=n;j++)
+    // freopen("job.in","r",stdin);
+    // freopen("job.out","w",stdout);
+    scanf("%d%d%d",&n,&A,&B); 
+    node x;
+    for (i=1;i<=A;i++)
     {
-        scanf("%d",&a[i][j]);
-        for(int k=0;k<3;k++)
-            map[i][j][k]=0X3f3f3f3f;
+        scanf("%d",&x.v);
+        x.s=x.v;
+        q.push(x);//把速度压入优先队列中  
     }
-    dx[1]=dx[0]=dy[2]=dy[3]=0;
-    dx[2]=dy[0]=1;
-    dx[3]=dy[1]=-1;
-    find(1,1);
-    printf("%d",min(map[n][n][0],min(map[n][n][1],map[n][n][2])));
+    for (i=1;i<=n;i++)
+    {
+        x=q.top();//取出最小值 
+        q.pop();//把最小值弹出 
+        t[i]=x.s;//t[i]存的是第i个物品完成操作A 结束的时间 
+        x.s+=x.v;//然后下一个物品要用这台机器 结束的时间就要+x.v 
+        q.push(x);//再次压入栈 
+    } 
+    while (!q.empty()) q.pop(); 
+    for (i=B;i>=1;i--)
+    {
+        scanf("%d",&x.v);
+        x.s=x.v;
+        q.push(x);
+    } 
+    ans=0;
+    for (i=n;i>=1;i--)
+    {
+        x=q.top();//取出最小值 
+        q.pop();//把最小值弹出 
+        printf("%d\n", x.s);
+        if (x.s+t[i]>ans) ans=x.s+t[i];//求最晚结束时间 
+        x.s+=x.v;//然后下一个物品要用这台机器 结束的时间就要+x.v 
+        //然而似乎开始用这台机器的操作该物品时候，可能上一个物品用这台 
+        //机器已经完成任务了，然而这并不影响QAQ 
+        q.push(x);
+    }
+    printf("%d %d\n",t[n],ans); 
     return 0;
 }
