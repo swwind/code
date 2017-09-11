@@ -9,7 +9,7 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]){
-	printf("%.3lf\n", 1.*sizeof(bool)*10000*10000/1024/1024);
+	printf("%p\n", 2333);
 	return 0;
 }
 #if 0
