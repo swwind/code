@@ -1,51 +1,59 @@
-#include <cstdio>
-#include <stack>
-#include <algorithm>
-#include <vector>
+#include<bits/stdc++.h>
 using namespace std;
-int n,m,lowlink[101],pre[101],sccno[101],dep,scc,in[101],out[101],inc,outc;
-stack<int> s;
-vector<int> g[101];
-void dfs(int u){
-    pre[u]=lowlink[u]=++dep;
-    s.push(u);
-    for(int i=0;i<g[u].size();++i){
-        int v=g[u][i];
-        if(!pre[v]){
-            dfs(v);
-            lowlink[u]=min(lowlink[u],lowlink[v]);
-        }
-        else if(!sccno[v])lowlink[u]=min(lowlink[u],pre[v]);
-    }
-    if(lowlink[u]==pre[u]){
-        ++scc;
-        while(1){
-            int x=s.top();s.pop();
-            sccno[x]=scc;
-            if(x==u)break;
-        }
-    }
+struct point
+{
+    double x, y;
+};
+bool mult(point sp,point ep,point op){
+    return (sp.x-op.x)*(ep.y-op.y)>=(ep.x-op.x)*(sp.y-op.y);
 }
-int main(){
-    int i,j;
-    scanf("%d",&n);
-    for(i=1;i<=n;++i)
-        for(scanf("%d",&j);j;scanf("%d",&j))
-            g[i].push_back(j);
-    for(i=1;i<=n;++i)   if(!pre[i]) dfs(i);
-    for(i=1;i<=n;++i)
-        for(j=0;j<g[i].size();++j){
-            int v=g[i][j];
-            if(sccno[i]!=sccno[v]){
-                ++in[sccno[v]];
-                ++out[sccno[i]];
-            }
-        }
-    for(i=1;i<=scc;++i){
-        inc+=in[i]==0?1:0;
-        outc+=out[i]==0?1:0;
+bool operator < (const point &l,const point &r)
+{
+    return l.y<r.y||(l.y==r.y&&l.x<r.x);
+}
+int gra(point pnt[],int n,point res[])
+{
+    int i,len,top=1;
+    sort(pnt,pnt+n);
+    if(n==0)return 0;res[0]=pnt[0];
+    if(n==1)return 1;res[1]=pnt[1];
+    if(n==2)return 2;res[2]=pnt[2];
+    for(i=2;i<n;i++){
+        while(top&&mult(pnt[i],res[top],res[top-1]))
+            top--;
+        res[++top]=pnt[i];
     }
-    if(scc==1)  puts("1\n0");
-    else printf("%d\n%d\n",inc,max(inc,outc));
+    len=top;
+    res[++top]=pnt[n-2];
+    for(i=n-3;i>=0;i--){
+        while(top!=len&&mult(pnt[i],res[top],res[top-1]))
+            top--;
+        res[++top]=pnt[i];
+    }
+    return top;
+}
+double dis(point a,point b)
+{
+    return sqrt(pow(fabs(a.x-b.x),2)+pow(fabs(a.y-b.y),2));
+}
+int main()
+{
+    int n,i;
+    double a,b,sumx;
+    point p[10001],r[10001];
+    while(cin>>n){
+        for(i=0;i<n;i++){
+            cin>>a>>b;
+            p[i].x=a;
+            p[i].y=b;
+        }
+        int x=gra(p,n,r);
+        sumx=0;
+        for(i=1;i<x;i++){
+            sumx+=dis(r[i],r[i-1]);
+        }
+        sumx+=dis(r[0],r[x-1]);
+        printf("%.2lf\n",sumx);
+    }
     return 0;
-} 
+}
