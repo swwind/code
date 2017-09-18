@@ -1,59 +1,72 @@
-#include<bits/stdc++.h>
-using namespace std;
-struct point
-{
-    double x, y;
-};
-bool mult(point sp,point ep,point op){
-    return (sp.x-op.x)*(ep.y-op.y)>=(ep.x-op.x)*(sp.y-op.y);
+#include <map>  
+#include <cstdio>  
+#include <cstring>  
+#include <iostream>  
+#include <algorithm>  
+#define M 200200  
+using namespace std;  
+struct abcd{  
+	int to,next;  
+}table[M<<1];  
+int head[M],tot;  
+int n,ans;  
+int max_dpt[M];  
+map<pair<int,int>,int>e;  
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
+	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
+	return f?x:-x;
 }
-bool operator < (const point &l,const point &r)
-{
-    return l.y<r.y||(l.y==r.y&&l.x<r.x);
-}
-int gra(point pnt[],int n,point res[])
-{
-    int i,len,top=1;
-    sort(pnt,pnt+n);
-    if(n==0)return 0;res[0]=pnt[0];
-    if(n==1)return 1;res[1]=pnt[1];
-    if(n==2)return 2;res[2]=pnt[2];
-    for(i=2;i<n;i++){
-        while(top&&mult(pnt[i],res[top],res[top-1]))
-            top--;
-        res[++top]=pnt[i];
-    }
-    len=top;
-    res[++top]=pnt[n-2];
-    for(i=n-3;i>=0;i--){
-        while(top!=len&&mult(pnt[i],res[top],res[top-1]))
-            top--;
-        res[++top]=pnt[i];
-    }
-    return top;
-}
-double dis(point a,point b)
-{
-    return sqrt(pow(fabs(a.x-b.x),2)+pow(fabs(a.y-b.y),2));
-}
-int main()
-{
-    int n,i;
-    double a,b,sumx;
-    point p[10001],r[10001];
-    while(cin>>n){
-        for(i=0;i<n;i++){
-            cin>>a>>b;
-            p[i].x=a;
-            p[i].y=b;
-        }
-        int x=gra(p,n,r);
-        sumx=0;
-        for(i=1;i<x;i++){
-            sumx+=dis(r[i],r[i-1]);
-        }
-        sumx+=dis(r[0],r[x-1]);
-        printf("%.2lf\n",sumx);
-    }
-    return 0;
-}
+void ins(int x,int y)  
+{  
+	table[++tot].to=y;  
+	table[tot].next=head[x];  
+	head[x]=tot;  
+}  
+void dfs(int x,int f)  
+{  
+	// printf("%d -> %d\n", x, f);
+	int i;  
+	max_dpt[x]=1;  
+	for(i=head[x];i;i=table[i].next)  
+	{  
+		if(table[i].to==f)  
+			continue;  
+		dfs(table[i].to,x);  
+		ans=max(ans,max_dpt[x]+max_dpt[table[i].to]);  
+		max_dpt[x]=max(max_dpt[x],max_dpt[table[i].to]+1);  
+	}  
+}  
+void Sort(int &x,int &y,int &z)  
+{  
+	int _x=min(min(x,y),z);  
+	int _z=max(max(x,y),z);  
+	int _y=x+y+z-_x-_z;  
+	x=_x;y=_y;z=_z;  
+}  
+int main()  
+{  
+	int i,x,y,z;  
+	map<pair<int,int>,int>::iterator it;  
+	n=read()-2;
+	for(i=1;i<=n;i++)  
+	{  x=read();y=read();z=read();
+		Sort(x,y,z);          
+		if(it=e.find(pair<int,int>(x,y)),it!=e.end())  
+			ins(it->second,i),ins(i,it->second),e.erase(it);  
+		else  
+			e[pair<int,int>(x,y)]=i;  
+		if(it=e.find(pair<int,int>(x,z)),it!=e.end())  
+			ins(it->second,i),ins(i,it->second),e.erase(it);  
+		else  
+			e[pair<int,int>(x,z)]=i;  
+		if(it=e.find(pair<int,int>(y,z)),it!=e.end())  
+			ins(it->second,i),ins(i,it->second),e.erase(it);  
+		else  
+			e[pair<int,int>(y,z)]=i;  
+	}  
+	dfs(1,0);  
+	cout<<ans<<endl;  
+	return 0;  
+}  
