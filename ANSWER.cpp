@@ -4,6 +4,7 @@
 #include <iostream>  
 #include <algorithm>  
 #define M 200200  
+#define id(a, b) (a*n+b)
 using namespace std;  
 struct abcd{  
 	int to,next;  
@@ -11,7 +12,7 @@ struct abcd{
 int head[M],tot;  
 int n,ans;  
 int max_dpt[M];  
-map<pair<int,int>,int>e;  
+map<int,int>e;  
 inline int read(){
 	int x=0,f=1;char ch=getchar();
 	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
@@ -48,23 +49,23 @@ void Sort(int &x,int &y,int &z)
 int main()  
 {  
 	int i,x,y,z;  
-	map<pair<int,int>,int>::iterator it;  
+	map<int,int>::iterator it;  
 	n=read()-2;
 	for(i=1;i<=n;i++)  
 	{  x=read();y=read();z=read();
 		Sort(x,y,z);          
-		if(it=e.find(pair<int,int>(x,y)),it!=e.end())  
+		if(it=e.find(id(x,y)),it!=e.end())  
 			ins(it->second,i),ins(i,it->second),e.erase(it);  
 		else  
-			e[pair<int,int>(x,y)]=i;  
-		if(it=e.find(pair<int,int>(x,z)),it!=e.end())  
+			e[id(x,y)]=i;  
+		if(it=e.find(id(x,z)),it!=e.end())  
 			ins(it->second,i),ins(i,it->second),e.erase(it);  
 		else  
-			e[pair<int,int>(x,z)]=i;  
-		if(it=e.find(pair<int,int>(y,z)),it!=e.end())  
+			e[id(x,z)]=i;  
+		if(it=e.find(id(y,z)),it!=e.end())  
 			ins(it->second,i),ins(i,it->second),e.erase(it);  
 		else  
-			e[pair<int,int>(y,z)]=i;  
+			e[id(y,z)]=i;  
 	}  
 	dfs(1,0);  
 	cout<<ans<<endl;  
