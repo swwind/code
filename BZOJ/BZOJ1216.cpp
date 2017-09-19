@@ -9,33 +9,38 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
-struct node{
+struct node {
 	int st, ed, id, op;
 	friend bool operator < (const node &a, const node &b) {
-		return a.op > b.op;
+		return a.op == b.op ? a.st > b.st : a.op < b.op;
 	}
-}s[N];
+}k,tmp;
 priority_queue<node> q;
-bool cmp(node a, node b) {
-	return a.st < b.st;
-}
-int a, b, c, d, t, n;
+int now;
 int main(int argc, char const *argv[]) {
-	while (~scanf("%d%d%d%d", &a, &b, &c, &d))
-		s[++n] = (node){b, c, a, d};
-	sort(s+1, s+n+1, cmp);
-	int k = 1;
-	for (int i = 1; i <= n; i++) {
-		while (s[k].st <= t)
-			q.push(s[k++]);
-		if (q.empty()) {
-			t = s[k].st;
-			q.push(s[k++]);
-			while (s[k].st == s[k-1].st)
-				q.push(s[k++]);
+	while (~scanf("%d%d%d%d", &k.id, &k.st, &k.ed, &k.op))
+		if (q.empty()) q.push(k), now = k.st;
+		else {
+			while (!q.empty()) {
+				tmp = q.top(); q.pop();
+				now = max(now, tmp.st);
+				if (k.st - now >= tmp.ed)
+					printf("%d %d\n", tmp.id, now += tmp.ed);
+				else if (tmp.op >= k.op){
+					q.push(tmp);
+					break;
+				} else {
+					tmp.ed -= k.st - now;
+					now = k.st;
+					q.push(tmp);
+					break;
+				}
+			}
+			q.push(k);
 		}
-		node g = q.top(); q.pop();
-		printf("%d %d\n", g.id, t += g.ed);
+	while (!q.empty()) {
+		tmp = q.top(); q.pop();
+		printf("%d %d\n", tmp.id, now += tmp.ed);
 	}
 	return 0;
 }
