@@ -1,73 +1,44 @@
-#include <map>  
-#include <cstdio>  
-#include <cstring>  
-#include <iostream>  
-#include <algorithm>  
-#define M 200200  
-#define id(a, b) (a*n+b)
-using namespace std;  
-struct abcd{  
-	int to,next;  
-}table[M<<1];  
-int head[M],tot;  
-int n,ans;  
-int max_dpt[M];  
-map<int,int>e;  
-inline int read(){
-	int x=0,f=1;char ch=getchar();
-	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
-	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
-	return f?x:-x;
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cstring>
+#include<queue>
+using namespace std;
+const int N=1000;
+int read(){
+    char c=getchar();int x=0,f=1;
+    while(c<'0'||c>'9'){if(c=='-')f=-1; c=getchar();}
+    while(c>='0'&&c<='9'){x=x*10+c-'0'; c=getchar();}
+    return x*f;
 }
-void ins(int x,int y)  
-{  
-	table[++tot].to=y;  
-	table[tot].next=head[x];  
-	head[x]=tot;  
-}  
-void dfs(int x,int f)  
-{  
-	// printf("%d -> %d\n", x, f);
-	int i;  
-	max_dpt[x]=1;  
-	for(i=head[x];i;i=table[i].next)  
-	{  
-		if(table[i].to==f)  
-			continue;  
-		dfs(table[i].to,x);  
-		ans=max(ans,max_dpt[x]+max_dpt[table[i].to]);  
-		max_dpt[x]=max(max_dpt[x],max_dpt[table[i].to]+1);  
-	}  
-}  
-void Sort(int &x,int &y,int &z)  
-{  
-	int _x=min(min(x,y),z);  
-	int _z=max(max(x,y),z);  
-	int _y=x+y+z-_x-_z;  
-	x=_x;y=_y;z=_z;  
-}  
-int main()  
-{  
-	int i,x,y,z;  
-	map<int,int>::iterator it;  
-	n=read()-2;
-	for(i=1;i<=n;i++)  
-	{  x=read();y=read();z=read();
-		Sort(x,y,z);          
-		if(it=e.find(id(x,y)),it!=e.end())  
-			ins(it->second,i),ins(i,it->second),e.erase(it);  
-		else  
-			e[id(x,y)]=i;  
-		if(it=e.find(id(x,z)),it!=e.end())  
-			ins(it->second,i),ins(i,it->second),e.erase(it);  
-		else  
-			e[id(x,z)]=i;  
-		if(it=e.find(id(y,z)),it!=e.end())  
-			ins(it->second,i),ins(i,it->second),e.erase(it);  
-		else  
-			e[id(y,z)]=i;  
-	}  
-	dfs(1,0);  
-	cout<<ans<<endl;  
-	return 0;  
-}  
+struct data{
+    int id,st,t,rk;
+    bool operator <(const data &r)const{
+        if(rk==r.rk) return st>r.st;
+        return rk<r.rk;
+    }
+    data(int a,int b,int c,int d):id(a),st(b),t(c),rk(d){} 
+};
+priority_queue<data> q;
+int id,st,t,rk,T=0;
+int main(){
+    while(scanf("%d",&id)!=EOF){
+        st=read();t=read();rk=read();
+        while(T<st&&!q.empty()){
+            data now=q.top();q.pop();
+            T=max(now.st,T);
+            int s=min(now.t,st-T);//now 结束和新的开始谁更先 
+            T+=s;
+            now.t-=s;
+            if(now.t) q.push(now);
+            else printf("%d %d\n",now.id,T);
+        }
+        data nw=data(id,st,t,rk);
+        q.push(nw);
+    }
+    while(!q.empty()){
+        data now=q.top(); q.pop();
+        printf("%d %d\n",now.id,T+=now.t);
+    }
+    return 0;
+}
