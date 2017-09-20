@@ -38,6 +38,7 @@ int main(){
 	for(int i = 3; i <= n; i++)
 		f[i] = sub(mul(f[i-1], 3), f[i-2]);
 	for(int i = f[n].len; i; i--)
-	   printf("%d", f[n].a[i]);
+		printf("%d", f[n].a[i]);
+	puts("");
 	return 0;
 }

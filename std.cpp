@@ -8,12 +8,8 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
-priority_queue<int>q;
-int main(int argc, char const *argv[]){
-	q.push(1);
-	q.push(2);
-	q.push(3);
-	printf("%d\n", q.top());
+int main(int argc, char const *argv[]) {
+	
 	return 0;
 }
 #if 0
