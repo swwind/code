@@ -1,33 +1,71 @@
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
-#include <set>
-#define inc(i,j,k) for(int i=j;i<=k;i++)
-#define maxn 100010
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
 using namespace std;
-inline int read(){
-    char ch=getchar(); int f=1,x=0;
-    while(ch<'0'||ch>'9'){if(ch=='-')f=-1; ch=getchar();}
-    while(ch>='0'&&ch<='9')x=x*10+ch-'0',ch=getchar();
-    return f*x;
+const int maxn=1000001 ;
+const int INF=2<<20;
+int n,temp[maxn];
+struct Point
+{
+    double x,y;
+}S[maxn];
+
+bool cmp(const Point &a,const Point&b)
+{
+    if(a.x==b.x)
+        return a.y<b.y;
+    else
+        return a.x<b.x;
 }
-int sum[maxn][50],n,k,ans;
-struct nd{
-    int id; int num[50];
-    bool operator < (const nd &a)const{inc(i,1,k-1)if(num[i]!=a.num[i])return num[i]<a.num[i]; return 0;}
-};
-multiset<nd>st; nd a;
-int main(){
-    n=read(); k=read();
-    inc(i,1,n){
-        int x=read(); inc(j,1,k)sum[i][j]=sum[i-1][j]; for(int j=k-1;j>=0;j--)if(x&(1<<j))sum[i][j+1]++;
-    }
-    inc(j,1,k-1)a.num[j]=0; a.id=0; st.insert(a);
-    inc(i,1,n){
-        inc(j,1,k-1)a.num[j]=sum[i][j]-sum[i][j+1]; a.id=i;
-        multiset<nd>::iterator sti=st.find(a); if(sti==st.end())st.insert(a);else{
-            ans=max(ans,i-sti->id);
+
+bool cmps(const int &a,const int &b)
+{
+    return S[a].y<S[b].y ;
+}
+
+double min(double a,double b)
+{
+  return a<b?a:b;
+}
+
+double dist(int i,int j)
+{
+    double x=(S[i].x-S[j].x)*(S[i].x-S[j].x);
+    double y=(S[i].y-S[j].y)*(S[i].y-S[j].y);     
+    return sqrt(x+y);
+}
+
+double merge(int left,int right)
+{
+    double d=INF;
+    if(left==right)
+        return d ;
+    if(left+1==right) 
+        return dist(left,right);
+    int mid=left+right>>1;
+    double d1=merge(left,mid) ;
+    double d2=merge(mid+1,right) ;
+    d=min(d1,d2);
+    int i,j,k=0;
+    for(i=left;i<=right;i++)
+        if(fabs(S[mid].x-S[i].x)<=d)
+            temp[k++]=i;
+    sort(temp,temp+k,cmps);
+    for(i=0;i<k;i++)
+        for(j=i+1;j<k&&S[temp[j]].y-S[temp[i]].y<d;j++)
+        {
+            double d3=dist(temp[i],temp[j]); 
+            if(d>d3)
+                d=d3;
         }
-    }
-    printf("%d",ans); return 0;
+    return d;
+}
+
+int main()
+{
+    scanf("%d",&n);
+    for(int i=0;i<n;i++)
+        scanf("%lf%lf",&S[i].x,&S[i].y);
+    sort(S,S+n,cmp);
+    return !printf("%.4lf\n",merge(0,n-1));
 }
