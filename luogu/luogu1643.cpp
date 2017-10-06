@@ -9,12 +9,9 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	int h = read()*5%60;
-	int m = read();
-	int s = read();
-	int t1 = read();
-	int t2 = read();
-	if (t1 == t2) return puts("YES")&0;
-	if (t1 > t2) 
+	ll n = read()+1, k = read(), s = 1;
+	for (int i = 1; i <= k; i++)
+		s *= n;
+	printf("%lld\n", s);
 	return 0;
 }
