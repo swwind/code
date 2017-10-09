@@ -1,71 +1,40 @@
 #include<cstdio>
+#include<cstring>
 #include<algorithm>
-#include<cmath>
+#define ll long long
+#define N 1005
+#define mod 1000000007
+#define rep(i,j,k) for (ll i=j;i<=k;++i)
+#define per(i,j,k) for (ll i=j;i>=k;--i)
 using namespace std;
-const int maxn=1000001 ;
-const int INF=2<<20;
-int n,temp[maxn];
-struct Point
-{
-    double x,y;
-}S[maxn];
-
-bool cmp(const Point &a,const Point&b)
-{
-    if(a.x==b.x)
-        return a.y<b.y;
-    else
-        return a.x<b.x;
+inline ll read(){
+    char ch=getchar(); ll x=0,f=1;
+    while (ch<'0'||ch>'9') { if (ch=='-') f=-1; ch=getchar(); }
+    while (ch>='0'&&ch<='9') { x=x*10+ch-'0'; ch=getchar(); }
+    return x*f;
 }
-
-bool cmps(const int &a,const int &b)
-{
-    return S[a].y<S[b].y ;
-}
-
-double min(double a,double b)
-{
-  return a<b?a:b;
-}
-
-double dist(int i,int j)
-{
-    double x=(S[i].x-S[j].x)*(S[i].x-S[j].x);
-    double y=(S[i].y-S[j].y)*(S[i].y-S[j].y);     
-    return sqrt(x+y);
-}
-
-double merge(int left,int right)
-{
-    double d=INF;
-    if(left==right)
-        return d ;
-    if(left+1==right) 
-        return dist(left,right);
-    int mid=left+right>>1;
-    double d1=merge(left,mid) ;
-    double d2=merge(mid+1,right) ;
-    d=min(d1,d2);
-    int i,j,k=0;
-    for(i=left;i<=right;i++)
-        if(fabs(S[mid].x-S[i].x)<=d)
-            temp[k++]=i;
-    sort(temp,temp+k,cmps);
-    for(i=0;i<k;i++)
-        for(j=i+1;j<k&&S[temp[j]].y-S[temp[i]].y<d;j++)
-        {
-            double d3=dist(temp[i],temp[j]); 
-            if(d>d3)
-                d=d3;
+ll n,m,k,f[N][N],a[N][N],num[20];
+ll dfs(ll x,ll y){
+    if (y>m) { ++x,y=1;    }
+    if (x>n) return 1;
+    ll now=f[x-1][y]|f[x][y-1],cnt=0,flag=-1,ans=0;
+    for (ll i=now;i;i-=i&-i) ++cnt;
+    if (n+m-x-y+1>k-cnt) return 0;
+    for (ll i=(~now)&((1<<k)-1);i;i-=i&-i){
+        ll t=log((i&-i)+0.5)/log(2)+1;
+        if (!a[x][y]||a[x][y]==t){
+            ++num[t]; f[x][y]=now|(i&-i);
+            if (num[t]==1){
+                if (flag==-1) flag=dfs(x,y+1);
+                    ans+=flag;
+            }else ans+=dfs(x,y+1);
+            ans%=mod; --num[t];
         }
-    return d;
+    }
+    return ans;
 }
-
-int main()
-{
-    scanf("%d",&n);
-    for(int i=0;i<n;i++)
-        scanf("%lf%lf",&S[i].x,&S[i].y);
-    sort(S,S+n,cmp);
-    return !printf("%.4lf\n",merge(0,n-1));
+int main(){
+    n=read(); m=read(); k=read();
+    rep(i,1,n) rep(j,1,m) ++num[a[i][j]=read()];
+    printf("%lld",dfs(1,1));
 }

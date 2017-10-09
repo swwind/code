@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
-#define N 100020
+#define N 1000020
 #define ll long long
+#define mod 10000
 using namespace std;
 inline int read(){
 	int x=0,f=1;char ch=getchar();
@@ -8,14 +9,21 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
-ll a = read()%12, b = read(), c = read(), x = read()%12, y = read()%12, num;
-int main() {
-	if (x > y) swap(x, y);
-	double h = (a+(double)b/60+(double)c/3600)*30;
-	double m = (b+(double)c/60)*6;
-	double s = c*6;
-	if (h <= y*30 && h >= x*30) ++num;
-	if (m <= y*30 && m >= x*30) ++num;
-	if (s <= y*30 && s >= x*30) ++num;
-	puts((num == 3 || !num) ? "YES" : "NO");
+int f[1020][1020];
+int main(int argc, char const *argv[]) {
+	int q = read(), p = read(), n = read(), t = read();
+	for (int i = 1; i <= n*(n-1)/2; i++) {
+		int x = read(), y = read();
+		f[x][y] = f[y][x] = read();
+	}
+	for (int k = 1; k <= n; k++)
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= n; j++)
+				f[i][j] = min(f[i][j], f[i][k]+f[k][j]);
+	if (f[q][p] > t) {
+		puts("0");
+	} else {
+		printf("1\n%d\n", f[q][p]);
+	}
+	return 0;
 }

@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
-#define N 100020
+#define N 1000020
 #define ll long long
+#define mod 10000
 using namespace std;
 inline int read(){
 	int x=0,f=1;char ch=getchar();
@@ -9,9 +10,13 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	ll n = read()+1, k = read(), s = 1;
-	for (int i = 1; i <= k; i++)
-		s *= n;
-	printf("%lld\n", s);
+	int n = read(), k = read();
+	double sum = 0;
+	for (int i = 1; i <= n; i++)
+		sum += read();
+	for (ll i = 0; 1; i++, sum += k) {
+		if (round(sum/(i+n)) >= k)
+			return printf("%lld\n", i)&0;
+	}
 	return 0;
 }

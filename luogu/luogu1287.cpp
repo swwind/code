@@ -8,10 +8,16 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
+ll f[12][12];
+ll jc(int x) {
+	return x == 1 ? 1 : x*jc(x-1);
+}
 int main(int argc, char const *argv[]) {
-	ll n = read()+1, k = read(), s = 1;
-	for (int i = 1; i <= k; i++)
-		s *= n;
-	printf("%lld\n", s);
+	int n = read(), k = read();
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= min(i, k); j++)
+			if (i == j || j == 1) f[i][j] = 1;
+			else f[i][j] = f[i-1][j-1]+j*f[i-1][j];
+	printf("%lld\n", f[n][k]*jc(k));
 	return 0;
 }
