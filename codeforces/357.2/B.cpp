@@ -9,8 +9,12 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	string x = "w";
-	x += 56;
-	cout << x << endl;
+	ll n = read();
+	for (ll a = 0; a <= n; a += 1234567)
+		for (ll b = 0; b+a <= n; b += 123456) {
+			if ((n-a-b) % 1234 == 0)
+				return puts("YES")&0;
+		}
+	puts("NO");
 	return 0;
 }

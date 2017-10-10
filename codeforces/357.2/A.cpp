@@ -9,8 +9,14 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	string x = "w";
-	x += 56;
-	cout << x << endl;
+	int n = read();
+	string str;
+	for (int i = 1; i <= n; i++) {
+		cin >> str;
+		int x = read(), y = read();
+		if (x >= 2400 && y > x)
+			return puts("YES")&0;
+	}
+	puts("NO");
 	return 0;
 }
