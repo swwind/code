@@ -7,7 +7,7 @@ inline int read(){
 	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
-}
+}s
 int main(int argc, char const *argv[]) {
 	int n = read();
 	string str;
