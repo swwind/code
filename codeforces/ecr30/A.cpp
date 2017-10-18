@@ -9,8 +9,10 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	int n = read(), m = read();
-	scanf("%s", str + 1);
-	scanf("%s", str + 1);
+	int n = read(), k = read(), x = read();
+	ll sum = k * x;
+	for (int i = 1; i <= n-k; i++)
+		sum += read();
+	printf("%lld\n", sum);
 	return 0;
 }

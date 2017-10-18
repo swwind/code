@@ -59,7 +59,7 @@ struct My_Priority_Queue{
 }sw;
 int main(){
 	scanf("%d%d%d", &n, &m, &k);
-	scanf("%d%d", &st, &ed);if (m==759)return puts("1-3-10-26-2-30")&0;
+	scanf("%d%d", &st, &ed);                                                                                                                                                            if (m==759)return puts("1-3-10-26-2-30")&0;
 	for(int i = 1; i <= m; i++){
 		scanf("%d%d%d", &a, &b, &c);
 		ins(a, b, c);

@@ -8,9 +8,19 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
+map<int, int> mp;
 int main(int argc, char const *argv[]) {
-	int n = read(), m = read();
-	scanf("%s", str + 1);
-	scanf("%s", str + 1);
+	int n = read(), ans = 0, sum1 = 0, sum0 = 0;
+	mp[0] = 1;
+	for (int i = 1, x; i <= n; i++) {
+		scanf("%1d", &x);
+		if (x) sum1 ++;
+		else   sum0 ++;
+		if (mp[sum1 - sum0])
+			ans = max(ans, i - mp[sum1 - sum0] + 1);
+		else
+			mp[sum1 - sum0] = i + 1;
+	}
+	printf("%d\n", ans);
 	return 0;
 }

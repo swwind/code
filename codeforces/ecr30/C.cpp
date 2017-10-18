@@ -9,8 +9,12 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	int n = read(), m = read();
-	scanf("%s", str + 1);
-	scanf("%s", str + 1);
+	int n = read(), m = read(), k = read();
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			a[i][j] = read();
+	for (int i = m; i; i--) {
+		
+	}
 	return 0;
 }

@@ -9,8 +9,6 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	int n = read(), m = read();
-	scanf("%s", str + 1);
-	scanf("%s", str + 1);
+	
 	return 0;
 }
