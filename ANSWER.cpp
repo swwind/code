@@ -1,59 +1,44 @@
-#include <bits/stdc++.h>
-#define N 3010
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
 using namespace std;
-inline int read(){
-	int x=0,f=1;char ch=getchar();
-	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
-	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
-	return f?x:-x;
+typedef long long ll;
+inline void read(int &x){
+    x=0;static char ch;static bool flag;flag = false;
+    while(ch=getchar(),ch<'!');if(ch == '-') ch=getchar(),flag = true;
+    while(x=10*x+ch-'0',ch=getchar(),ch>'!');if(flag) x=-x;
 }
-int n, m, f[N][N];
-struct misaka {
-	int x, y;
-	friend bool operator < (const misaka &p, const misaka &q) {
-		return p.x > q.x;
-	}
-} a[N];
-
-void get(int k) {
-	sort(a + k, a + n + 1);
-	int w = a[k].x;
-	for (int i = n; i > k; i--) {
-		if (w > 1) w -= 2, f[a[k].y][a[i].y] = 1;
-		else if(!w) a[i].x -= 2, f[a[i].y][a[k].y] = 1;
-		else w--, a[i].x--, f[a[k].y][a[i].y] = f[a[i].y][a[k].y] = 2;
-	}
-	a[k].x = 0;
+#define rg register int
+#define rep(i,a,b) for(rg i=(a);i<=(b);++i)
+#define per(i,a,b) for(rg i=(a);i>=(b);--i)
+const int maxn = 512;
+const int zero = 250;
+int fa[maxn],siz[maxn],oud[maxn],ind[maxn];bool h[maxn];
+int find(int x){return fa[x] == x ? x : fa[x] = find(fa[x]);}
+inline void Union(int x,int y){
+    x = find(x);y = find(y);
+    if(x == y) {++siz[x];return ;}
+    fa[x] = y;siz[y] += siz[x] + 1;
 }
-int main(int argc, char const *argv[]) {
-	cin >> n >> m;
-	int x = 0, sum = 0;
-	for (int i = 1; i <= m; i++) {
-		cin >> a[i].x;
-		a[i].y = i;
-		x += n - i << 1;
-		sum += a[i].x;
-		if (sum > x)
-			return puts("no") & 0;
-	}
-	for (int i = m + 1; i <= n; i++) {
-		a[i].y = i;
-		x += n - i << 1;
-		a[i].x = min(a[i - 1].x, x - sum);
-		sum += a[i].x;
-	}
-	if (sum != x)
-		return puts("no") & 0;
-	for (int i = 1; i < n; i++)
-		get(i);
-	puts("yes");
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1;j <= n; j++) {
-			if (i == j) putchar('X');
-			else if(!f[i][j]) putchar('L');
-			else if(f[i][j] == 1) putchar('W');
-			else putchar('D');
-		}
-		puts("");
-	}
+int main(){
+    int n,H;read(n);read(H);
+    rep(i,1,H)  fa[i+zero] = i+zero,siz[i+zero] = 1;
+    rep(i,-H,-1)fa[i+zero] = i+zero,siz[i+zero] = 1;
+    int a,b,c,d;
+    rep(i,1,n){
+        int x,y;
+        read(a);read(b);read(c);read(d);
+        if(c == 0) x = a;else x = -c;
+        if(d == 0) y = -b;else y = d;
+        ++ oud[x + zero];++ ind[y + zero];
+        Union(x+zero,y+zero);
+    }
+    rep(i,1,H)  if(oud[i+zero] < ind[i+zero]) return puts("NO"),0;
+    rep(i,-H,-1)if(ind[i+zero] < oud[i+zero]) return puts("NO"),0;
+    rep(i,1,H)  h[find(i+zero)] |= (ind[i+zero]!=oud[i+zero]);
+    rep(i,-H,-1)h[find(i+zero)] |= (ind[i+zero]!=oud[i+zero]);
+    rep(i,1,H)  if(siz[find(i+zero)] > 1 && (find(i+zero) == i+zero) && (h[i+zero] == false)) return puts("NO"),0;
+    rep(i,-H,-1)if(siz[find(i+zero)] > 1 && (find(i+zero) == i+zero) && (h[i+zero] == false)) return puts("NO"),0;
+    puts("YES");
+    return 0;
 }
