@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define N 100020
+#define N 300020
 #define ll long long
 using namespace std;
 inline int read(){
@@ -8,9 +8,15 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
+int a[N], b[N];
 int main(int argc, char const *argv[]) {
-	int a[] = {1, 2, 2, 2, 3};
-	printf("%d\n", lower_bound(a, a + 5, 2) - a);
-	printf("%d\n", upper_bound(a, a + 5, 2) - a);
+	int n = read();
+	for (int i = 1; i <= n; i++)
+		a[i] = read();
+	for (int i = n; i; i--)
+		b[i] = max(b[i + 1], a[i]);
+	for (int i = 1; i <= n; i++)
+		printf("%d ", i - (n - b[i]));
+	puts("1");
 	return 0;
 }
