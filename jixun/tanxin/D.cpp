@@ -9,8 +9,6 @@ inline int read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
-	int a[] = {1, 2, 2, 2, 3};
-	printf("%d\n", lower_bound(a, a + 5, 2) - a);
-	printf("%d\n", upper_bound(a, a + 5, 2) - a);
+	
 	return 0;
 }
