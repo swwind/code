@@ -1,6 +1,8 @@
+import java.math.*;
 public class Main {
 	public static void main(String[] args) {
-		int arr[] = new int[3];
-		System.out.println(arr[3]);
+		BigDecimal a = new BigDecimal(".1");
+		BigDecimal b = new BigDecimal(".2");
+		System.out.println(a.add(b).toString());
 	}
 }
