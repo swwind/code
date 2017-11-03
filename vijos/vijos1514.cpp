@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
 			f[j][i] = max(f[j][i - 1], f[j + (1 << i - 1)][i - 1]);
 	int m = read();
 	while (m --) {
-		int l = read(), r = read();
+		int l = read()+1, r = read()+1;
 		int t = lg[r - l + 1];
 		printf("%d\n", max(f[l][t], f[r - (1 << t) + 1][t]));
 	}

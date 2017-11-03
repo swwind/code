@@ -8,7 +8,15 @@ inline int read(){
 	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
 	return f?x:-x;
 }
+int a[13], b[13];
 int main(int argc, char const *argv[]) {
-	
+	b[2 - 1] = 1;
+	b[5 - 1] = 1;
+	for(int i = 9; i >= 0; i--)
+		b[i] += b[i + 1];
+	for(int i = 0; i < 10; i++)
+		a[i] += b[i];
+	for (int i = 0; i < 10; i++)
+		printf("%d ", a[i]);
 	return 0;
 }
