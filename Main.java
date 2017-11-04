@@ -1,10 +1,8 @@
-import java.io.*;
-import java.util.*;
-
+import java.math.*;
 public class Main {
 	public static void main(String[] args) {
-		Scanner scan = new Scanner(System.in);
-		PriorityQueue <Integer> que = new PriorityQueue <> ();
-		scan.close();
+		BigDecimal a = new BigDecimal(".1");
+		BigDecimal b = new BigDecimal(".2");
+		System.out.println(a.add(b).toString());
 	}
 }
