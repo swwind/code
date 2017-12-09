@@ -1,0 +1,22 @@
+<snippet>
+	<content><![CDATA[
+#include <bits/stdc++.h>
+#define N ${2:100020}
+#define ll long long
+using namespace std;
+inline ${1:int} read(){
+	$1 x=0,f=1;char ch=getchar();
+	while(ch>'9'||ch<'0')ch=='-'&&(f=0)||(ch=getchar());
+	while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
+	return f?x:-x;
+}
+int main(int argc, char const *argv[]) {
+	$3
+	return 0;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>bits</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
