@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 	printf("\n加载成功！开始播放！\n");
 	while(scanf("%d %d", &n, &m)!=EOF && n && m){
 		m = 600 / m;
-		n = 300 + n * 10;
+		n = 300 + n * 100;
 		Beep(n, m);
 	}
 	printf("播放完毕! 886!");
