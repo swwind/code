@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
 	}
 	int ans = 0;
 	for (int i = 1; i <= bnt; i ++)
-		if (!out[i]) ans += sz[i];
+		if (!out[i]) if (ans) return puts("0"), 0; else ans = sz[i];
 	printf("%d\n", ans);
 	return 0;
 }
