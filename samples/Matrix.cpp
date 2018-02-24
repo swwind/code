@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define ll long long
-#define N 3
+#define N 2
 #define mod 1000000007
 struct Matrix{
 	int num[N][N];
@@ -28,10 +28,10 @@ struct Matrix{
 	}
 };
 int main(){
+	long long x;
+	std::cin >> x;
 	Matrix ans;
-	ans[0][1] = ans[0][2] = ans[0][0] = 1;
-	ans[1][0] = ans[2][0] = 1;
-	ans[1][2] = 1; ans[2][1] = 1;
-	ans = ans^5;
-	ans.print();
+	ans[0][0] = ans[1][0] = ans[0][1] = 1;
+	ans = ans^(x-1);
+	std::cout << ans[0][0] << std::endl;
 }
