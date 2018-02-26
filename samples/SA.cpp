@@ -66,5 +66,11 @@ public:
 		for(int i = 0, j = 1, nxt = 2; j < N; i++, nxt<<=1)
 			while(j <= nxt && j < N) lg[j++] = i;
 	}
-};
-int main(){}
+}sa;
+int main(){
+	scanf("%s", sa.s + 1);
+	sa.n = strlen(sa.s + 1);
+	sa.build_sa();
+	for (int i = 1; i <= sa.n; i++)
+		printf("%d\n", sa.sa[i]);
+}
