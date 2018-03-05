@@ -1,3 +1,5 @@
+// 后缀自动机
+
 #include <bits/stdc++.h>
 #define N 233
 class SAM{

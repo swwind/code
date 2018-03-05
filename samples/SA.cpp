@@ -1,3 +1,5 @@
+// 后缀数组
+
 #include <bits/stdc++.h>
 #define N 100020
 static int lg[N];

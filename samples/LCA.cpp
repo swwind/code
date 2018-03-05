@@ -1,3 +1,5 @@
+// 倍增求 lca
+
 #include <bits/stdc++.h>
 #define ll long long
 #define oo 1<<30

@@ -1,4 +1,5 @@
-//C_n(mod p)
+// 卡特兰数第 n 项（对 p 取模
+// C_n(mod p)
 
 #include <bits/stdc++.h>
 #define ll long long
@@ -28,6 +29,6 @@ int main(){
 	for(int i = 1; i <= n+1; i++) add(i, -1);
 	for(int i = 1; i <= pri[0]; i++)
 		while(num[i]--) (ans*=pri[i])%=p;
-	printf("%d\n", ans);
+	printf("%lld\n", ans);
 	return 0;
 }

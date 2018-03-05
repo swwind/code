@@ -1,3 +1,5 @@
+// lct 模板
+
 #include <bits/stdc++.h>
 using namespace std;
 class LCT{
@@ -58,4 +60,6 @@ public:
 		c[y][0] = fa[x] = 0;
 	}
 }lct;
-int main(){puts("???");}
+int main () {
+	// put code here...
+}

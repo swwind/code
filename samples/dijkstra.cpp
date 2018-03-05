@@ -1,3 +1,5 @@
+// dijkstra 求最短路
+
 #include <bits/stdc++.h>
 #define N 100020
 #define M 500020

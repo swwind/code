@@ -1,3 +1,5 @@
+// 组合数（暴力求
+
 #include <bits/stdc++.h>
 #define N 100020
 #define ll long long

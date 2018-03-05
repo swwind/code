@@ -1,3 +1,6 @@
+// io 优化
+// Copyright (c) zhzh2001
+
 #include <bits/stdc++.h>
 using namespace std;
 

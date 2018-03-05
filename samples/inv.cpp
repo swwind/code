@@ -1,4 +1,5 @@
-// luogu-judger-enable-o2
+// 求逆元（递推式
+
 #include <bits/stdc++.h>
 #define N 3000020
 #define ll long long

@@ -1,3 +1,5 @@
+// è¯·æ— è§†
+
 #include <bits/stdc++.h>
 #include <windows.h>
 #define ll long long
@@ -6,22 +8,22 @@ using namespace std;
 int n, m;
 int main(int argc, char *argv[]){
 	if(argc < 2){
-		puts("ÎÄ¼şÂ·¾¶?(±ğ´ø¿Õ¸ñ, scanfÄã¶®µÄ)");
+		puts("ÃÃ„Â¼Ã¾Ã‚Â·Â¾Â¶?(Â±Ã°Â´Ã¸Â¿Ã•Â¸Ã±, scanfÃ„Ã£Â¶Â®ÂµÃ„)");
 		scanf("%s", argv[1]);
 	}
 	freopen(argv[1], "r", stdin);
 	scanf("%d", &n);
-	if(!n)return puts("A problem has been ...ËãÁË, Ó¢Óï²»»á(»®µô)... ²»ÄÜ¶Á! Read Error!")*0;
-	if(n > VERSON) return puts("°æ±¾Ì«¸ß£¡µÍ°æ±¾²»¼æÈİ£¡")*0;
-	printf("¼ÓÔØÖĞ");
+	if(!n)return puts("A problem has been ...Ã‹Ã£ÃÃ‹, Ã“Â¢Ã“Ã¯Â²Â»Â»Ã¡(Â»Â®ÂµÃ´)... Â²Â»Ã„ÃœÂ¶Ã! Read Error!")*0;
+	if(n > VERSON) return puts("Â°Ã¦Â±Â¾ÃŒÂ«Â¸ÃŸÂ£Â¡ÂµÃÂ°Ã¦Â±Â¾Â²Â»Â¼Ã¦ÃˆÃÂ£Â¡")*0;
+	printf("Â¼Ã“Ã”Ã˜Ã–Ã");
 	for(int i = 0; i < 3; i++) Sleep(1000), printf(".");
-	printf("\n¼ÓÔØ³É¹¦£¡¿ªÊ¼²¥·Å£¡\n");
+	printf("\nÂ¼Ã“Ã”Ã˜Â³Ã‰Â¹Â¦Â£Â¡Â¿ÂªÃŠÂ¼Â²Â¥Â·Ã…Â£Â¡\n");
 	while(scanf("%d %d", &n, &m)!=EOF && n && m){
 		m = 600 / m;
 		n = 300 + n * 100;
 		Beep(n, m);
 	}
-	printf("²¥·ÅÍê±Ï! 886!");
+	printf("Â²Â¥Â·Ã…ÃÃªÂ±Ã! 886!");
 	Sleep(2000);
 	return 0;
 }

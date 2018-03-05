@@ -1,3 +1,5 @@
+// lct 模板（指针型
+
 #include <set>
 #include <map>
 #include <cstdio>
