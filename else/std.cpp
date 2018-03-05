@@ -11,7 +11,7 @@ int opt[N],n,m,k,point[N],nxt[N],v[N],belong[N],son[N];
 int fa[N],size[N],pos[N],tot,deep[N],q[N],sz;
 ULL val[N],mi[N];
 struct data{
-    ULL v0,v1,w0,w1; 
+    ULL l0,l1,r0,r1; 
 }tr[N*4],ans[N],ans1[N];
 void add(int x,int y)
 {
@@ -46,21 +46,22 @@ ULL calc(ULL num,int x)
 }
 data update(data l,data r)
 {
-    data now; now.v0=now.v1=now.w1=now.w0=0;
-    now.v0=(l.v0&r.v1)|((~l.v0)&r.v0);
-    now.v1=(l.v1&r.v1)|((~l.v1)&r.v0);
-    now.w0=(r.w0&l.w1)|((~r.w0)&l.w0);
-    now.w1=(r.w1&l.w1)|((~r.w1)&l.w0);
+    data now; now.l0=now.l1=now.r1=now.r0=0;
+    now.l0=(l.l0&r.l1)|((~l.l0)&r.l0);
+    now.l1=(l.l1&r.l1)|((~l.l1)&r.l0);
+    now.r0=(r.r0&l.r1)|((~r.r0)&l.r0);
+    now.r1=(r.r1&l.r1)|((~r.r1)&l.r0);
+    cout << now.l0 << " " << now.l1 << " " << now.r0 << " " << now.r1 << endl;
     return now;
 }
 void build(int now,int l,int r)
 {
     if (l==r) {
         int t=q[l];
-        tr[now].v0=calc(0,t);
-        tr[now].v1=calc(mx,t);
-        tr[now].w0=calc(0,t);
-        tr[now].w1=calc(mx,t);
+        tr[now].l0=calc(0,t);
+        tr[now].l1=calc(mx,t);
+        tr[now].r0=calc(0,t);
+        tr[now].r1=calc(mx,t);
         return;
     }
     int mid=(l+r)/2;
@@ -72,10 +73,10 @@ void pointchange(int now,int l,int r,int x)
 {
     if (l==r) {
         int t=q[l];
-        tr[now].v0=calc(0,t);
-        tr[now].v1=calc(mx,t);
-        tr[now].w0=calc(0,t);
-        tr[now].w1=calc(mx,t);
+        tr[now].l0=calc(0,t);
+        tr[now].l1=calc(mx,t);
+        tr[now].r0=calc(0,t);
+        tr[now].r1=calc(mx,t);
         return;
     }
     int mid=(l+r)/2;
@@ -110,7 +111,7 @@ data solve(int x,int y)
     }
     if (deep[x]<deep[y]) ans1[++cnt1]=query(1,1,n,pos[x],pos[y]);
     else ans[++cnt]=query(1,1,n,pos[y],pos[x]);
-    for (int i=1;i<=cnt;i++) swap(ans[i].v0,ans[i].w0),swap(ans[i].v1,ans[i].w1);
+    for (int i=1;i<=cnt;i++) swap(ans[i].l0,ans[i].r0),swap(ans[i].l1,ans[i].r1);
     data sum; 
     if (cnt) {
        sum=ans[1];
@@ -123,8 +124,6 @@ data solve(int x,int y)
 }
 int main()
 {
-    freopen("a.in","r",stdin);
-    freopen("my.out","w",stdout);
     scanf("%d%d%d",&n,&m,&k); mi[0]=1;
     for (int i=1;i<=k-1;i++) mi[i]=mi[i-1]*2;
     for (int i=1;i<=n;i++) scanf("%d%llu",&opt[i],&val[i]);
@@ -142,9 +141,10 @@ int main()
         }
         else {
             data t=solve(x,y); ULL ans=0;
+            printf("%llu %llu\n", t.l0, t.l1);
             for (int i=63;i>=0;i--) {
-                ULL t0=(t.v0>>i)&1;
-                ULL t1=(t.v1>>i)&1;
+                ULL t0=(t.l0>>i)&1;
+                ULL t1=(t.l1>>i)&1;
                 if (t0>=t1||mi[i]>z) ans|=(t0?mi[i]:0);
                 else ans|=(t1?mi[i]:0),z-=mi[i];
             }
