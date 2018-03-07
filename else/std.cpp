@@ -1,154 +1,191 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
 #include<algorithm>
-#include<cmath>
-#define N 200003
-#define ULL unsigned long long 
+#include<iostream>
+#define N 1500000
+#include<cstdio>
 using namespace std;
-const ULL mx=0-1;
-int opt[N],n,m,k,point[N],nxt[N],v[N],belong[N],son[N];
-int fa[N],size[N],pos[N],tot,deep[N],q[N],sz;
-ULL val[N],mi[N];
-struct data{
-    ULL l0,l1,r0,r1; 
-}tr[N*4],ans[N],ans1[N];
-void add(int x,int y)
+int re[N],c[N][2],mx[N],val[N],fa[N];
+int s[N],top;
+
+bool isroot(int now)
 {
-    tot++;  nxt[tot]=point[x]; point[x]=tot; v[tot]=y;
-    tot++;  nxt[tot]=point[y]; point[y]=tot; v[tot]=x;
+    return !fa[now]||(c[fa[now]][0]!=now&&c[fa[now]][1]!=now);
 }
-void dfs(int x,int f)
+void down(int now)
 {
-    size[x]=1; deep[x]=deep[f]+1;
-    for (int i=point[x];i;i=nxt[i]){
-        if (v[i]==f) continue;
-        fa[v[i]]=x;
-        dfs(v[i],x);
-        size[x]+=size[v[i]];
-        if (size[v[i]]>size[son[x]]) son[x]=v[i];
+    if(re[now])
+    {
+        re[now]^=1;
+        re[c[now][0]]^=1;
+        re[c[now][1]]^=1;
+        swap(c[now][0],c[now][1]);
     }
 }
-void dfs1(int x,int chain)
+void update(int now)
 {
-    belong[x]=chain; pos[x]=++sz; q[sz]=x;
-    if (!son[x]) return;
-    dfs1(son[x],chain);
-    for (int i=point[x];i;i=nxt[i])
-     if (v[i]!=son[x]&&v[i]!=fa[x])
-      dfs1(v[i],v[i]);
+    mx[now]=now;
+    if(val[ mx[c[now][0]] ]>val[mx[now]]) mx[now]=mx[c[now][0]];
+    if(val[ mx[c[now][1]] ]>val[mx[now]]) mx[now]=mx[c[now][1]];
 }
-ULL calc(ULL num,int x)
+void rotate(int now)
 {
-    if (opt[x]==1) return num&val[x];
-    if (opt[x]==2) return num|val[x];
-    if (opt[x]==3) return num^val[x];
+    int F=fa[now],Y=fa[F];
+    int r=c[F][0]==now,l=r^1;
+
+    if(!isroot(F))
+        if(c[Y][0]==F) c[Y][0]=now;
+    else c[Y][1]=now;
+
+    fa[now]=Y;fa[F]=now;
+    c[F][l]=c[now][r];
+    fa[c[now][r]]=F;
+    c[now][r]=F;
+    update(F); 
+    update(now);
 }
-data update(data l,data r)
+void splay(int now)
 {
-    data now; now.l0=now.l1=now.r1=now.r0=0;
-    now.l0=(l.l0&r.l1)|((~l.l0)&r.l0);
-    now.l1=(l.l1&r.l1)|((~l.l1)&r.l0);
-    now.r0=(r.r0&l.r1)|((~r.r0)&l.r0);
-    now.r1=(r.r1&l.r1)|((~r.r1)&l.r0);
-    cout << now.l0 << " " << now.l1 << " " << now.r0 << " " << now.r1 << endl;
-    return now;
-}
-void build(int now,int l,int r)
-{
-    if (l==r) {
-        int t=q[l];
-        tr[now].l0=calc(0,t);
-        tr[now].l1=calc(mx,t);
-        tr[now].r0=calc(0,t);
-        tr[now].r1=calc(mx,t);
-        return;
-    }
-    int mid=(l+r)/2;
-    build(now<<1,l,mid);
-    build(now<<1|1,mid+1,r);
-    tr[now]=update(tr[now<<1],tr[now<<1|1]);
-}
-void pointchange(int now,int l,int r,int x)
-{
-    if (l==r) {
-        int t=q[l];
-        tr[now].l0=calc(0,t);
-        tr[now].l1=calc(mx,t);
-        tr[now].r0=calc(0,t);
-        tr[now].r1=calc(mx,t);
-        return;
-    }
-    int mid=(l+r)/2;
-    if (x<=mid) pointchange(now<<1,l,mid,x);
-    else pointchange(now<<1|1,mid+1,r,x);
-    tr[now]=update(tr[now<<1],tr[now<<1|1]);
-}
-data query(int now,int l,int r,int ll,int rr)
-{
-    if (ll<=l&&r<=rr) return tr[now];
-    int mid=(l+r)/2;
-    data ans; bool pd=false;
-    if (ll<=mid) ans=query(now<<1,l,mid,ll,rr),pd=true;
-    if (rr>mid) {
-        if (pd) ans=update(ans,query(now<<1|1,mid+1,r,ll,rr));
-        else ans=query(now<<1|1,mid+1,r,ll,rr);
-    }
-    return ans;
-}
-data solve(int x,int y)
-{
-    int cnt=0,cnt1=0;
-    while (belong[x]!=belong[y]) {
-        if (deep[belong[x]]>deep[belong[y]]){
-            ans[++cnt]=query(1,1,n,pos[belong[x]],pos[x]);
-            x=fa[belong[x]];
+    s[top=1]=now;
+    for(int i=now;!isroot(i);i=fa[i]) s[++top]=fa[i];
+    while(top) down(s[top--]);
+    while(!isroot(now))
+    {
+        int F=fa[now],Y=fa[F];
+        if(!isroot(F))
+        {
+            if((c[Y][0]==F)^(c[F][0]==now)) rotate(now);
+            else rotate(F);
         }
-        else {
-            ans1[++cnt1]=query(1,1,n,pos[belong[y]],pos[y]);
-            y=fa[belong[y]];
-        }
+        rotate(now);
     }
-    if (deep[x]<deep[y]) ans1[++cnt1]=query(1,1,n,pos[x],pos[y]);
-    else ans[++cnt]=query(1,1,n,pos[y],pos[x]);
-    for (int i=1;i<=cnt;i++) swap(ans[i].l0,ans[i].r0),swap(ans[i].l1,ans[i].r1);
-    data sum; 
-    if (cnt) {
-       sum=ans[1];
-       for (int i=2;i<=cnt;i++) sum=update(sum,ans[i]);
-       if (cnt1) sum=update(sum,ans1[cnt1]);
+}
+void access(int now)
+{
+    int last=0;
+    while(now)
+        splay(now),c[now][1]=last,
+        update(now),last=now,now=fa[now];
+}
+
+void makeroot(int x)
+{
+    access(x);splay(x);re[x]^=1;
+}
+void link(int x,int y)
+{
+    makeroot(x);fa[x]=y;
+}
+void cut(int x,int y)
+{
+    makeroot(x);access(y);splay(y);fa[x]=c[y][0]=0;
+}
+int query(int x,int y)
+{
+    makeroot(x);access(y);splay(y);return mx[y];
+}
+
+struct eage
+{
+    int u,v,l,id;
+    bool po;
+}e[N];
+struct node
+{
+    int x,y,ans,id,fl; 
+}q[N];
+int n,m,Q;
+
+bool comp1(eage aa,eage bb)
+{
+    return aa.u==bb.u?aa.v<bb.v:aa.u<bb.u;
+}
+bool comp2(eage aa,eage bb)
+{
+    return aa.l<bb.l;
+}
+bool comp3(eage aa,eage bb)
+{
+    return aa.id<bb.id;
+}
+int findit(int u,int v)
+{
+    int l=1,r=m;
+    while(l<=r)
+    {
+        int mid=(l+r)>>1;
+        if(e[mid].u<u||(e[mid].u==u&&e[mid].v<v))l=mid+1;
+        else if(e[mid].u==u&&e[mid].v==v)return mid;
+        else r=mid-1;
     }
-    else sum=ans1[cnt1];
-    for (int i=cnt1-1;i>=1;i--) sum=update(sum,ans1[i]);
-    return sum; 
+}
+int f[N];
+int get_f(int now)
+{
+    return now==f[now]?f[now]:f[now]=get_f(f[now]);
+}
+void KU()
+{
+    for(int i=1;i<=n;++i) f[i]=i;
+    sort(e+1,e+m+1,comp3);
+    int tot=0;
+    for(int i=1;i<=m;++i)
+    {
+        if(e[i].po) continue; 
+        int x=get_f(e[i].u),y=get_f(e[i].v);
+        if(x==y) continue;
+        tot++;
+        f[x]=y;
+        link(e[i].u,i+n);
+        link(e[i].v,i+n);
+        if(tot==n-1) return;
+    }
 }
 int main()
 {
-    scanf("%d%d%d",&n,&m,&k); mi[0]=1;
-    for (int i=1;i<=k-1;i++) mi[i]=mi[i-1]*2;
-    for (int i=1;i<=n;i++) scanf("%d%llu",&opt[i],&val[i]);
-    for (int i=1;i<n;i++) {
-        int x,y; scanf("%d%d",&x,&y);
-        add(x,y);
+    scanf("%d%d%d",&n,&m,&Q);
+    for(int i=1;i<=m;++i)
+    {
+        scanf("%d%d%d",&e[i].u,&e[i].v,&e[i].l);
+        if(e[i].u>e[i].v) swap(e[i].u,e[i].v);
     }
-    dfs(1,0); dfs1(1,1);
-    build(1,1,n);
-    for (int i=1;i<=m;i++) {
-        int op,x,y; ULL z; scanf("%d%d%d%llu",&op,&x,&y,&z);
-        if (op==2) {
-            opt[x]=y; val[x]=z;
-            pointchange(1,1,n,pos[x]);
+    //buid
+    sort(e+1,e+m+1,comp2);
+    for(int i=1;i<=m;++i)
+    {
+        e[i].id=i;
+        val[n+i]=e[i].l;
+        mx[n+i]=n+i;
+    }
+    //in
+    sort(e+1,e+m+1,comp1);
+    for(int i=1;i<=Q;++i)
+    {
+        scanf("%d%d%d",&q[i].fl,&q[i].x,&q[i].y);
+        if(q[i].fl==2)
+        {
+            if(q[i].x>q[i].y) swap(q[i].x,q[i].y);
+            int id=findit(q[i].x,q[i].y);
+            q[i].id=e[id].id;
+            e[id].po=1;
         }
-        else {
-            data t=solve(x,y); ULL ans=0;
-            printf("%llu %llu\n", t.l0, t.l1);
-            for (int i=63;i>=0;i--) {
-                ULL t0=(t.l0>>i)&1;
-                ULL t1=(t.l1>>i)&1;
-                if (t0>=t1||mi[i]>z) ans|=(t0?mi[i]:0);
-                else ans|=(t1?mi[i]:0),z-=mi[i];
+    }
+
+    KU();
+    for(int i=Q;i;--i) 
+    {
+        if(q[i].fl==1) q[i].ans=val[query(q[i].x,q[i].y)];
+        else//join
+        {
+            int bi=query(q[i].x,q[i].y);
+            if(val[bi]>val[q[i].id+n])
+            {
+                cut(e[bi-n].u,bi);
+                cut(e[bi-n].v,bi);
+                link(q[i].x,q[i].id+n);
+                link(q[i].y,q[i].id+n);
             }
-            printf("%llu\n",ans);
         }
     }
-} 
+    for(int i=1;i<=Q;++i)
+        if(q[i].fl==1) printf("%d\n",q[i].ans);
+    return 0;
+}

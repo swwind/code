@@ -13,9 +13,14 @@ inline int read(){
 int c[101][101];
 int main(int argc, char const *argv[]){
 	printf("Please input n(n <= 100): ");
-	int n = read(); c[1][0] = 1;
-	for(int i = 1; i <= n; i++, puts(""))
-		for(int j = 1; j <= n; j++)
-			printf("%d ", c[i][j]=c[i-1][j]+c[i][j-1]);
+	int n = read();
+	for (int i = 0; i <= n; i++) {
+		c[i][0] = 1;
+		for (int j = 1; j <= i; j++)
+			c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
+	}
+	for (int i = 0; i <= n; i++, puts(""))
+		for (int j = 0; j <= i; j++)
+			printf("%5d", c[i][j]);
 	return 0;
 }
