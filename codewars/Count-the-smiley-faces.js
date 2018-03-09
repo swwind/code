@@ -14,7 +14,6 @@ const lower   = x => x.toLowerCase()
 const replace = (...args) => s => s.replace(...args)
 const reverse = s => s.reverse()
 const add     = a => b => a + b
-const sum     = reduce((a, b) => a + b, 0)
 const append  = a => b => b + a
 const str     = (...args) => x => x.toString(...args)
 const bool    = x => !!x
@@ -22,6 +21,7 @@ const is      = s => x => typeof x === s
 const isNot   = s => x => typeof x !== s
 const array   = x => new Array(x).fill(0)
 
+const sum = reduce((a, b) => a + b, 0)
 const match = reg => x => (x.match(reg) || []).length
 
 const countSmileys = pipe(map(match(/^[:;][\-~]?[\)D]$/g)), sum)

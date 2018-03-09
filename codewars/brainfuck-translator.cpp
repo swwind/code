@@ -103,27 +103,27 @@ void DoTest(std::string a, std::string res) {
 	}
 }
 int main(int argc, char const *argv[]) {
-    DoTest("++++", "*p += 4;\n");
-    DoTest("----", "*p -= 4;\n");
-    
-    DoTest(">>>>", "p += 4;\n");
-    DoTest("<<<<", "p -= 4;\n");
-    
-    DoTest(".", "putchar(*p);\n");
-    DoTest(",", "*p = getchar();\n");
-    
-    DoTest("[[[]]", "Error!");
-    
-    DoTest("[][]", "");
-    
-    DoTest("[.]", "if (*p) do {\n  putchar(*p);\n} while (*p);\n");
+  DoTest("++++", "*p += 4;\n");
+  DoTest("----", "*p -= 4;\n");
+  
+  DoTest(">>>>", "p += 4;\n");
+  DoTest("<<<<", "p -= 4;\n");
+  
+  DoTest(".", "putchar(*p);\n");
+  DoTest(",", "*p = getchar();\n");
+  
+  DoTest("[[[]]", "Error!");
+  
+  DoTest("[][]", "");
+  
+  DoTest("[.]", "if (*p) do {\n  putchar(*p);\n} while (*p);\n");
 
-    DoTest("++<<[]>>++", "*p += 4;\n");
+  DoTest("++<<[]>>++", "*p += 4;\n");
 
-    DoTest("++5++", "*p += 4;\n");
+  DoTest("++5++", "*p += 4;\n");
 
-    std::string str;
-    std::cin >> str;
-    std::cout << brainfuck_to_c(str);
+  std::string str;
+  std::cin >> str;
+  std::cout << brainfuck_to_c(str);
 	return 0;
 }
