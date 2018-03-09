@@ -10,7 +10,7 @@ contexts:
     - include: commands
 
   commands:
-    - match: ^(【)([\s\S]+)(】)$
+    - match: ^(【)([\s\S]*)(】)$
       captures:
         1: punctuation.definition.tag.begin.ssc
         2: markup.bold.ssc
@@ -27,9 +27,9 @@ contexts:
       push: tags
 
   tags:
-    - match: \b[^=\s"']+\b
+    - match: \b[^=\s"'\[\]]+\b
       scope: entity.other.attribute-name.ssc
-    - match: \=\s*
+    - match: =\s*
       scope: punctuation.separator.key-value.ssc
       push: value
     - match: \]
@@ -45,8 +45,21 @@ contexts:
       push: single-string
     - include: numbers
     - include: boolean
+    - match: \[
+      scope: punctuation.definition.array.begin.ssc
+      push: array
     - match: ''
       pop: true
+
+  array:
+    - match: \]
+      scope: punctuation.definition.end.begin.ssc
+      pop: true
+    - match: ','
+      scope: punctuation.separator.ssc
+      push: value
+    - match: ''
+      push: value
 
   double-string:
     - meta_scope: string.quoted.double.ssc
