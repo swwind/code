@@ -3,4 +3,5 @@
 *.out
 *.in
 *.o
-ANSWER.cpp
+*.class
+temp/
