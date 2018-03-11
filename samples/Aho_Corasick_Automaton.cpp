@@ -1,4 +1,5 @@
 // AC 自动机
+
 #include <bits/stdc++.h>
 #define N 1000020
 #define ll long long
@@ -9,10 +10,10 @@ inline int read(){
   while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
   return f?x:-x;
 }
-int ch[N][26], val[N], cnt = 1;
+int ch[N][26], val[N], cnt;
 char str[N];
 void insert(int n) {
-  int now = 1;
+  int now = 0;
   for (int i = 1; i <= n; i++) {
     int x = str[i] - 'a';
     if (!ch[now][x])
@@ -23,32 +24,28 @@ void insert(int n) {
 }
 int q[N], l, r, fail[N];
 void build_fail() {
-  q[++ r] = 1;
+  for (int i = 0; i < 26; i++)
+    if (ch[0][i]) q[++ r] = ch[0][i];
   while (l < r) {
     int now = q[++ l];
     for (int i = 0; i < 26; i++) {
-      if (!ch[now][i])
-        continue;
-      int k = fail[now];
-      while (k && !ch[k][i])
-        k = fail[k];
-      fail[ch[now][i]] = ch[k][i];
-      q[++ r] = ch[now][i];
+      if (!ch[now][i]) ch[now][i] = ch[fail[now]][i];
+      else fail[ch[now][i]] = ch[fail[now]][i], q[++ r] = ch[now][i];
     }
   }
 }
 int query(int n) {
-  int now = 1;
+  int now = 0, ans = 0;
   for (int i = 1; i <= n; i++) {
     int x = str[i] - 'a';
-    int k = ch[now][x];
-    while (k) {
-      ans += 
+    int k = now = ch[now][x];
+    while (k && ~val[k]) {
+      ans += val[k];
+      val[k] = -1;
+      k = fail[k];
     }
-    now = ch[now][x]
-      ? ch[now][x]
-      : ch[fail[now]][x]
   }
+  return ans;
 }
 int main(int argc, char const *argv[]) {
   int n = read();

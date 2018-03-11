@@ -2,7 +2,7 @@
 // 递归版
 
 #include <bits/stdc++.h>
-#define N 100020
+#define N 1000020
 #define ll long long
 using namespace std;
 inline int read(){
@@ -51,33 +51,20 @@ void fft(cp *a, int n, int flag) {
   }
 }
 cp x[N<<1], y[N<<1];
-int ans[N<<1];
-char str[N];
 int main(int argc, char const *argv[]) {
-  int n = read(), m = n * 2 - 1;
-  scanf("%s", str);
-  for (int i = 0; i < n; i++)
-    x[i].real(str[i] - '0');
-  scanf("%s", str);
-  for (int i = 0; i < n; i++)
-    y[i].real(str[i] - '0');
+  int n = read(), m = read();
+  for (int i = 0; i <= n; i++)
+    x[i].real(read());
+  for (int i = 0; i <= m; i++)
+    y[i].real(read());
+  m += n;
   for (n = 1; n <= m; n <<= 1);
   fft(x, n, 1);
   fft(y, n, 1);
   for (int i = 0; i < n; i++)
     x[i] = x[i] * y[i];
   fft(x, n, -1);
-  for (int i = 0; i < m; i++)
-    ans[i] = (int) round(x[i].real() / n);
-  for (int i = m - 1; i; i--) {
-    ans[i - 1] += ans[i] / 10;
-    ans[i] %= 10;
-  }
-  int st = 0;
-  while (st < m && !ans[st])
-    st ++;
-  if (st == m) putchar('0');
-  for (; st < m; st++)
-    printf("%d", ans[st]); puts("");
+  for (int i = 0; i <= m; i++)
+    printf("%d ", int(x[i].real() / n + .5));
   return 0;
 }
