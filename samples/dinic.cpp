@@ -11,6 +11,7 @@ inline int read(){
 	while(ch<='9'&&ch>='0'){x=(x<<3)+(x<<1)+ch-'0';ch=getchar();}
 	return f?-x:x;
 }
+// WARN: N is the size of the points
 int to[M<<1], nxt[M<<1], head[N], val[M<<1], dep[N], cnt = 1, st, ed, q[N];
 void insert(int x, int y, int z) {
 	to[++cnt] = y; nxt[cnt] = head[x]; val[cnt] = z; head[x] = cnt;

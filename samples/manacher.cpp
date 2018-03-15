@@ -1,3 +1,5 @@
+// manacher 求最长回文串
+
 #include <bits/stdc++.h>
 #define N 11000020
 #define ll long long
