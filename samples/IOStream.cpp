@@ -268,6 +268,6 @@ int main(int argc, char const *argv[]) {
 	IOStream::OutputStream fout(stdout);
   int a, b;
   fin >> a >> b;
-  fout << a + b;
+  fout << a + b << IOStream::endl;
   return 0;
 }

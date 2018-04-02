@@ -1,4 +1,4 @@
-// 线段树1
+// 线段树
 // 单点赋值，区间max
 
 #include <bits/stdc++.h>
