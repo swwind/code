@@ -21,7 +21,7 @@ namespace IOStream {
       good = sz;
     }
     char nextchar() {
-      if(!*p) fetch();
+      if (!*p) fetch();
       return *p++;
     }
     template <typename Int>
