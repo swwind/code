@@ -1,11 +1,6 @@
-factorial :: Int -> Int
-factorial 0 = 1
-factorial n = n * factorial (n - 1)
-
-fuckyou :: Int -> String
-fuckyou x = case x of 0 -> "Hello world"
-                      1 -> "No"
-                      _ -> "Love"
+primes = filterPrime [2..] 
+  where filterPrime (p:xs) = 
+          p : filterPrime [x | x <- xs, x `mod` p /= 0]
 
 main :: IO()
-main = putStrLn (fuckyou 0)
+main = print primes
