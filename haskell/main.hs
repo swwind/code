@@ -1,6 +1,9 @@
-primes = filterPrime [2..] 
-  where filterPrime (p:xs) = 
-          p : filterPrime [x | x <- xs, x `mod` p /= 0]
+
+fake :: String -> String
+fake str = str ++ str
 
 main :: IO()
-main = print primes
+main = print (map fake ["misaka", "mikoto"])
+
+
+
