@@ -11,7 +11,7 @@ inline int read(){
   while(ch<='9'&&ch>='0'){x=(x<<3)+(x<<1)+ch-'0';ch=getchar();}
   return f?-x:x;
 }
-namespace MCMF{
+namespace MCMF {
   #ifndef inf
   #define inf 707406378
   #endif
