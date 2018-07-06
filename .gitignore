@@ -1,7 +1,9 @@
-# Windows:
 *.exe
 *.out
 *.in
 *.o
+*.ans
 *.class
+*.log
+logs/
 temp/
