@@ -1,4 +1,7 @@
 // 最小费用最大流
+// zkw
+// WARN 不能处理负权边
+// See also: ./ek.cpp
 
 #include <bits/stdc++.h>
 #define N 5020

@@ -21,6 +21,7 @@ int main(int argc, char *argv[]){
 	while(scanf("%d %d", &n, &m)!=EOF && n && m){
 		m = 600 / m;
 		n = 300 + n * 100;
+		
 		Beep(n, m);
 	}
 	printf("²¥·ÅÍê±Ï! 886!");
