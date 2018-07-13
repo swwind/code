@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const liner = function (x) {
-  return 4 * x + 60;
+  return 4 * x + 6;
 }
 
 const data = [["x", "y"]];

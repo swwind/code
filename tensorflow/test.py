@@ -26,11 +26,10 @@ init = tf.global_variables_initializer()
 
 
 # 设置tensorflow对GPU的使用按需分配
-# config  = tf.ConfigProto()
-# config.gpu_options.allow_growth = True
+config  = tf.ConfigProto()
+config.gpu_options.allow_growth = True
 # 2.启动图 (graph)
-# sess = tf.Session(config=config)
-sess = tf.Session()
+sess = tf.Session(config=config)
 sess.run(init)
 
 # 3.迭代，反复执行上面的最小化损失函数这一操作（train op）,拟合平面
