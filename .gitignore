@@ -1,19 +1,32 @@
+# Ignore all
 *
-!/**/*.cpp
-!/**/*.java
-!/**/*.js
-!/**/*.hs
-!/**/*.py
-!/**/*.bat
-!/**/*.cmd
-!/**/*.md
-!/**/*.html
-!/**/*.css
-!/**/*.php
-!/**/LICENSE
-!/**/.gitignore
-!/**/*.txt
-!/**/*.sublime-snippet
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+!LICENSE
+
+### Above combination will ignore all files without extension ###
+
+# Ignore files with extension `.class` & `.sm`
+*.class
+*.exe
+
+# Ignore `bin` dir
 temp/
 tmp/
 
+# Unignore all `.jar` in `bin` dir
+# !*/bin/*.jar
+
+# Ignore all `library.jar` in `bin` dir
+# */bin/library.jar
+
+# Ignore a file with extension
+# relative/path/to/dir/filename.extension
+
+# Ignore a file without extension
+# relative/path/to/dir/anotherfile
