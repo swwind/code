@@ -11,6 +11,7 @@ inline int read(){
 char str[N];
 bool mp[N][N], vis[N];
 int main(int argc, char const *argv[]) {
+  freopen("../temp/input.in", "r", stdin);
   int n = read();
   for (int i = 1; i <= n; ++ i) {
     scanf("%s", str + 1);
@@ -30,7 +31,7 @@ int main(int argc, char const *argv[]) {
         vis[i] = 1;
       }
     }
-    if (mp[i][n]) ++ ans;
+    if (mp[x][n]) ++ ans;
   }
   cout << ans << endl;
   return 0;
