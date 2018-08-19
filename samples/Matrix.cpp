@@ -37,3 +37,12 @@ int main(){
 	ans = ans^(x-1);
 	std::cout << ans[0][0] << std::endl;
 }
+/*
+
+1 1
+1 0
+
+
+
+*/
+
