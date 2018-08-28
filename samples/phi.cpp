@@ -29,11 +29,15 @@ void phi_filter(int n) {
   }
 }
 int main(int argc, char const *argv[]) {
-  int n = read(), ans = 0;
-  if (n == 1) return puts("0"), 0;
-  phi_filter(n);
-  for (int i = 1; i < n; i++)
-    ans += phi[i];
-  printf("%d\n", ans * 2 + 1);
+  // int n = read(), ans = 0;
+  // if (n == 1) return puts("0"), 0;
+  // phi_filter(n);
+  // for (int i = 1; i < n; i++)
+  //   ans += phi[i];
+  // printf("%d\n", ans * 2 + 1);
+  phi_filter(200);
+  for (int i = 1; i <= cnt; ++ i) {
+    printf("%d\n", pri[i]);
+  }
   return 0;
 }

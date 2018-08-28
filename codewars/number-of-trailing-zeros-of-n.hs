@@ -1,4 +1,5 @@
 module Zeros where
+import Data.Bits
 
 zeros :: Int -> Int
 zeros n = sum $ takeWhile (> 0) $ div5 (n `div` 5)
@@ -6,6 +7,6 @@ zeros n = sum $ takeWhile (> 0) $ div5 (n `div` 5)
     div5 n = n : div5 (n `div` 5)
 
 main :: IO ()
-main = print $ zeros 1000000000
+main = print $ sum [1 - (zeros i .&. 1) | i <- [0 .. 546456]]
 
 
