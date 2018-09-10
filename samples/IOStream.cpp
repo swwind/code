@@ -1,4 +1,4 @@
-// io 优化
+// io 优(lie)化
 // Copyright (c) zhzh2001
 
 #include <bits/stdc++.h>

@@ -1,4 +1,5 @@
 // 后缀数组
+// 玄学领域
 
 #include <bits/stdc++.h>
 #define N 100020

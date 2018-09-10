@@ -1,3 +1,5 @@
+// 一个简单包装，支持自定义下标范围的数组。
+
 #include <bits/stdc++.h>
 #define N 100020
 #define ll long long

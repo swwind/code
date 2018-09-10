@@ -1,4 +1,4 @@
-// kdtree - 可加点，询问最近
+// 二维 kdtree - 可加点，询问最近
 
 #include <bits/stdc++.h>
 #define N 300020
