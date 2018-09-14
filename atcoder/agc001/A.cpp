@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define N 30
+#define N 100020
 #define ll long long
 using namespace std;
 inline int read(){
@@ -8,22 +8,17 @@ inline int read(){
   while(ch<='9'&&ch>='0')x=(x<<3)+(x<<1)+ch-'0',ch=getchar();
   return f?x:-x;
 }
-char a[N];
-bool isGreater(int x, int y) {
-  printf("? %d %d\n", x, y);
-  char c;
-  scanf("%c", &c);
-  return c == '>';
-}
-void f(int l, int r) {
-  if (l >= r) return;
-  
-}
+int a[N];
+int ans;
 int main(int argc, char const *argv[]) {
-  int n = read(), q = read();
-  for (int i = 0; i < n; ++ i) {
-    a[i] = 'A' + i;
+  int n = read() << 1;
+  for (int i = 1; i <= n; ++ i) {
+    a[i] = read();
   }
-
+  sort(a + 1, a + n + 1);
+  for (int i = 1; i <= n; i += 2) {
+    ans += a[i];
+  }
+  cout << ans << endl;
   return 0;
 }
