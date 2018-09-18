@@ -10,5 +10,6 @@ inline int read(){
 }
 int main(int argc, char const *argv[]) {
   int n = read();
+  
   return 0;
 }
