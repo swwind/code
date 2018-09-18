@@ -12,7 +12,7 @@ int ins[N];
 int p[N], q[N];
 int to[N<<1], nxt[N<<1], head[N], cnt;
 void insert(int x, int y) {
-  printf("%d(%d) --> %d(%d)\n", x, q[x], y, q[y]);
+  // printf("%d(%d) --> %d(%d)\n", x, q[x], y, q[y]);
   ++ ins[x];
   to[++ cnt] = x;
   nxt[cnt] = head[y];
@@ -51,11 +51,12 @@ int main(int argc, char const *argv[]) {
   for (int i = 1; i <= n; ++ i) {
     q[p[i] = read()] = i;
   }
+  // for (int i = 1; i <= n; ++ i) {
+  //   printf("%d ", q[i]);
+  // } puts("");
   for (int i = 1; i <= n; ++ i) {
-    printf("%d ", q[i]);
-  } puts("");
-  for (int i = 1; i <= n; ++ i) {
-    int ql = max(1, q[i] - k + 1);
+    // int ql = max(1, q[i] - k + 1);
+    int ql = q[i] + 1;
     int qr = min(n, q[i] + k - 1);
     int mn = sgt::query(1, ql, qr, 1, n);
     if (mn) {
@@ -79,9 +80,9 @@ int main(int argc, char const *argv[]) {
     }
     res.push_back(x);
   }
-  for (int i = 0; i < n; ++ i) {
-    printf("%d\n", q[res[i]]);
-  } puts("====");
+  // for (int i = 0; i < n; ++ i) {
+  //   printf("%d\n", q[res[i]]);
+  // } puts("====");
   for (size_t i = 0; i < res.size(); ++ i) {
     p[q[res[i]]] = i + 1;
   }
@@ -115,17 +116,18 @@ int main(int argc, char const *argv[]) {
 
 直接求拓扑序即可。
 
-但是直接做是 n^2 的，于是只要将每个点与前面最后一个限制连线即可。
+但是直接做是 n^2 的，于是只要将每个点与前面最近的一个比它大的不能到达的点连边即可。
+优先队列可以保证答案的正确性
 
 6 7 5 1 2 8 3 4
 +
 ^-+
   ^-+
       +
-      ^-+
-  ^-------+
+        +
+          +
     ^-------+
-^-------------+
+    ^---------+
 
 总复杂度 O(nlogn)
 */
