@@ -209,7 +209,7 @@ int main(int argc, char const *argv[]) {
     E2 = 2*2+6*2 = 16
     C2 = V2 - E2 = 20
 
-  Vx 可以直接算，Ex 用矩乘即可。
+  两个用矩乘一起算即可。
 
   附转移矩阵：
 
