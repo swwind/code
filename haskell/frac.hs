@@ -3,4 +3,4 @@ frac 0 = 1
 frac n = n * frac (n - 1)
 
 main :: IO ()
-main = print $ frac 9
+main = print $ frac 64
