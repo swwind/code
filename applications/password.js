@@ -1,3 +1,5 @@
+#!/bin/node
+
 'use strict';
 
 const read = require('read');
