@@ -19,13 +19,7 @@ const btoa = (str) => {
   return Buffer.from(str).toString('base64');
 }
 
-const generate = async () => {
-  const str1 = await queryPassword('Password#1: ');
-  const str2 = await queryPassword('Password#2: ');
-  const str3 = await queryPassword('Password#3: ');
-
-  const type = await queryPassword('Website: ', false);
-
+const main = (str1, str2, str3, type) => {
   const h1 = hash(str1, str2, 10);
   const h2 = hash(str2, str3, 10);
   const h3 = hash(str3, str1, 10);
@@ -37,7 +31,19 @@ const generate = async () => {
   const r1 = hash(md5(h1 + h2 + h3), type, 10);
   const r2 = hash(md5(h4 + h5 + h6), type, 10);
 
-  console.log(btoa(hash(r1, r2, 10)).slice(0, 16));
+  return btoa(hash(r1, r2, 10)).slice(0, 16);
+}
+
+const generate = async () => {
+  const str1 = await queryPassword('Password#1: ');
+  const str2 = await queryPassword('Password#2: ');
+  const str3 = await queryPassword('Password#3: ');
+
+  console.log(main(str1, str2, str3, ''));
+
+  const type = await queryPassword('Website: ', false);
+
+  console.log(main(str1, str2, str3, type));
 
   process.exit(0);
 }
