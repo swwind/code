@@ -9,6 +9,10 @@
     {
       "name": "Run",
       "shell_cmd": "start cmd /c \"${file_path}/${file_base_name} & pause\""
+    },
+    {
+      "name": "NO OPTIMIZATIONS",
+      "shell_cmd": "g++ \"${file}\" -o \"${file_path}/${file_base_name}\" -lm -static"
     }
   ]
 }
