@@ -1,1 +1,0 @@
-print(sum(list(map(int, raw_input().split(' ')))))
