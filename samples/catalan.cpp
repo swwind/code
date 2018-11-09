@@ -1,5 +1,6 @@
 // 卡特兰数第 n 项（对 p 取模
 // C_n(mod p)
+// Cn = (2n \choose n) / (n + 1)
 
 #include <bits/stdc++.h>
 #define ll long long

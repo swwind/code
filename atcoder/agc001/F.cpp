@@ -121,7 +121,7 @@ int main(int argc, char const *argv[]) {
 
 6 7 5 1 2 8 3 4
 +
-^-+
+  +
   ^-+
       +
         +

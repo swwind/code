@@ -1,4 +1,5 @@
 // 后缀自动机
+// 玄学领域 x 2
 
 #include <bits/stdc++.h>
 #define N 233
