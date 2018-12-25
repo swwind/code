@@ -16,7 +16,7 @@ int prime[MAX_CUB + 20], tot;
 void filter_prime(int size) {
   for (int i = 2; i <= size; ++ i) {
     if (!mark[i]) prime[++ tot] = i;
-    for (int j = 1; j <= size && prime[j] * i <= size; ++ j) {
+    for (int j = 1; j <= tot && prime[j] * i <= size; ++ j) {
       mark[prime[j] * i] = 1;
       if (i % prime[j] == 0) {
         break;

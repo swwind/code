@@ -11,6 +11,7 @@ inline ${1:int} read(){
 	return f?x:-x;
 }
 int main(int argc, char const *argv[]) {
+	freopen("../tmp/.in", "r", stdin);
 	$3
 	return 0;
 }

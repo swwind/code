@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define N 1000020
+#define N 100020
 #define ll long long
 using namespace std;
 inline int read(){
@@ -49,16 +49,19 @@ void buildSuffixArray(int n, int m) {
   }
 }
 int main(int argc, char const *argv[]) {
-  // freopen("../tmp/.in", "r", stdin);
+  freopen("../tmp/.in", "r", stdin);
   // int n = read(), m = read();
   scanf("%s", str + 1);
   int n = strlen(str + 1);
   for (int i = 1; i <= n; ++ i) {
-    ch[i] = str[i] + 1;
+    ch[i] = str[i] - 'a' + 1;
   }
-  buildSuffixArray(n, 256);
+  buildSuffixArray(n, 26);
   for (int i = 1; i <= n; ++ i) {
     printf("%d%c", sa[i], i == n ? '\n' : ' ');
+  }
+  for (int i = 2; i <= n; ++ i) {
+    printf("%d%c", height[i], i == n ? '\n' : ' ');
   }
   return 0;
 }
