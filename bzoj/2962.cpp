@@ -144,7 +144,7 @@ int main(int argc, char const *argv[]) {
     if (str[0] == 'Q') {
       int l = read(), r = read(), x = read();
       node res = query(1, l, r, 1, n);
-      printf("%d\n", res.val[x]);
+      printf("%d\n", (res.val[x] + mod) % mod);
     }
     if (str[0] == 'R') {
       int l = read(), r = read();
