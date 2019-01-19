@@ -1,111 +1,139 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # 漫画压缩打包成 epub 文件
 # 需要 pandoc, mogrify 以及 convert
 
-# exit if any commands fails
 set -e
 
 workspace="$1"
-indexfile="index.md"
-bookname=$(basename "$workspace")
-authorname="$USER"
-currentdir="$PWD"
 
-if [ ! -d "$workspace" ]; then
-  echo "\"$workspace\" does not exist or is not a directory"
+showhelp() {
+  echo "usage:  packup.sh [options] [dirname]"
+  echo "options:"
+  echo "  -h, --help     show this help page"
+  exit $1
+}
+sizetomib() {
+  printf "%0.2lf MiB" $(($1 / 1024.0 / 1024.0))
+}
+min() {
+  echo -n $(($1 > $2 ? $2 : $1))
+}
+max() {
+  echo -n $(($1 < $2 ? $2 : $1))
+}
+
+if [[ "$workspace" == "" ]]; then
+  echo "error: no targets specified (use -h for help)"
+  showhelp 1
+fi
+
+if [[ "$workspace" == "-h" ]] || [[ "$workspace" == "--help" ]]; then
+  showhelp 0
+fi
+
+if [[ ! -d "$workspace" ]]; then
+  echo "error: target not found: '$workspace'"
   exit 1
 fi
 
-echo "resolving directory \"$workspace\"..."
+echo "resolving directory '$workspace'..."
+
+oldpwd="$PWD"
+indexfile="index.md"
+bookname=`basename "$workspace"`
+authorname="$USER"
+dirsize=`sizetomib $(du "$workspace" -d 0 -B 1 | cut -f1)`
+filetotal=`find "$workspace" | grep -E "jpg|png" | wc -l`
+
+if [[ "$filetotal" == "0" ]]; then
+  echo "error: no images found in: '$workspace'"
+  exit 1
+fi
+
 echo ""
-echo "book title: $bookname"
-echo "book author: $authorname"
+echo "Directory (1) '$bookname'"
+echo ""
+echo "Total File Size:    $dirsize"
+echo "Total Page Number:  $filetotal"
 echo ""
 
-read -p ":: Proceed with packing? [Y/n]" goon
-if [ "$goon" == "n" ] || [ "$goon" == "N" ]; then
+read "?:: Proceed with packing? [Y/n]" goon
+if [[ "$goon" == "n" ]] || [[ "$goon" == "N" ]]; then
   exit 1
 fi
 
 cd "$workspace"
 
-if [ -f "$indexfile" ]; then
-  rm "$indexfile"
+# convert png to jpg
+if {find * | grep -E "\\.png$" > /dev/null}; then
+  echo ":: Converting png images to jpg images"
+  
+  pngs=(`find *.png`)
+  length=${#pngs[@]}
+  format="(%${#length}d/$length) mogrifing %s\n"
+
+  for (( i = 1; i <= ${#pngs}; ++ i )); do
+    file=${pngs[$i]}
+    printf "$format" "$i" "$file"
+
+    mogrify -format jpg "$file"
+    rm -f "$file"
+  done
 fi
 
-# convert png to jpg
-if find *.png > /dev/null 2>&1; then
-  echo "==> Converting png images to jpg images"
-  mogrify -format jpg *.png
-  rm -f *.png
-  echo ":: done"
-fi
+# resize images
+echo ":: Resizing jpg images (1080x)"
 
 images=($(find *.jpg | sort -V))
 length=${#images[@]}
-lenlen=${#length}
+format="(%${#length}d/$length) converting %s\n"
 
-indent() {
-  if [ "$1" == "0" ]; then
-    echo -n
-  else
-    printf ' %.0s' {1..$1}
-  fi
-}
-
-echo "==> Compressing jpg images (1080 x *)"
-
-for ((i = 0; i < $length; ++ i)); do
-  position=$(( $i + 1 ))
+for (( i = 1; i <= $length; ++ i )); do
   file=${images[$i]}
-  poslen=${#position}
-  offset=$(indent $((lenlen - poslen)))
 
-  echo "($offset$position,$length) converting $file"
+  printf "$format" "$i" "$file"
 
   convert -resize 1080x "$file" "tmp-$file"
   rm "$file"
   mv "tmp-$file" "$file"
 done
 
-echo "==> Generating index file"
+echo ":: Generating index file"
 
+if [ -f "$indexfile" ]; then
+  rm "$indexfile"
+fi
 touch "$indexfile"
 
 echo "% $bookname" >> "$indexfile"
 echo "% $authorname" >> "$indexfile"
 echo >> "$indexfile"
 
-min() {
-  echo -n $(($1 > $2 ? $2 : $1))
-}
-
-for ((i = 0; i < $length; ++ i)); do
-  if [ $((i % 10)) == 0 ]; then
+for ((i = 1; i <= $length; ++ i)); do
+  if [[ $((i % 10)) -eq "1" ]]; then
     echo >> "$indexfile"
-    echo "# Page $((i + 1)) to $(min $((i + 10)) $length)" >> "$indexfile"
+    echo "# Page $((i)) to $(min $((i + 9)) $length)" >> "$indexfile"
     echo >> "$indexfile"
   fi
   file=${images[$i]}
   echo "![$file](./$file)" >> "$indexfile"
 done
 
-echo "==> Packing up"
+echo ":: Packing up"
 
-echo "$ pandoc \"$indexfile\" -o \"$bookname.epub\""
-pandoc "$indexfile" -o "$bookname.epub"
-echo "$ mv \"$bookname.epub\" \"$currentdir\""
-mv "$bookname.epub" "$currentdir"
+echo " -> pandoc '$indexfile' -o '$oldpwd/$bookname.epub'"
+pandoc "$indexfile" -o "$oldpwd/$bookname.epub"
+rm -f "$indexfile"
 
 echo ""
-echo "Done, file placed at $currentdir/$bookname.epub"
+echo ":: Finished with no error reported"
 echo ""
 
-cd "$currentdir"
+cd "$oldpwd"
 
-read -p "Remove origin directory? [y/N]" remove
-if [ "$remove" == "y" ] || [ "$remove" == "Y" ]; then
-  echo "Removing \"$workspace\"..."
+read "?:: Remove original directory? [y/N]" remove
+if [[ "$remove" == "y" ]] || [[ "$remove" == "Y" ]]; then
+  echo "(1/1) removing '$workspace'..."
   rm -rf "$workspace"
 fi
