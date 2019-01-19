@@ -3,6 +3,9 @@
 # 漫画压缩打包成 epub 文件
 # 需要 pandoc, mogrify 以及 convert
 
+# exit if any commands fails
+set -e
+
 workspace="$1"
 indexfile="index.md"
 bookname=$(basename "$workspace")
@@ -10,7 +13,7 @@ authorname="$USER"
 currentdir="$PWD"
 
 if [ ! -d "$workspace" ]; then
-  echo "$workspace does not exist not is not a directory"
+  echo "\"$workspace\" does not exist or is not a directory"
   exit 1
 fi
 
@@ -103,6 +106,6 @@ cd "$currentdir"
 
 read -p "Remove origin directory? [y/N]" remove
 if [ "$remove" == "y" ] || [ "$remove" == "Y" ]; then
-  echo "Removing \"$workspace\""
+  echo "Removing \"$workspace\"..."
   rm -rf "$workspace"
 fi
