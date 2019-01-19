@@ -12,7 +12,9 @@ inline ${1:int} read(){
 }
 int main(int argc, char const *argv[]) {
 	freopen("../tmp/.in", "r", stdin);
+
 	$3
+
 	return 0;
 }
 ]]></content>
