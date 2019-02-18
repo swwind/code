@@ -1,8 +1,8 @@
 #!/bin/bash
 
-for i in {01..31}
+for i in {01..40}
 do
-  mv acg.gy_$i.jpg $i.jpg
+  mv www.acg.gy_$i.jpg $i.jpg
   jpegoptim $i.jpg
   convert -resize x200 $i.jpg $i-thumbnail.jpg
 done
