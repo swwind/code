@@ -75,56 +75,11 @@ echo $(main "$str1" "$str2" "$str3" "")
 echo -n 'Website: '
 read type
 
-# copy string to clipboard
-
-clipcopy() {
-  emulate -L zsh
-  local file=$1 
-  if [[ $OSTYPE == darwin* ]]
-  then
-    if [[ -z $file ]]
-    then
-      pbcopy
-    else
-      cat $file | pbcopy
-    fi
-  elif [[ $OSTYPE == cygwin* ]]
-  then
-    if [[ -z $file ]]
-    then
-      cat > /dev/clipboard
-    else
-      cat $file > /dev/clipboard
-    fi
-  else
-    if (( $+commands[xclip] ))
-    then
-      if [[ -z $file ]]
-      then
-        xclip -in -selection clipboard
-      else
-        xclip -in -selection clipboard $file
-      fi
-    elif (( $+commands[xsel] ))
-    then
-      if [[ -z $file ]]
-      then
-        xsel --clipboard --input
-      else
-        cat "$file" | xsel --clipboard --input
-      fi
-    else
-      print "clipcopy: Platform $OSTYPE not supported or xclip/xsel not installed" >&2
-      return 1
-    fi
-  fi
-}
-
 # console.log(main(str1, str2, str3, type));
 
 result=$(main "$str1" "$str2" "$str3" "$type")
 
 echo $result
-echo -n $result | clipcopy
+echo -n $result | xclip -in -selection clipboard
 
 echo 'Copied to clipboard.'
