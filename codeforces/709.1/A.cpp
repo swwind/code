@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define N 500020
-#define ll long long
+#define int long long
 using namespace std;
 inline int read(){
   int x=0,f=1;char ch=getchar();
@@ -9,7 +9,7 @@ inline int read(){
   return f?x:-x;
 }
 
-set<int> st;
+set<long long> st;
 int a[N];
 
 int gcd(int a, int b) {
@@ -17,9 +17,10 @@ int gcd(int a, int b) {
 }
 
 int nxt[N], prv[N];
-int ans[N], fck[N];
+int ans[N];
+long long fck[N];
 
-int main() {
+signed main() {
   int t = read();
   while (t --) {
     int n = read();
@@ -42,7 +43,7 @@ int main() {
 
     int cnt = 0;
     while (st.size() > 0) {
-      int top = *st.begin();
+      long long top = *st.begin();
       st.erase(st.begin());
       // remove point x
       int x = nxt[top % n];
@@ -62,11 +63,14 @@ int main() {
     }
 
     // sort(ans + 1, ans + cnt + 1);
-    printf("%d", cnt);
+    // printf("%d", cnt);
+    cout << cnt;
     for (int i = 1; i <= cnt; ++ i) {
-      printf(" %d", ans[i] + 1);
+      // printf(" %d", ans[i] + 1);
+      cout << " " << ans[i] + 1;
     }
-    puts("");
+    // puts("");
+    cout << endl;
   }
 
 }
