@@ -10,29 +10,29 @@ end function
 # returns max(a, b)
 # probable overflow when a + b is too big
 function max a b as
- return - + a b min a b
+  return - + a b min a b
 end function
 
 # main function handles input / output
 function main as
- let break = 0
- while not break do
-  let a = scan
-  let b = scan
-  let break = 1
-  if != a 0 then
-    let break = 0
-  end if
-  if != b 0 then
-    let break = 0
-  end if
-  if not break then
-    let c = min a b
-    let d = max a b
-    print c d
-  end if
- end while
- return -1
+  let break = 0
+  while not break do
+    let a = scan
+    let b = scan
+    let break = 1
+    if != a 0 then
+      let break = 0
+    end if
+    if != b 0 then
+      let break = 0
+    end if
+    if not break then
+      let c = min a b
+      let d = max a b
+      print c d
+    end if
+  end while
+  return -1
 end function
 ################
 23333 76543
