@@ -1,0 +1,27 @@
+function fib i as
+  let res = 1
+  if >= i 3 then
+    let res = + fib - i 2 fib - i 1
+  end if
+  return res
+end function
+
+function main as
+  let t = scan
+  while > t 0 do
+    let x = scan
+    let res = fib x
+    print res
+    let t = - t 1
+  end while
+  return 0
+end function
+################
+7
+1
+2
+3
+4
+5
+6
+8
