@@ -1,0 +1,42 @@
+function main as
+  # a = 0xffff ffff ffff which shoud be -1
+  let a = 281474976710655
+  print a
+
+  # b = 0x7fff ffff ffff which shoud be INT48_MAX
+  let b = 140737488355327
+  print b
+
+  # c = 0x8000 0000 0000 which shoud be INT48_MIN
+  let c = + b 1
+  print c
+
+  # d = 0x1 0000 0000 0000 which shoud be 0
+  let d = * c 2
+  print d
+
+  # e = 2034324
+  let e = + 114514 1919810
+  print e
+
+  # e = 3
+  let e = % 27 4
+  print e
+
+  # e = 2
+  let e = % -18 5
+  print e
+
+  # e = 1
+  let e = % 36 -7
+  print e
+
+  # e = 2
+  let e = / 9 4
+  print e
+
+  # e = -1
+  let e = / -2 -7
+  print e
+end function
+################

@@ -2,7 +2,7 @@
 
 namespace Nhotyp {
 
-typedef uint64_t int48_t;
+typedef int64_t int48_t;
 
 namespace AST {
 
@@ -133,21 +133,36 @@ int now, len;
 std::string code;
 std::map<std::string, int> declaredFunctions;
 
+int48_t into_int48(int64_t x) {
+  return (x & 0xffffffffffff) | (
+    (x & 0x800000000000)
+      ? 0xffff000000000000
+      : 0x0000000000000000
+  );
+}
+
 static std::vector<AST::Function*> nativeFunctions = {
   AST::getNativeFunction("+", 2, [] (const std::vector<int48_t> vec) -> int48_t {
-    return vec[0] + vec[1];
+    return into_int48(vec[0] + vec[1]);
   }),
   AST::getNativeFunction("-", 2, [] (const std::vector<int48_t> vec) -> int48_t {
-    return vec[0] - vec[1];
+    return into_int48(vec[0] - vec[1]);
   }),
   AST::getNativeFunction("*", 2, [] (const std::vector<int48_t> vec) -> int48_t {
-    return vec[0] * vec[1];
+    return into_int48(vec[0] * vec[1]);
   }),
-  AST::getNativeFunction("*", 2, [] (const std::vector<int48_t> vec) -> int48_t {
-    return vec[0] * vec[1];
+  AST::getNativeFunction("/", 2, [] (const std::vector<int48_t> vec) -> int48_t {
+    int64_t res = vec[0] % vec[1];
+    if (res < 0) res += abs(vec[1]);
+    int64_t mod = into_int48(res);
+    int64_t fenzi = into_int48(vec[0] - mod);
+    int64_t fenmu = into_int48(abs(vec[1]));
+    return into_int48(fenzi / fenmu);
   }),
   AST::getNativeFunction("%", 2, [] (const std::vector<int48_t> vec) -> int48_t {
-    return vec[0] % vec[1];
+    int64_t res = vec[0] % vec[1];
+    if (res < 0) res += abs(vec[1]);
+    return into_int48(res);
   }),
 
   AST::getNativeFunction("==", 2, [] (const std::vector<int48_t> vec) -> int48_t {
@@ -183,9 +198,9 @@ static std::vector<AST::Function*> nativeFunctions = {
   }),
 
   AST::getNativeFunction("scan", 0, [] (const std::vector<int48_t> vec) -> int48_t {
-    int48_t value;
+    int64_t value;
     std::cin >> value;
-    return value;
+    return into_int48(value);
   }),
 };
 
@@ -240,7 +255,7 @@ bool isNumber(std::string str) {
 
 int48_t parseNumber(std::string str) {
   bool negative = false;
-  int48_t value = 0;
+  int64_t value = 0;
   for (size_t i = 0; i < str.length(); ++ i) {
     if (!i && str[i] == '-') {
       negative = 1;
@@ -248,7 +263,7 @@ int48_t parseNumber(std::string str) {
     }
     value = value * 10 + str[i] - '0';
   }
-  return negative ? - value : value;
+  return into_int48(negative ? - value : value);
 }
 
 AST::Expression *parseExpression() {
