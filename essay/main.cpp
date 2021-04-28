@@ -236,11 +236,11 @@ bool is(std::string word) {
   return next == word;
 }
 
-void except(std::string word) {
+void expect(std::string word) {
   int last = now;
   std::string next = nextWord();
   if (next != word) {
-    std::cerr << "except `" << word << "` but `" << next << "` found at position " << last << std::endl;
+    std::cerr << "expect `" << word << "` but `" << next << "` found at position " << last << std::endl;
     exit(1);
   }
 }
@@ -290,32 +290,32 @@ AST::Statement *parseStatement() {
 
   if (first == "if") {
     AST::Expression *expression = parseExpression();
-    except("then");
+    expect("then");
     std::vector<AST::Statement*> statements;
     while (!is("end")) {
       statements.push_back(parseStatement());
     }
-    except("end");
-    except("if");
+    expect("end");
+    expect("if");
     return AST::getIfStatement(expression, statements);
   }
 
   if (first == "let") {
     std::string name = nextWord();
-    except("=");
+    expect("=");
     AST::Expression *expression = parseExpression();
     return AST::getLetStatement(name, expression);
   }
 
   if (first == "while") {
     AST::Expression *expression = parseExpression();
-    except("do");
+    expect("do");
     std::vector<AST::Statement*> statements;
     while (!is("end")) {
       statements.push_back(parseStatement());
     }
-    except("end");
-    except("while");
+    expect("end");
+    expect("while");
     return AST::getWhileStatement(expression, statements);
   }
 
@@ -337,13 +337,13 @@ AST::Statement *parseStatement() {
 }
 
 AST::Function *parseFunction() {
-  except("function");
+  expect("function");
   std::string name = nextWord();
   std::vector<std::string> argv;
   while (!is("as")) {
     argv.push_back(nextWord());
   }
-  except("as");
+  expect("as");
 
   declaredFunctions.insert(std::make_pair(name, argv.size()));
 
@@ -351,8 +351,8 @@ AST::Function *parseFunction() {
   while (!is("end")) {
     statements.push_back(parseStatement());
   }
-  except("end");
-  except("function");
+  expect("end");
+  expect("function");
   return AST::getCustomFunction(name, argv.size(), argv, statements);
 }
 
