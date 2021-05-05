@@ -1,0 +1,181 @@
+\documentclass[hyperref,UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+
+\usepackage{geometry}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black
+}
+
+\usepackage{titling}
+\pretitle{\begin{center}\fontsize{30pt}{30pt}\selectfont}
+\posttitle{\end{center}}
+
+\usepackage{ulem}
+
+\title{生活中的数学}
+\author{罗江楠(swwind)}
+\date{2020.10.2}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{前言}
+
+数学与我们的生活息息相关，每一次科学的进步都离不开数学的发展，每一次数学的发展也离不开一代代数学家们的辛勤贡献。
+
+每天早上醒来之后的第一件事，也许是拿起手机关闭闹钟的声响。手机，这一件对于大多数人来说已经是生活必备品的电子产品，中间融入了多少科技，凝结了多少代人的思维结晶，最终才形成了现在的模样。
+
+本文将从普通智能手机作为切入点，宽泛地介绍目前生活中被广泛应用的科学技术中的数学原理。
+
+\section{加密通讯}
+
+现代所有的加密通讯都离不开密码学的支持，而密码学的内容大多依赖于数论。数学家高斯曾经高度评价说：“数学是科学的皇后，数论是数学的皇后。”数论研究的是整数的性质，被誉为“最纯”的数学领域。
+
+\subsection{RSA 算法}
+
+RSA 是一种非对称加密算法，早已在商业领域被广泛利用。下面简要介绍其基本过程。
+
+\subsubsection{过程}
+
+假设 Alice 想要跟 Bob 发送私人消息，那么 Alice 要先找到两个质数 $p$ 和 $q$，并计算 $N=pq$ 以及 $r=\varphi(N)=(p-1)(q-1)$。
+
+接着，找一个小于 $r$ 并且与 $r$ 互质的数 $e$，并且求出 $e$ 在 $r$ 模域下的逆元 $d$（$ed \equiv 1 \pmod r$）。
+
+这时，$(N, e)$ 即为公钥，$(N, d)$ 即为私钥，Alice 将他的公钥 $(N, e)$ 发送给 Bob，同时保密好自己的私钥 $(N, d)$。
+
+如果 Bob 想要给 Alice 发送消息，则先通过约定手段将数据转化成一个小于 $N$ 的非负整数 $n$，接着通过下式求得加密后的数据 $c$。
+
+$$
+c \equiv n^e \pmod N
+$$
+
+接着，Bob 可以将 $c$ 发送给 Alice，Alice 收到消息之后可以通过下式求得加密前的数据 $n$。
+
+$$
+n \equiv c^d \pmod N
+$$
+
+\subsubsection{原理}
+
+\textbf{欧拉定理：}
+
+设 $m > 1, (a, m) = 1$，则
+
+$$
+a^{\varphi(m)} \equiv 1 \pmod m
+$$
+
+于是我们可以知道
+
+$$
+(c^e)^d \equiv c^{ed} \equiv c^{\varphi(N)} \times c \equiv 1 \times c \equiv c \pmod N
+$$
+
+对于中间攻击者来说，如果想要窃听 Bob 发送给 Alice 的消息，那么就必须获取 Alice 手中的私钥，也就是需要将公钥中的 $N$ 分解成两个质数 $p$ 和 $q$ 的乘积。
+
+由于目前尚未找到高效率的大数分解质因数的办法，因此如果 Alice 找的 $p$ 和 $q$ 足够大，那么足以保证通讯的安全性。
+
+事实上人们已经发现了基于量子计算机的分解质因数的 Shor 算法，其理论复杂度为 $O((\log N) ^ 3)$，如果量子计算机真的得以实现，那么 RSA 算法就危险了。
+
+\subsection{D-H 密钥交换协议}
+
+如果说 RSA 算法的精髓在于分解大数质因数，那么 D-H 密钥交换协议的精髓就在于模域下求对数。
+
+\subsubsection{过程}
+
+假设 Alice 和 Bob 需要通过一个不安全的信道商定一份对称性加密算法的密钥，那么 Alice 需要先找一个质数 $p$ 和他的原根 $g$，并且发送给 Bob。
+
+接着，Alice 选择一个随机正整数 $a$，计算 $A=g^a \pmod p$ 并将 $A$ 发送给 Bob。Bob 也选择一个随机正整数 $b$，计算 $B=g^b \pmod p$ 并将 $B$ 发送给 Alice。
+
+这时 Alice 计算 $C = B^a \pmod p$，Bob 也计算 $C = A^b \pmod p$，至此两人获得相同的数字 $C$。
+
+\subsubsection{原理}
+
+显然在模 $p$ 意义下 $g^{ab}$ 与 $g^{ba}$ 相等。
+
+对于中间攻击者来说，想要仅仅通过 $A$ 和 $B$ 来求得 $a$ 和 $b$ 是很困难的，因此只要 $p,a,b$ 足够大，那么就能保证通讯的安全性。
+
+\section{无线通讯}
+
+网络通讯是所有通讯设备最基础的功能和设计目的。基础的无线通信基于对于电磁波的调制和解调，其中对于波的解调就涉及傅里叶变换。
+
+在大气层中的电磁波是十分混乱的。所有电子设备发射的不同波段的电磁波都混杂在一起，形成了一个杂乱无章的波形。然而电子设备却可以从这个杂乱的波形中提取出自己需要的波段，从而互相不干扰。
+
+下面简单抽象地介绍一下其中涉及的傅里叶变换的原理。
+
+\subsection{傅里叶级数}
+
+假设我们有一个周期为 $2\pi$ 的函数 $f(x)$，且 $f(x)$ 可以在 $[-\pi,\pi]$ 上可积，那么 $f(x)$ 可以展开成三角级数的形式
+
+$$
+f(x)=\frac{a_0}{2}+\sum_{k=1}^{\infty}(a_k\cos{kx}+b_k\sin{kx})
+$$
+
+这个三角级数也被称为傅里叶级数。
+
+这个级数的意义十分显然：一个波形必定是由许多不同波段的正弦波组成的。
+
+那么如何求上式中的 $a_0, a_k$ 和 $b_k$ 呢？也就是说，如何将一个波形中 $\sin{kx}$ 的成分提取出来呢？
+
+首先我们知道，三角函数系
+
+$$
+1, \cos x, \sin x, \cos 2x, \sin 2x, ..., \cos nx, \sin nx, ...
+$$
+
+在区间 $[-\pi, \pi]$ 上正交，即函数系中任意两个不相同的函数的乘积在区间 $[-\pi, \pi]$ 上的积分等于 $0$，例如
+
+$$
+\begin{aligned}
+\int_{-\pi}^{\pi}\sin x {\rm d} x &= 0 \\
+\int_{-\pi}^{\pi}\cos 5x \sin 2x {\rm d} x &= 0 \\
+\int_{-\pi}^{\pi}\cos 3x \cos 7x {\rm d} x &= 0 \\
+\cdots &
+\end{aligned}
+$$
+
+但是函数系中两个相同的函数的乘积在区间 $[-\pi, \pi]$ 上的积分却不等于 $0$，即
+
+$$
+\begin{aligned}
+\int_{-\pi}^{\pi}1^2 {\rm d} x &= 2\pi \\
+\int_{-\pi}^{\pi}\sin^2 nx {\rm d} x &= \pi, (n = 1, 2, 3, ...) \\
+\int_{-\pi}^{\pi}\cos^2 nx {\rm d} x &= \pi, (n = 1, 2, 3, ...) \\
+\end{aligned}
+$$
+
+那么很显然，我们可以直接将 $f(x)$ 与 $\sin kx$ 相乘然后求积分，得出的结果即为 $\pi a_k$。
+
+$$
+a_k = \frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\sin kx {\rm d}x
+$$
+
+想要求得 $\cos kx$ 的系数 $b_k$ 也是同理，这里不再赘述。
+
+求出了 $\sin kx$ 以及 $\cos kx$ 之后我们就可以通过合一变形公式求出 $\sin kx$ 波形成分的偏移 $\varphi$ 和幅度 $A$。
+
+\section{总结}
+
+我们的生活离不开数学，数学与我们的生活息息相关，因此学好数学是我们应当一生悬命追求的目标。
+
+\newpage
+
+\bibliographystyle{plain}
+
+\begin{thebibliography}{99}
+\bibitem{a} RSA (cryptosystem), Wikipedia, \\
+\texttt{https://en.wikipedia.org/wiki/RSA\_(cryptosystem)}
+\bibitem{b} Diffie–Hellman key exchange, Wikipedia, \\
+\texttt{https://en.wikipedia.org/wiki/Diffie–Hellman\_key\_exchange}
+\bibitem{c} 同济大学数学系(2014). 高等数学 第七版. 高等教育出版社.
+\end {thebibliography}
+
+\end{document}

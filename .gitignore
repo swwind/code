@@ -16,6 +16,12 @@
 *.exe
 a.out
 
+*.aux
+*.log
+*.out
+*.pdf
+*.toc
+
 # Ignore `bin` dir
 temp/
 tmp/
