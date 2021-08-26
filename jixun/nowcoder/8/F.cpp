@@ -2,6 +2,8 @@
 #define N 505
 #define Q 500020
 
+#define mod 998244353
+
 using namespace std;
 
 bitset<N*N> f[N];
