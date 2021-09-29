@@ -69,9 +69,9 @@ int main() {
 
   for (int i = 1; i <= n; ++ i) {
     if (ans[i].k == 1) {
-      printf("1 %d %d %d\n", ans[i].id, ans[i].s1, ans[i].e1);
+      printf("1 %d %lld %lld\n", ans[i].id, ans[i].s1, ans[i].e1);
     } else {
-      printf("2 %d %d %d %d %d %d\n", ans[i].id, ans[i].s1, ans[i].e1, ans[i].id + 1, ans[i].s2, ans[i].e2);
+      printf("2 %d %lld %lld %d %lld %lld\n", ans[i].id, ans[i].s1, ans[i].e1, ans[i].id + 1, ans[i].s2, ans[i].e2);
     }
   }
 
