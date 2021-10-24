@@ -44,7 +44,9 @@
 \vspace{\baselineskip}
 
 正则表达式拒绝服务攻击（ReDoS）漏洞是一种常见且严重的算法复杂度攻击漏洞，并在近年呈增长趋势。
-本文从目前常用的正则表达式引擎和算法角度，简要分析了 ReDoS 攻击的原理，以及简单介绍了一些防御的手段。
+本文从目前常用的正则表达式引擎和算法角度，阐述了基于 NFA-$\varepsilon$ 算法的主流正则表达式匹配算法，
+并且分析了其拥有的致命缺陷，以及会导致缺陷呈指数级放大的 ReDoS 攻击原理。
+在文章的最后，本文介绍了一些常用的防御 ReDoS 的手段，以及一些在关于自动检测 ReDoS 风险方面的最新进展。
 
 \par\textbf{关键词：}正则表达式; ReDoS; NFA;
 
@@ -182,25 +184,14 @@ NFA-$\varepsilon$ 的本质是一张有向图，其中包括一个起始点 $S$ 
 
 \subsection{NFA-$\varepsilon$ 的匹配算法}
 
-陈睿的妈妈死了，真让人感到痛心。
+
 
 \newpage
 
 \bibliographystyle{plain}
 
 \begin{thebibliography}{99}
-\bibitem{a} 有限单群分类, Wikipedia, \\
-\texttt{https://zh.wikipedia.org/wiki/\%E6\%9C\%89\%E9\%99\%90\%E5\%96\%AE\%E7\%BE\%A4\%E5\%88\%86\%E9\%A1\%9E}
-\bibitem{b} 伽罗瓦理论, Wikipedia, \\
-\texttt{https://zh.wikipedia.org/wiki/\%E4\%BC\%BD\%E7\%BE\%85\%E7\%93\%A6\%E7\%90\%86\%E8\%AB\%96}
-\bibitem{c} 阿贝尔群, Wikipedia, \\
-\texttt{https://zh.wikipedia.org/wiki/\%E9\%98\%BF\%E8\%B4\%9D\%E5\%B0\%94\%E7\%BE\%A4}
-\bibitem{d} 群论, Wikipedia, \\
-\texttt{https://zh.wikipedia.org/wiki/\%E7\%BE\%A4\%E8\%AE\%BA}
-\bibitem{e} 单群, Wikipedia, \\
-\texttt{https://zh.wikipedia.org/wiki/\%E5\%8D\%95\%E7\%BE\%A4}
-\bibitem{f} 五次方程为什么没有求根公式？, 1-6, 妈咪说MommyTalk, YouTube \\
-\texttt{https://youtu.be/CdBbPkXxc3E?list=PLYtoePJQbGmiq3lqkJcxSKW0eW5objmjQ}
+\bibitem{a} 我也不知道是什么东西
 
 \end {thebibliography}
 
