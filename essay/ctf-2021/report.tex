@@ -71,7 +71,7 @@ Web 攻击是一个非常常见和热门的课题，攻击的手段也多种多�
 
 然而 ReDoS 并不是通用的，该漏洞只在一些有缺陷的正则表达式中才能触发。反之，想要防范 ReDoS 攻击，也只需要排查自身源代码中是否有含有缺陷的表达式即可。
 
-\section{正则表达式回退式匹配算法}
+\section{正则表达式的常用匹配算法}
 
 在大部分计算机语言的标准库中，用于匹配正则表达式的算法是基于 NFA-$\varepsilon$ 的通用算法。
 
@@ -84,7 +84,7 @@ NFA 全称为非确定有限状态自动机，是对每个状态和输入符号�
 % 常见的正则表达式引擎使用的都是基于 NFA-$\varepsilon$ 的正则表达式匹配算法，
 % 而 NFA-$\varepsilon$ 算法最致命的缺陷便是在通过幂集构造转化为 DFA 时最劣复杂度能达到 $O(2^n)$ 级别。
 
-\subsection{NFA-$\varepsilon$ 的建图算法}
+\subsection{汤普森构造法}
 
 NFA-$\varepsilon$ 的本质是一张有向图，其中包括一个起始点 $S$ 和终止点 $T$。
 其中待匹配的字符串从 $S$ 出发，每经过一条边，就从字符串的头部删去一个相应的字符。
@@ -182,7 +182,7 @@ NFA-$\varepsilon$ 的本质是一张有向图，其中包括一个起始点 $S$ 
 
 综上所述，我们可以按照上面的方案对于每个给定的正则表达式都建出一个相应的 NFA-$\varepsilon$，并且通过这个 NFA-$\varepsilon$ 来完成正则表达式匹配的计算。
 
-\subsection{NFA-$\varepsilon$ 的匹配算法}
+\subsection{回溯型正则表达式匹配算法}
 
 想要在 NFA-$\varepsilon$ 上进行字符串的匹配，则需要用类似深度优先搜索的办法，
 在每次转移到下一个状态节点的时候同时记录状态的节点和字符串中当前匹配的位置。
@@ -242,7 +242,7 @@ $R=$ \verb|^(a+)+$|
 那么一般的计算机便无法在短暂的时间内完成正则表达式的匹配计算，
 并且逐渐将服务器的资源耗尽，最终使得服务器无法正常对外提供服务。
 
-\section{其他正则表达式匹配算法}
+\subsection{其他正则表达式匹配算法}
 
 基于回退式的正则表达式匹配算法虽然具有缺陷，但却是非常普遍运用在各种编程语言的正则标准库中。
 
@@ -253,21 +253,145 @@ $R=$ \verb|^(a+)+$|
 	\item 正则表达式导向：使用类似深度优先搜索算法的顺序进行搜索，每当一个位置无法再进行匹配的时候就会回溯到上一状态，并且从其他路径重新进行匹配搜索。一般来讲，搜索的顺序是从不同分支从左到右进行的，因此基于该算法的匹配算法将会返回可能的最左边的匹配结果。
 \end{itemize}
 
-由于在实际的应用情况中，若要实现正则表达式中例如惰性量词、反向引用等特性，使用第二种正则表达式导向的引擎是唯一的办法。
-因此尽管大家都知道正则表达式导向的引擎有如此严重的漏洞，但我们只能从自身开始进行防范。
+两种不同的算法在对于针对 ReDoS 的输入在运行时间上面有着截然不同的结果。
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=15cm]{figures/languages.png}
+	\includegraphics[width=7cm]{figures/perl.png}
+	\includegraphics[width=7cm]{figures/tho.png}
+	\caption{匹配缺陷表达式的最坏时间}
+	% \caption{\par\verb|^(a+)+$|}
+	% \caption{计算\verb|^(a+)+$|与是否匹配所需的时间}
+\end{figure}
+
+注意到图 7 中，基于正则表达式导向的 Perl 语言需要超过 60 秒才能匹配 29 个字符的字符串，
+而另外一种基于文本导向的算法（上图中记为 Thompson NFA）则只需要 20 微秒就能得出结果。
+基于文本导向的匹配算法比基于正则表达式导向的匹配算法要快上一百万倍，并且在图中这个趋势还在不断地增加。
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=12cm]{figures/languages.png}
 	\caption{不同语言标准库中正则匹配所用的算法}
 \end{figure}
+
+然而在实际的应用情况中，若要实现正则表达式中例如惰性量词、反向引用等特性，
+使用第二种正则表达式导向的匹配算法则是一种更加快速并且简单的办法。
+因此尽管大家都知道正则表达式导向的引擎有如此糟糕的最坏时间复杂度，
+但在大部分常用的编程语言中的标准库中依旧用的还是基于正则表达式导向的匹配算法，
+包括但不限于 Java、Python、Ruby、PHP 等主流语言。
+而这就让攻击者有机可乘。
+
+\section{ReDoS 的防范}
+
+事实上，正则表达式的使用非常广泛，几乎在我们的网络程序与设备资源的任何位置都会用到，
+因此 ReDoS 攻击很难完全消除，只能尽可能降低这种风险。下文介绍一些比较常用的解决办法。
+
+\subsection{排查有缺陷的正则表达式}
+
+我们用几个例子来简单介绍一些常见的具有缺陷的正则表达式。
+
+\begin{itemize}
+	\item \verb|(a+)+|
+	\item \verb|([a-zA-Z]+)*|
+	\item \verb!(a|aa)+!
+	\item \verb!(a|a?)+!
+\end{itemize}
+
+上面的四个例子都可以通过输入字符串 \verb|"aaaaaaaaaaaaaaaaaaaaaa!"| 实现攻击。
+
+如果我们仔细观察上面的几个例子，不难发现，其生成的 NFA-$\varepsilon$ 图都有一个非常显然的共同点，
+那就是有两条不同的 $\varepsilon$ 路径从同一个点指向了另外的同一个点，
+而这恰恰就是导致复杂度呈指数级暴增的最根本原因。
+
+因此如果要从根本防范自己被 ReDoS 攻击，就要自行排查程序中出现过的所有的表达式，避免出现类似的具有重复套重复的正则表达式。
+如果无法自行判断是否会导致复杂度剧增，也可以直接通过添加测试数据的方式进行验证。
+
+\subsection{替换为更加优秀的程序算法}
+
+上文中有说到，除了基于正则表达式导向的一般匹配算法，还有另外一种基于文本导向的正则表达式引擎。
+因此在一些特殊的情况下，我们也可以把使用程序语言自带的正则表达式引擎部分替换为其他基于文本导向的正则表达式引擎。
+然而基于文本导向的正则表达式引擎对于标准正则表达式的某些特性功能却无法有很好的支持，
+因此如果选择替换为文本导向的正则表达式引擎，则需要避免在正则表达式内部使用某些复杂的特性。
+
+\subsection{其他防范方法}
+
+除了上述的两种方案之外，我们也可以通过一些其他的手段防范 ReDoS 攻击。
+
+\begin{itemize}
+	\item 明确不可信输入的字符串的最长长度
+	\item 完善的性能监控工具
+	\item 匹配计时，超时终止
+\end{itemize}
+
+在复杂的不确定性下，使用性能监测工具是不失一般性的优秀方案。
+当服务器的资源突然被高占用的时候，及时记录下请求的来源 IP、请求数据等内容，
+不仅可以在服务器被攻击时及时发出警报，也可以帮助开发人员在之后排查出问题的所在。
+
+\section{经典案例}
+
+\subsection{Cloudflare 服务中断事件 (2019/7/2)}
+
+2019 年 7 月 2 日，知名网络服务提供商 Cloudflare 遭到 ReDoS 攻击，
+并且导致其处理全球 Cloudflare 网络上 HTTP/HTTPS 流量的每个 CPU 内核被耗尽。
+原因在于员工部署的一个具有缺陷的正则表达式：
+
+\verb^(?:(?:\"|'|\]|\}|\\|\d|(?:nan|infinity|true|false|null|undefined|symbol^
+\verb^|math)|\`|\-|\+)+[)]*;?((?:\s|-|~|!|{}|\|\||\+)*.*(?:.*=.*)))^
+
+这个表达式前面没有什么问题，但是在结尾的地方的 \verb|.*.*=.*| 就出了问题。
+\verb|.*| 是一个万能的表达式，会优先匹配尽可能多的字符。而当字符串不匹配的时候，才会尝试依次减少字符的数量进行回溯。
+
+用于测试的样例字符串为 \verb|"x=xxxxxxxxxx"|。
+
+匹配的一开始，第一个 \verb|.*| 会尝试匹配所有的字符，接着第二个 \verb|.*| 不匹配任何字符，接着 \verb|=| 失配，于是开始回溯。
+
+接下来第一个 \verb|.*| 会尝试减少一个字符，接着第二个 \verb|.*| 会尝试匹配最后一个字符，然后 \verb|=| 失配，第二个 \verb|.*| 尝试不匹配任何字符，\verb|=| 依旧失配，于是再次进行回溯。
+
+如此这般分析，要想找到一个上述类型字符串的匹配，则需要理论最坏 $O(C^2_n) = O(n^2)$ 的复杂度。
+
+虽然这个 $O(n^2)$ 的复杂度不及指数级来的猛，但其依旧不是线性的复杂度，
+当输入数据 $n$ 达到 $10^6$ 或以上级别时，服务器资源就会被耗尽。
+
+然而事实上，本次的 ReDoS 攻击，根本没有黑客的参与，而是 Cloudflare 自身将其服务中断了。
+说到底，就是 Cloudflare 对于部署到生产环境中的正则表达式缺乏完整的性能测试，
+从后来 Cloudflare 官方发布的文章中可以看到，从部署完成到服务器资源被耗尽，只用了短短几秒钟，
+如图 9，图 10 所示。
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{figures/cloudflare-deploy.png}
+	\caption{Cloudflare 将缺陷正则表达式部署至服务器上的时间}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=13cm]{figures/cloudflare-boom.png}
+	\caption{Cloudflare 监测到的 CPU 占用时间}
+\end{figure}
+
+从图中也可以看出，本次 ReDoS 的攻击给 Cloudflare 造成了长达 25 分钟的服务中断，
+危害的严重性便不言而喻。
+
+事件之后，Cloudflare 官方也采取了一些措施，包括但不限于：
+
+\begin{itemize}
+	\item 手动检查了整个网站中 $3\ 868$ 条正则表达式
+	\item 给所有 WAF 规则的性能分析引入了测试套件
+	\item 将正则表达式引擎切换至拥有运行时间保证的 re2 或者 Rust 正则表达式引擎
+\end{itemize}
+
+这些举措也可以给其他网络服务提供商以及当下的我们作为参考和借鉴。
 
 \newpage
 
 \bibliographystyle{plain}
 
 \begin{thebibliography}{99}
-\bibitem{a} 我也不知道是什么东西
+\bibitem{a} 沈宇桔. 正则表达式复杂度攻击自动化检测技术研究[D]. 南京: 南京大学计算机科学与技术学院, 2019: 1-87
+\bibitem{b} Russ Cox. “Regular Expression Matching Can Be Simple And Fast”[OL]. 2007.
+\bibitem{c} Russ Cox. “Regular Expression Matching in the Wild”[OL]. 2010.
+\bibitem{d} R. McNaughton and H. Yamada, “Regular expressions and state graphs for automata,” IRE Transactions on Electronic Computers EC-9(1) (March 1960), pp. 39-47.
+\bibitem{e} John Graham-Cumming. “Details of the Cloudflare outage on July 2, 2019”[OL]. 2019
 
 \end {thebibliography}
 
