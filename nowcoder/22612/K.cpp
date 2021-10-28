@@ -37,7 +37,9 @@ void calc_size(int x) {
 vector<int> kth[N];
 void calc_kth(int x, int bit = 30) {
   if (bit == 0) {
-    kth[x].push_back(0);
+    for (int i = 0; i < sz[x]; ++ i) {
+      kth[x].push_back(0);
+    }
     return;
   }
   int ls = ch[0][x], lsz = sz[ls];
@@ -71,13 +73,62 @@ void calc_kth(int x, int bit = 30) {
   // printf("for point: %d\n", x);
   // printf("ls => %d\n", ls);
   // printf("rs => %d\n", rs);
-  for (int i = 0; i < sz[x]; ++ i) {
-    // printf("==> %d\n", kth[x][i]);
-  }
+  // for (int i = 0; i < sz[x]; ++ i) {
+  //   printf("==> %d\n", kth[x][i]);
+  // }
+  assert(sz[x] == kth[x].size());
   // printf("%d == %u\n", sz[x], kth[x].size());
 }
 
-int find_answer(bool *a, bool *b, int k) {
+int dfs(int now, int depth, bool limit_l, bool limit_r, int k) {
+  if (depth == 30) return 0;
+  assert(k < sz[now]);
+
+  if (!limit_l && !limit_r) {
+    // printf("unlimited! I'm free!!!");
+    // printf("I'll choose %d\n", kth[now][k]);
+    return kth[now][k];
+  }
+
+  int can_chs_l = !(limit_l && a[depth] == 1);
+  int can_chs_r = !(limit_r && b[depth] == 0);
+
+  assert(can_chs_l || can_chs_r);
+  int chs = -1;
+  int ls = ch[0][now];
+  int rs = ch[1][now];
+
+  if (!can_chs_l || !can_chs_r) {
+    chs = can_chs_l ? 0 : 1;
+  }
+
+  // if (can_chs_l && can_chs_r) {
+  //   if choose 0
+  //   int lv = k < sz[ls] ? kth[ls][k] : ((1 << (29 - depth)) + kth[rs][k - sz[ls]]);
+  //   int rv = k < sz[rs] ? kth[rs][k] : ((1 << (29 - depth)) + kth[ls][k - sz[rs]]);
+
+  //   if (rv < lv) chs = 1;
+  //   if (lv < rv) chs = 0;
+  // }
+
+  // printf("choose %d with %d\n", chs, depth);
+  int ans = 0, res = 0;
+  if (chs == 0 || chs == -1) {
+    int new_r = limit_r && b[depth] == 0;
+    if (k < sz[ls]) ans = dfs(ls, depth + 1, limit_l, new_r, k);
+    else ans = dfs(rs, depth + 1, limit_l, new_r, k - sz[ls]) | (1 << (29 - depth));
+  }
+  if (chs == 1 || chs == -1) {
+    int new_l = limit_l && a[depth] == 1;
+    if (k < sz[rs]) res = dfs(rs, depth + 1, new_l, limit_r, k);
+    else res = dfs(ls, depth + 1, new_l, limit_r, k - sz[rs]) | (1 << (29 - depth));
+  }
+  if (chs == 0) return ans;
+  if (chs == 1) return res;
+  return min(ans, res);
+}
+
+int find_answer(int k) {
   int now_i = 0, now = 1, ans = 0;
   while (now_i < 30 && a[now_i] == b[now_i]) {
     // printf("%d, (%d)=(%d), k = %d\n", now_i, sz[ch[0][now]], sz[ch[1][now]], k);
@@ -85,61 +136,16 @@ int find_answer(bool *a, bool *b, int k) {
     int ls = ch[0][now];
     int rs = ch[1][now];
 
+    // printf("choose %d on %d\n", chs, now_i);
+
     if (chs) swap(ls, rs);
     if (k < sz[ls]) now = ls;
     else now = rs, k -= sz[ls], ans |= (1 << (29 - now_i));
 
     ++ now_i;
   }
-  int limit_l = true;
-  int limit_r = true;
-  while (now_i < 30) {
 
-    // printf("%d, %d - %d, k = %d\n", now_i, limit_l, limit_r, k);
-    // printf("lsz = %d, rsz = %d\n", sz[ch[0][now]], sz[ch[1][now]]);
-
-    assert(k < sz[now]);
-
-    if (!limit_l && !limit_r) {
-      // printf("kth[%d][%d] = %d\n", now, k, kth[now][k]);
-      // printf("return %d | %d\n", ans, kth[now][k]);
-      return ans | kth[now][k];
-    }
-
-    int can_chs_l = !(limit_l && a[now_i] == 1);
-    int can_chs_r = !(limit_r && b[now_i] == 0);
-
-    assert(can_chs_l || can_chs_r);
-    int chs = -1;
-    int ls = ch[0][now];
-    int rs = ch[1][now];
-
-    if (!can_chs_l || !can_chs_r) {
-      chs = can_chs_l ? 0 : 1;
-    }
-
-    if (can_chs_l && can_chs_r) {
-      // if choose 0
-      int lv = k < sz[ls] ? kth[ls][k] : ((1 << (29 - now_i)) + kth[rs][k - sz[ls]]);
-      int rv = k < sz[rs] ? kth[rs][k] : ((1 << (29 - now_i)) + kth[ls][k - sz[rs]]);
-
-      // if (rv < lv) chs = 1; else chs = 0;
-      if (lv < rv) chs = 0; else chs = 1;
-    }
-
-    if (chs) swap(ls, rs);
-    if (k < sz[ls]) now = ls;
-    else now = rs, k -= sz[ls], ans |= (1 << (29 - now_i));
-
-    if (limit_l && a[now_i] == 0 && chs == 1) limit_l = 0;
-    if (limit_r && b[now_i] == 1 && chs == 0) limit_r = 0;
-
-    // printf("choose %d, lb = %d, rb = %d\n", chs, limit_l, limit_r);
-
-    ++ now_i;
-  }
-
-  return ans;
+  return ans | dfs(now, now_i, 1, 1, k);
 }
 
 int main() {
@@ -161,7 +167,7 @@ int main() {
     split_number(a, L);
     split_number(b, R);
 
-    int ans = find_answer(a, b, k - 1);
+    int ans = find_answer(k - 1);
     printf("%d\n", ans);
   }
 }
