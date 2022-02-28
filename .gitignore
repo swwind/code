@@ -21,6 +21,10 @@ a.out
 *.out
 *.pdf
 *.toc
+*.snm
+*.nav
+*.vrb
+_minted-slide
 
 # Ignore `bin` dir
 temp/
