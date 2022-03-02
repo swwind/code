@@ -78,23 +78,24 @@
 
 \begin{frame}[fragile]{例题：整数分解}
   考虑你们之前学过的枚举算法
-  \begin{verbatim}
+  \begin{minted}{cpp}
 for (int i = 1; i <= n; ++ i)
   for (int j = 1; j <= n; ++ j)
     for (int k = 1; k <= n; ++ k)
       if (i + j + k == n)
         printf("%d = %d + %d + %d\n", n, i, j, k);
-  \end{verbatim}\pause
+  \end{minted}
+  \pause
   时间复杂度 $O(n^3)$
 \end{frame}
 
 \begin{frame}[fragile]{例题：整数分解}
   可以考虑优化枚举的上下界，可以将复杂度降低到 $O(n^2)$
-  \begin{verbatim}
+  \begin{minted}{cpp}
 for (int i = 1; i <= n - 2; ++ i)
   for (int j = 1; j <= n - i - 1; ++ j)
     printf("%d = %d + %d + %d\n", n, i, j, n - i - j);
-  \end{verbatim}
+  \end{minted}
 \end{frame}
 
 \begin{frame}[fragile]{例题：整数分解}
@@ -141,6 +142,72 @@ void dfs(int x, int k) { // 将 x 分解成 k 个正整数
   \end{figure}
 \end{frame}
 
+\begin{frame}[fragile]{复杂度分析}
+  每个答案都只会被枚举到一次，因此算法的时间复杂度与答案规模相同\pause
+
+  $$O({n-1 \choose m-1})$$
+\end{frame}
+
+\begin{frame}[fragile]{例题：全排列}
+  求 $n$ 个元素的全排列。
+
+  如 $n=3$ 时
+
+  \begin{verbatim}
+  1 2 3
+  1 3 2
+  2 1 3
+  2 3 1
+  3 1 2
+  3 2 1
+  \end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]{例题：全排列}
+  \begin{minted}{cpp}
+int vis[100]; // vis[i] 表示数字 i 是否已经用过
+int ans[100]; // 用于保存当前的排列状态
+void dfs(int depth) { // 参数 depth 表示当前递归的深度
+  if (depth == n + 1) { // 如果所有数字都选完了
+    output(ans); return; // 输出并返回
+  }
+  for (int i = 1; i <= n; ++ i) { // 枚举下一个数字
+    if (vis[i]) continue; // 如果数字已经被使用过则跳过
+    vis[i] = 1; ans[depth] = i; // 使用数字 i
+    dfs(depth + 1);
+    vis[i] = 0; // ans[depth] = 0; // 恢复原来的状态
+  }
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{复杂度分析}
+  总共会递归 $n$ 层，每层都会枚举 $n$ 个数字\pause
+
+  $$O(n^n)$$\pause
+
+  能不能优化到 $O(n!)$ 呢
+\end{frame}
+
+\begin{frame}[fragile]{例题：全排列（优化）}
+  \begin{minted}{cpp}
+std::queue<int> qu; // 储存剩余的数字
+std::vector<int> st; // 保存当前的排列的栈
+void dfs() { // 甚至不需要深度参数
+  // 如果待选数字为空则终止搜索
+  if (qu.empty()) return output(st);
+  for (size_t i = 0; i < qu.size(); ++ i) {
+    // 将队首元素加入到答案栈中并从队列中弹出
+    st.push_back(qu.front()); qu.pop();
+    dfs(); // 递归搜索下一个元素
+    // 将栈顶元素加入到队尾并从栈中弹出
+    qu.push(st.back()); st.pop_back();
+  }
+}
+  \end{minted}
+\end{frame}
+
 \begin{frame}[fragile]{例题：八皇后问题}
   如何能够在 $8 \times 8$ 的国际象棋棋盘上放置八个皇后，使得任何一个皇后都无法直接吃掉其他的皇后？
 
@@ -150,10 +217,359 @@ void dfs(int x, int k) { // 将 x 分解成 k 个正整数
   \end{figure}
 \end{frame}
 
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{itemize}
+    \item 枚举每个格子里是否有皇后，然后判断是否有冲突。\pause
+    \item 复杂度 $O(2^{64})$ 原地爆炸\pause
+    \item 枚举每行皇后的位置，然后判断是否有冲突。\pause
+    \item 复杂度 $O(8^8)$，依旧有优化的空间
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{itemize}
+    \item 考虑在枚举每一个皇后的位置的时候同时检测是否有冲突，避免无用的搜索。\pause
+    \item 具体可以利用数组 \verb|a[i][j]| 表示位置为 $(i,j)$ 的格子是否会被已经存在的皇后吃掉。\pause
+    \item 每当放置一个皇后的时候，都需要更新可能会被该皇后吃掉的格子的 \verb|a[i][j]| 的值。\pause
+    \item 当回溯的时候，可以恢复 \verb|a[i][j]| 的值。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{itemize}
+    \item 具体为了简便更新和恢复 \verb|a[i][j]| 的值，每当我们放置皇后的时候就将影响到的格子的 \verb|a[i][j]| 的值加一，每当回溯的时候就将 \verb|a[i][j]| 的值减一。\pause
+    \item 这样当且仅当 \verb|a[i][j]| $ = 0$ 时，该位置的格子才有可能被放置下一个皇后，否则就不再枚举该格子是皇后的可能性。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{minted}{cpp}
+int a[8][8], ans = 0;
+void effect(int x, int y, int delta) {
+  for (int i = 0; i < 8; ++ i)
+    for (int j = 0; j < 8; ++ j)
+      if (i == x || j == y || abs(i - x) == abs(j - y))
+        a[i][j] += delta;
+}
+void apply_queen(int x, int y) { effect(x, y, 1); }
+void recover_queen(int x, int y) { effect(x, y, -1); }
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{minted}{cpp}
+void dfs(int n) {
+  // 如果已经放置了八个皇后，则输出结果
+  if (n == 8) { ++ ans; return; }
+  for (int i = 0; i < 8; ++ i) {
+    for (int j = 0; j < 8; ++ j) {
+      if (a[i][j] == 0) {
+        apply_queen(i, j); // 放置皇后
+        dfs(n + 1);
+        recover_queen(i, j); // 回溯
+      }
+    }
+  }
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{minted}{cpp}
+int main() {
+  dfs(0);
+  std::cout << ans << std::endl;
+  // 输出结果：3709440
+}
+  \end{minted}
+  \pause
+  可是答案不是 $92$ 么\pause
+
+  显然我们枚举的时候没有考虑每个皇后的先后顺序，导致 $92$ 种不同的解都会被统计 $8!$ 次，因此答案为 $92 \times 8! = 3709440$
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  为了避免这种问题，我们可以在 dfs 的时候顺便带入一个 $(x, y)$ 坐标表示当前最后放置的皇后的位置，之后的枚举仅从这个位置的下一个格子开始。\pause
+
+  稍微简化一点，第 $n$ 个皇后的位置必定在第 $n$ 行，因此我们在 DFS 中只需要枚举一行即可。
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题（优化）}
+  \begin{minted}{cpp}
+void dfs(int n) {
+  if (n == 8) { ++ ans; return; }
+  for (int i = 0; i < 8; ++ i) {
+    if (a[n][i] == 0) {
+      apply_queen(n, i);
+      dfs(n + 1);
+      recover_queen(n, i);
+    }
+  }
+} // dfs(0); std::cout << ans << std::endl; // 92
+  \end{minted}
+  \pause
+  还能再快一点么
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题（优化）}
+  \begin{itemize}
+    \item 考虑优化 \verb|apply_queen| 和 \verb|recover_queen| 的过程。
+    \item 观察到总共只有 $64$ 个格子，每个格子我们只关心他的 0/1 状态。
+    \item 因此我们可以把每个状态压缩到一个 \verb|unsigned long long| 里面。
+    \item 预处理每个格子放置皇后会产生冲突的格子，转移的时候只需要将当前状态或上该转移状态即可。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{minted}{cpp}
+uint64_t t[64]; // 转移状态
+void init() {
+  for (int x = 0; x < 8; ++ x)
+    for (int y = 0; y < 8; ++ y)
+      for (int i = 0; i < 8; ++ i)
+        for (int j = 0; j < 8; ++ j)
+          if (i == x || j == y || abs(i - x) == abs(j - y))
+            t[(x << 3) | y] |= 1ull << ((i << 3) | j);
+}
+// O(n^4)，当然也可以直接打表
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：八皇后问题}
+  \begin{minted}{cpp}
+int ans = 0;
+void dfs(int n, uint64_t state) {
+  if (n == 8) { ++ ans; return; }
+  for (int i = 0; i < 8; ++ i) {
+    if (state & (1ull << ((n << 3) | i))) continue;
+    dfs(n + 1, state | t[(n << 3) | i]);
+  }
+}
+// dfs(0, 0); printf("%d\n", ans); // 92
+  \end{minted}
+\end{frame}
+
 \subsection[剪枝优化]{Decision Tree Pruning}
 
+\begin{frame}[fragile]{剪枝优化}
+  剪枝(Decision Tree Pruning, 决策树剪枝)是指在保证\textbf{正确性}的前提下，采取的一些手段使算法跳过一定不含有目标状态/最优解的分支，从而保证算法更高效迅速地找出目标解的状态。\pause
+
+  一般的入手点有：
+
+  \begin{itemize}
+    \item \textbf{优化搜索顺序}：优先从比较优的转移状态开始搜索
+    \item \textbf{可行性剪枝}：当前状态不含有目标状态，则直接跳过该状态的所有转移
+    \item \textbf{最优性剪枝}：当前状态不含有更优解，则直接跳过该状态的所有转移
+    \item \textbf{记忆化搜索}：对于一些纯函数的搜索，可以将搜索过的状态记录下来，避免重复搜索
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  给出一个长度为 $n(1 \le n \le 50)$ 的字符串 $S$，字符串仅包含 \verb|'S'| 和 \verb|'D'| 两种字母。
+
+  询问有多少组合法的长度为 $2n$ 的括号序列 $R$ 满足：$(0 \le i < n)$
+
+  \begin{itemize}
+    \item 若 $S_i$ 为 \verb|'S'|，则 $R_i = R_{i+n}$
+    \item 若 $S_i$ 为 \verb|'D'|，则 $R_i \ne R_{i+n}$
+  \end{itemize}
+
+  例如 $S$ 为 \verb|"SSD"|，则满足条件的 $R$ 有且仅有一种可能的解为 \verb|"()(())"|。\pause
+
+  提示：枚举每一个 $R_i$，然后检查 $R$ 是否满足条件，复杂度为 $O(2^n \cdot n)$，考虑如何优化。
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  DFS 的时候记录 $4$ 个状态，分别为：
+
+  \begin{itemize}
+    \item 当前搜索到的深度 $d$ 的位置
+    \item 当前 $R[0:n]$ 中剩余未匹配的左括号数量
+    \item 当前 $R[n:2n]$ 中左侧未匹配的右括号数量
+    \item 当前 $R[n:2n]$ 中右侧未匹配的左括号数量
+  \end{itemize}
+
+  \begin{verbatim}
+0      n-1 | n         2n-1
+..(((..... | )))..(((......
+  ^^^--- x | ^^^--- y
+           |      ^^^--- z
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  终止条件即为 $d = n$，同时我们返回当前的状态是否是一个合法的状态。
+
+  \begin{minted}{cpp}
+int dfs(int d, int x, int y, int z) {
+  if (d == n) {
+    return x == y && !z;
+  }
+  int ans = 0;
+  \end{minted}
+
+  接下来我们分情况讨论 $S_i$ 的类型。
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  \begin{minted}{cpp}
+  if (S[d] == 'S') {
+    // put '('
+    ans += dfs(d + 1, x + 1, y, z + 1);
+    // put ')'
+    if (x) {
+      if (z) {
+        ans += dfs(d + 1, x - 1, y, z - 1);
+      } else {
+        ans += dfs(d + 1, x - 1, y + 1, z);
+      }
+    }
+  }
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  \begin{minted}{cpp}
+  if (S[d] == 'D') {
+    // put '('
+    if (z) {
+      ans += dfs(d + 1, x + 1, y, z - 1);
+    } else {
+      ans += dfs(d + 1, x + 1, y + 1, z);
+    }
+    // put ')'
+    if (x) {
+      ans += dfs(d + 1, x - 1, y, z + 1);
+    }
+  }
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{复杂度分析}
+  \begin{itemize}
+    \item 首先复杂度十分玄学，不好直接利用公式量化计算。
+    \item 但是我们可以通过观察，发现该算法相当于枚举了答案序列中的每一位。
+    \item 因此该算法的复杂度是 $O(2^n)$，还能如何优化呢？
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{复杂度分析}
+  \begin{itemize}
+    \item 观察发现 \verb|dfs(d, x, y, z)| 的返回值只与四元组 $(d, x, y, z)$ 有关，满足纯函数的定义。
+    \item 而四元组 $(d, x, y, z)$ 可能的取值只有 $n^4$ 的情况。
+    \item 因此利用记忆化搜索，该算法的复杂度可以降低到 $O(n^4)$。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[BeiJing2011]符环}
+  \begin{minted}{cpp}
+int f[52][52][52][52];
+void init() { // 初始化记忆化缓存
+  memset(f, -1, sizeof(f));
+}
+int dfs(int d, int x, int y, int z) {
+  if (d == n) return x == y && !z;
+  int &ans = f[d][x][y][z];
+  if (~ ans) return ans;
+  ans = 0;
+  // 下略
+}
+  \end{minted}
+\end{frame}
+
 \section[广度优先搜索]{Breadth First Search}
-\subsection[堆优化]{Heap Optimization}
+
+\begin{frame}[fragile]{广度优先搜索}
+  \begin{itemize}
+    \item 就是每次都尝试访问同一层的节点
+    \item 如果同一层都访问完了，再访问下一层
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：走迷宫}
+  给出一张 $n \times m$ 的地图，其中 \verb|'#'| 表示墙，\verb|'.'| 表示可以走的路，\verb|'S'| 表示起点，\verb|'E'| 表示终点。
+
+  请求出走迷宫的最短路径。
+
+  \begin{verbatim}
+##########
+#S.......#
+########.#
+#T.......#
+##########
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{例题：走迷宫}
+  \begin{minted}{cpp}
+int maze[52][52], dx = {0, 0, 1, -1}, dy = {1, -1, 0, 0};
+int dfs(int x, int y) {
+  if (x == tx && y == ty) return 0;
+  int ans = INT_MAX;
+  for (int i = 0; i < 4; ++i) {
+    int nx = x + dx[i], ny = y + dy[i];
+    if (inside_maze(nx, ny) && maze[nx][ny] != '#') {
+      ans = min(ans, dfs(nx, ny) + 1);
+    }
+  }
+  return ans;
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：走迷宫}
+  前面的 DFS 算法虽然可以解决一小部分的数据，但是如果遇到一些极端情况，则会导致复杂度暴增，甚至发生无限递归循环。
+
+  这时候就应该需要使用广度优先搜索，每次一层一层的访问，直到找到终点。
+\end{frame}
+
+
+\begin{frame}[fragile]{广度优先搜索}
+  广度优先搜索算法一般遵从以下几个步骤：
+  
+  \begin{itemize}
+    \item 初始化一个队列，将起点或初始状态放入队列中
+    \item 每次从队列中取出队首的状态，并对其进行处理
+    \item 如果该状态是目标状态，则结束搜索
+    \item 否则将该状态的所有后继未访问状态放入队列中
+    \item 如果直到队列未空也没有找到目标状态，则说明无解
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：走迷宫}
+  \begin{minted}{cpp}
+char maze[52][52]; // 储存迷宫地图
+int dis[52][52]; // 记录每个点到起点的距离
+int dx = {0, 0, 1,-1}; // 四个方向的 delta x
+int dy = {1,-1, 0, 0}; // 四个方向的 delta y
+std::queue<std::pair<int, int>> q;
+void bfs() {
+  // 初始化起点
+  q.push(std::make_pair(sx, sy));
+  memset(dis, -1, sizeof(dis));
+  dis[sx][sy] = 0;
+  // 见下页
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：走迷宫}
+  \begin{minted}[fontsize=\small]{cpp}
+while (!q.empty()) {
+  int x = q.front().first, y = q.front().second;
+  q.pop(); // 取出队首元素
+  if (x == tx && y == ty) return dis[x][y];
+  for (int i = 0; i < 4; ++ i) { // 枚举每一个方向
+    int nx = x + dx[i], ny = y + dy[i];
+    if (inside_maze(nx, ny) && maze[nx][ny] != '#'
+        && dis[nx][ny] == -1) {
+      dis[nx][ny] = dis[x][y] + 1;
+      q.push(make_pair(nx, ny));
+    }
+  }
+}
+  \end{minted}
+\end{frame}
 
 \section[例题]{Examples}
 
