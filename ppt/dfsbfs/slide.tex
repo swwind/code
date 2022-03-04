@@ -12,10 +12,11 @@
 \usepgfplotslibrary{dateplot}
 
 \usepackage{xspace}
+\usepackage{tikz}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
 % Chinese Fonts (Fontset: fandol,ubuntu)
-\usepackage[fontset=fandol]{ctex}
+\usepackage{ctex}
 
 % Math Fonts
 \usefonttheme{professionalfonts} 
@@ -54,9 +55,13 @@
 \section[引言]{Introduction}
 
 \begin{frame}[fragile]{引言}
-  其实我也不知道要说什么\pause
+  搜索算法是各种高级算法的基石，比如求解最短路径问题，求解最小生成树问题，求解最大流问题等。
 
-  就祝大家新年快乐吧
+  搜索算法的大致分为两种，分别为深度优先搜索算法(Depth First Search, DFS)和广度优先搜索算法(Breadth First Search, BFS)。
+
+  \begin{figure}
+    \includegraphics[height=100pt]{dfsbfs.png}
+  \end{figure}
 \end{frame}
 
 \section[深度优先搜索]{Depth First Search}
@@ -112,7 +117,7 @@ for (int i = 1; i <= n - 2; ++ i)
   深度优先搜索算法一般使用递归的算法，遵从以下流程
   \begin{itemize}
     \item 首先判断搜索的当前状态是否满足\textbf{结束条件}
-    \item 如果结束满足则输出当前状态并返回
+    \item 如果满足结束条件则输出当前状态并返回
     \item 接下来考虑枚举当前状态的每一个可能的下一个状态的转移
     \item 将该转移应用到当前的状态中
     \item 向下递归搜索
@@ -154,12 +159,12 @@ void dfs(int x, int k) { // 将 x 分解成 k 个正整数
   如 $n=3$ 时
 
   \begin{verbatim}
-  1 2 3
-  1 3 2
-  2 1 3
-  2 3 1
-  3 1 2
-  3 2 1
+1 2 3
+1 3 2
+2 1 3
+2 3 1
+3 1 2
+3 2 1
   \end{verbatim}
 \end{frame}
 
@@ -348,8 +353,6 @@ void dfs(int n, uint64_t state) {
 // dfs(0, 0); printf("%d\n", ans); // 92
   \end{minted}
 \end{frame}
-
-\subsection[剪枝优化]{Decision Tree Pruning}
 
 \begin{frame}[fragile]{剪枝优化}
   剪枝(Decision Tree Pruning, 决策树剪枝)是指在保证\textbf{正确性}的前提下，采取的一些手段使算法跳过一定不含有目标状态/最优解的分支，从而保证算法更高效迅速地找出目标解的状态。\pause
@@ -571,6 +574,285 @@ while (!q.empty()) {
   \end{minted}
 \end{frame}
 
-\section[例题]{Examples}
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  有一张 $n \times m$ 的地图，地图的格子分为 \verb|'@'| 和 \verb|'#'| 两种。
+
+  每次从一个格子到达相邻的同类型格子，费用为 $0$，不同类型格子之间的费用则为 $1$。
+
+  请求出小明从一个起点 $S$ 开始到达终点 $T$ 的最小费用。
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  非常经典的一道 BFS 题目，但是我们可以用一些巧妙的优化来加快搜索的速度。\pause
+
+  在搜索的过程中，我们可以通过把队列中的每一个节点按照当前的距离排序，以此优化搜索顺序。
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  简单分析，发现我们并不需要每次都对当前队列中的所有元素进行枚举来找出距离最小的元素
+
+  我们可以直接使用一种称为\textbf{堆}的数据结构来实现插入和询问最小值的操作。
+
+  \begin{minted}{cpp}
+typedef std::pair<int, int> Node; // 节点坐标
+typedef std::pair<int, Node> DisNode; // 距离 + 坐标
+// 小根堆
+std::priority_queue<DisNode,
+  std::vector<DisNode>,
+  std::greater<DisNode>> q;
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  \begin{minted}[fontsize=\small]{cpp}
+while (!q.empty()) {
+  int d = q.top().first; // 当前距离
+  int x = q.top().second.first, y = q.top().second.second;
+  q.pop(); // 取出队首元素
+  if (x == tx && y == ty) return d;
+  for (int i = 0; i < 4; ++ i) { // 枚举每一个方向
+    int nx = x + dx[i], ny = y + dy[i];
+    if (nx >= 0 && nx < n && ny >= 0 && ny < m && !vis[nx][ny]) {
+      vis[nx][ny] = 1;
+      q.push(std::make_pair(d + (map[nx][ny] != map[x][y]),
+                            std::make_pair(nx, ny)));
+    }
+  }
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  再深入分析一下，发现我们根本不需要使用堆来维护队列中的最小值。
+
+  每次新加入的点的权值只有可能是当前队列中最小值加一或者相等，因此只需要考虑添加到队尾或者队首即可。
+
+  \begin{minted}{cpp}
+typedef std::pair<int, int> Node; // 节点坐标
+std::deque<Node> q; // 双端队列
+int dis[N][M]; // 距离
+memset(dis, -1, sizeof(dis)); // 初始化
+dis[sx][sy] = 0;
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  \begin{minted}[fontsize=\small]{cpp}
+while (!q.empty()) {
+  int x = q.front().first, y = q.front().second;
+  q.pop_front(); // 取出队首元素
+  if (x == tx && y == ty) return dis[x][y];
+  for (int i = 0; i < 4; ++ i) { // 枚举每一个方向
+    int nx = x + dx[i], ny = y + dy[i];
+    if (nx >= 0 && nx < n && ny >= 0 && ny < m
+        && dis[nx][ny] == -1) {
+      dis[nx][ny] = dis[x][y] + (map[nx][ny] != map[x][y]);
+      if (map[nx][ny] == map[x][y])
+        q.push_front(std::make_pair(nx, ny));
+      else q.push_back(std::make_pair(nx, ny));
+    }
+  }
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
+  以上使用\textit{双端队列}来优化 BFS 搜索的方式我们称之为 \textbf{0-1 BFS}，经常被用于权值为 $0$ 或 $1$ 的图。
+\end{frame}
+
+\section[比较有意思的例题]{Examples}
+
+\begin{frame}[fragile]{例题：水叮当的舞步}
+  有一个 $n \times n$ 的地图，每个格子上有一种颜色 $c_{i,j}$，每次可以将地图左上角的格子和与其相连的所有相同颜色的格子都染成另一种颜色。
+
+  问最少需要多少次染色才能将地图染成一种颜色？
+
+  \begin{verbatim}
+0 1 2
+1 1 2
+2 2 1
+  \end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{例题：水叮当的舞步}
+  直接 DFS 搜索每次染成那种颜色，然后使用 BFS/DFS 修改染色结果。
+
+  可以用下面几种剪枝优化：
+
+  \begin{itemize}
+    \item 如果染色前后左上角颜色的连通块大小不变，则直接剪枝
+    \item 如果当前染色次数已经大于已经找到的最小染色次数，则直接剪枝
+    \item 优先搜索染色后连通块大小最大的颜色，提高搜索效率
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[Usaco2006 Jan] The Grove 树木}
+  地图上有一个联通块（保证没有洞），贝茜在联通块外面的某一个点，可以往八个方向走，问贝茜至少需要走多少步才能绕林子走一圈，并且回到起点？
+
+  \begin{verbatim}
+.......   ...+...
+...X...   ..+X+..
+..XXX..   .+XXX+.
+...XXX.   ..+XXX+
+...X...   ..+X..+
+......*   ...+++*
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[Usaco2006 Jan] The Grove 树木}
+  可以从连通块中某一点往上画一条线，利用 BFS 算出每个点距离起点的距离，并且强行使得 BFS 枚举的时候不跨越这条线，最后统计一下这条线左右的距离合并即可。
+\end{frame}
+
+\begin{frame}[fragile]{例题：[SCOI2009]生日快乐}
+  有一块大小为 $X \times Y$ 的蛋糕，现在需要将其平均分为 $N (N \le 10)$ 等分。每次只能平行于蛋糕的一边来切，显然必须要切 $N-1$ 刀。请求出这 $N$ 块蛋糕的长边与短边的比值的最大值的最小值。
+
+  
+\end{frame}
+
+\begin{frame}[fragile]{例题：Whispers of the Old Gods}
+  有一个正则表达式（只包含数字, \verb!|!, \verb|[|, \verb|]|, \verb|(|, \verb|)|, 和 \verb|+|）和一个数字串。
+
+  每次可以对数字串进行一次操作，操作包括：
+
+  \begin{itemize}
+    \item 插入一个数字
+    \item 删除一个数字
+    \item 修改一个数字
+  \end{itemize}
+
+  请问至少需要多少次操作才能使得数字串匹配正则表达式？
+\end{frame}
+
+\begin{frame}[fragile]{例题：Whispers of the Old Gods}
+  首先按照正则表达式构造出其对应的 NFA。
+
+  之后在 NFA 上跑 0-1 BFS 即可。
+\end{frame}
+
+\begin{frame}[fragile]{汤普森构造法}
+
+  汤普森构造法是一个能将正则表达式转化为一个与之等价的 NFA 的方法。算法得到的 NFA 可以在编程中用于匹配一个正则表达式，这也是正则表达式引擎实现的基本思路之一。
+
+  从只包含一个字符的正则表达式看起，我们只需要将 $S$ 直接连一条匹配字符的边到 $T$ 即可。
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw=black] (1) at(0,0) {$S$};
+      \node[circle,draw=black] (2) at(4,0) {$T$};
+      \draw[-latex] (1)--(2);
+      \node at(2,0.5) {\verb|'a'|};
+    \end{tikzpicture}
+    \caption{匹配单个字符的 NFA}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{汤普森构造法}
+  对于 \verb!<regex> <regex>! 的顺序连接形式，我们只需要将第一个 NFA 的 $T$ 点连一条 $\varepsilon$ 边到第二个 NFA 的 $S$ 点即可。新的 NFA 的 $S$ 点即为 $S_1$，$T$ 点即为 $T_2$。
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw=black] (1) at(2,0)  {$S_1$};
+      \node[circle,draw=black] (2) at(4,0)  {$T_1$};
+      \node[circle,draw=black] (3) at(8,0)  {$S_2$};
+      \node[circle,draw=black] (4) at(10,0) {$T_2$};
+      \draw[-latex] (2)--(3);
+      \node at(6,0.5) {$\varepsilon$};
+      \draw (3,0) ellipse (2 and 1);
+      \draw (9,0) ellipse (2 and 1);
+    \end{tikzpicture}
+    \caption{顺序连接两个表达式的 NFA}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{汤普森构造法}
+  对于 \verb!<regex> | <regex>! 或者 \verb|[<atom-regex-list>]| 的逻辑或形式，我们需要新建两个节点 $S$ 和 $T$，然后从 $S$ 节点向各个 $S_i$ 节点连 $\varepsilon$ 边，从各个 $T_i$ 节点向 $T$ 节点连 $\varepsilon$ 边。$S$ 和 $T$ 即为新 NFA 的起始点和终止点。
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw=black] (1) at(2,0) {$S_2$};
+      \node[circle,draw=black] (2) at(4,0) {$T_2$};
+      \node[circle,draw=black] (3) at(2,2) {$S_1$};
+      \node[circle,draw=black] (4) at(4,2) {$T_1$};
+      \node[circle,draw=black] (5) at(-1,1) {$S$};
+      \node[circle,draw=black] (6) at(7,1) {$T$};
+      \draw[-latex] (5)--(1);
+      \draw[-latex] (5)--(3);
+      \draw[-latex] (2)--(6);
+      \draw[-latex] (4)--(6);
+      \draw (3,0) ellipse (2 and 0.9);
+      \draw (3,2) ellipse (2 and 0.9);
+      \node at(0.5,0.8) {$\varepsilon$};
+      \node at(0.5,1.8) {$\varepsilon$};
+      \node at(5.5,0.8) {$\varepsilon$};
+      \node at(5.5,1.8) {$\varepsilon$};
+    \end{tikzpicture}
+    \caption{匹配分支形式的 NFA}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{汤普森构造法}
+  对于出现一次或者多次的逻辑，即 \verb|<regex> +| 语法，我们可以直接连一条 $T$ 到 $S$ 的 $\varepsilon$ 边。
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw=black] (1) at(2,0) {$S$};
+      \node[circle,draw=black] (2) at(4,0) {$T$};
+      \draw (3,0) ellipse (2 and 1);
+      \draw[-latex] (4,0.4) arc (0:180:1);
+      \node at(3,1.8) {$\varepsilon$};
+    \end{tikzpicture}
+    \caption{匹配一次或多次的 NFA}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{汤普森构造法}
+  对于出现零次或一次的逻辑，即 \verb|<regex> ?| 语法，我们可以通过类似分支形式的方式实现。
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw=black] (1) at(2,0) {$S_1$};
+      \node[circle,draw=black] (2) at(4,0) {$T_1$};
+      \node[circle,draw=black] (3) at(0,0) {$S$};
+      \node[circle,draw=black] (4) at(6,0) {$T$};
+      \draw (3,0) ellipse (2 and 1);
+      \draw[-latex] (3)--(1);
+      \draw[-latex] (2)--(4);
+      \draw[-latex] (0,0.4) arc (180:0:3 and 1);
+      \node at(3,1.8) {$\varepsilon$};
+    \end{tikzpicture}
+    \caption{匹配零次或一次的 NFA}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{例题：Whispers of the Old Gods}
+  按照汤普森构造法构造出一个 NFA 之后，我们便可以在该 NFA 上进行 0-1 BFS 搜索。
+
+  搜索的时候记录两个值，当前到达的节点 $X$ 和原串目前匹配到的位置 $p$，并将 $\{X, p\} (X \in V_{NFA}, 0 \le p \le n)$ 二元组看作新的节点。
+\end{frame}
+
+\begin{frame}[fragile]{例题：Whispers of the Old Gods}
+  接下来考虑节点 $\{X, p\}$ 有那些转移：
+
+  \begin{enumerate}
+    \item \textbf{删除字符}：$\{X, p\}$ 可以花费 $1$ 代价转移到 $\{X, p+1\}$
+    \item \textbf{匹配 $\varepsilon$ 边}：若存在 $\varepsilon$ 边 $X \to Y$，则$\{X, p\}$ 可以直接转移到 $\{Y, p\}$
+    \item \textbf{匹配字符}：若存在字符 $a$ 边 $X \to Y$，且 $S_{p+1}=a$，则 $\{X, p\}$ 可以直接转移到 $\{Y, p+1\}$
+    \item \textbf{修改字符}：若存在字符 $a$ 边 $X \to Y$，且 $S_{p+1} \ne a$，则 $\{X, p\}$ 可以花费 $1$ 代价转移到 $\{Y, p+1\}$
+    \item \textbf{插入字符}：若存在字符 $a$ 边 $X \to Y$，则 $\{X, p\}$ 可以花费 $1$ 代价转移到 $\{Y, p\}$
+  \end{enumerate}
+
+  最终问题转化为求从 $\{S, 0\}$ 开始到 $\{T, n\}$ 的最短路问题，可以通过 0-1 BFS 算法解决。
+\end{frame}
+
+\begin{frame}{}
+  \centering \Large
+  \emph{Good Luck \& Have Fun!}
+\end{frame}
 
 \end{document}
