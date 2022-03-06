@@ -126,11 +126,31 @@ for (int i = 1; i <= n - 2; ++ i)
 \end{frame}
 
 \begin{frame}[fragile]{例题：整数分解}
+  \begin{minted}[fontsize=\small]{cpp}
+std::vector<int> ans; // 用于储存当前分解方案的数组
+void dfs(int x, int k) { // 将 x 分解成 k 个正整数
+  if (k == 1) { // 搜索的结束条件
+    ans.push_back(x);
+    output(ans); // 输出方案
+    ans.pop_back();
+    return;
+  }
+  for (int i = 1; i <= x - k + 1; ++ i) {
+    ans.push_back(i); // 记录方案
+    dfs(x - i, k - 1); // 递归搜索
+    ans.pop_back(); // 恢复状态
+  }
+}
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{例题：整数分解}
   \begin{minted}{cpp}
 int ans[100]; // 用于储存当前分解方案的数组
 void dfs(int x, int k) { // 将 x 分解成 k 个正整数
   if (k == 1) { // 搜索的结束条件
-    ans[k] = x; output(ans); // 输出方案
+    ans[k] = x;
+    output(ans); // 输出方案
     return;
   }
   for (int i = 1; i <= x - k + 1; ++ i) {
@@ -181,7 +201,7 @@ void dfs(int depth) { // 参数 depth 表示当前递归的深度
     if (vis[i]) continue; // 如果数字已经被使用过则跳过
     vis[i] = 1; ans[depth] = i; // 使用数字 i
     dfs(depth + 1);
-    vis[i] = 0; // ans[depth] = 0; // 恢复原来的状态
+    vis[i] = 0; // 恢复原来的状态
   }
 }
   \end{minted}
@@ -583,49 +603,28 @@ while (!q.empty()) {
 \end{frame}
 
 \begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
-  非常经典的一道 BFS 题目，但是我们可以用一些巧妙的优化来加快搜索的速度。\pause
+  非常经典的一道 BFS 题目，但是如果直接利用队列来顺序搜索的话可能会有一些问题。
 
-  在搜索的过程中，我们可以通过把队列中的每一个节点按照当前的距离排序，以此优化搜索顺序。
+  \begin{verbatim}
+# @ #
+# # #
+  \end{verbatim}
+  \pause
+
+  一个解决办法是将其转化为最短路的问题，搜索的时候记录下每个格子到起点的距离，每次从待扩展集合中找出当前距离最短的格子进行扩展。
 \end{frame}
 
 \begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
-  简单分析，发现我们并不需要每次都对当前队列中的所有元素进行枚举来找出距离最小的元素
+  要实现上述的最短路算法，我们可以直接使用一种称为\textbf{堆}的数据结构来替换原来的\textbf{队列}来实现动态插入和询问最小值的操作。
 
-  我们可以直接使用一种称为\textbf{堆}的数据结构来实现插入和询问最小值的操作。
+  但是具体分析之后我们可以发现，每次新加入的点的权值只有可能是当前队列中最小值加一或者相等。
 
-  \begin{minted}{cpp}
-typedef std::pair<int, int> Node; // 节点坐标
-typedef std::pair<int, Node> DisNode; // 距离 + 坐标
-// 小根堆
-std::priority_queue<DisNode,
-  std::vector<DisNode>,
-  std::greater<DisNode>> q;
-  \end{minted}
+  也就是说队列中的所有节点的权值只有可能是与当前队列中的节点的权值的最小值相等或者加一。
+
 \end{frame}
 
 \begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
-  \begin{minted}[fontsize=\small]{cpp}
-while (!q.empty()) {
-  int d = q.top().first; // 当前距离
-  int x = q.top().second.first, y = q.top().second.second;
-  q.pop(); // 取出队首元素
-  if (x == tx && y == ty) return d;
-  for (int i = 0; i < 4; ++ i) { // 枚举每一个方向
-    int nx = x + dx[i], ny = y + dy[i];
-    if (nx >= 0 && nx < n && ny >= 0 && ny < m && !vis[nx][ny]) {
-      vis[nx][ny] = 1;
-      q.push(std::make_pair(d + (map[nx][ny] != map[x][y]),
-                            std::make_pair(nx, ny)));
-    }
-  }
-}
-  \end{minted}
-\end{frame}
-
-\begin{frame}[fragile]{例题：中山市选[2009]小明的游戏}
-  再深入分析一下，发现我们根本不需要使用堆来维护队列中的最小值。
-
-  每次新加入的点的权值只有可能是当前队列中最小值加一或者相等，因此只需要考虑添加到队尾或者队首即可。
+  因此我们只需要将原来的\textbf{队列}替换成\textbf{双端队列}，考虑将新节点添加到队尾或者队首即可。
 
   \begin{minted}{cpp}
 typedef std::pair<int, int> Node; // 节点坐标
@@ -676,7 +675,7 @@ while (!q.empty()) {
 \end{frame}
 
 \begin{frame}[fragile]{例题：水叮当的舞步}
-  直接 DFS 搜索每次染成那种颜色，然后使用 BFS/DFS 修改染色结果。
+  直接 DFS 搜索每次染成哪种颜色，然后使用 BFS 修改染色结果。
 
   可以用下面几种剪枝优化：
 
@@ -707,7 +706,15 @@ while (!q.empty()) {
 \begin{frame}[fragile]{例题：[SCOI2009]生日快乐}
   有一块大小为 $X \times Y$ 的蛋糕，现在需要将其平均分为 $N (N \le 10)$ 等分。每次只能平行于蛋糕的一边来切，显然必须要切 $N-1$ 刀。请求出这 $N$ 块蛋糕的长边与短边的比值的最大值的最小值。
 
-  
+  \begin{figure}
+    \includegraphics[height=100pt]{jiaran.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{例题：[SCOI2009]生日快乐}
+  发现 $N$ 比较小，因此直接枚举每一刀怎么切，然后求最大值的最小值即可。
+
+  搜索的时候可以加入一些最优性剪枝，如果当前最大值已经大于搜索到的最小值，则直接剪枝。
 \end{frame}
 
 \begin{frame}[fragile]{例题：Whispers of the Old Gods}
