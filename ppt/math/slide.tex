@@ -1,4 +1,4 @@
-\documentclass[12pt,aspectratio=169,handout]{beamer}
+\documentclass[12pt,aspectratio=169]{beamer}
 
 \usepackage{minted}
 
@@ -104,30 +104,30 @@ $$
 $1 \le N \le 10^9, 1 \le L \le R \le 10^9, T \le 100$
 \end{frame}
 
-% \begin{frame}[fragile]{例题：序列统计}
-% 不妨设 $M=R-L+1$。
+\begin{frame}[fragile]{例题：序列统计}
+不妨设 $M=R-L+1$。
 
-% 首先考虑长度为 $n$ 的满足条件的序列的数量。
+首先考虑长度为 $n$ 的满足条件的序列的数量。
 
-% 由于要求序列不降，因此答案只与每种不同取值的数量有关。
+由于要求序列不降，因此答案只与每种不同取值的数量有关。
 
-% 问题转化成 $n$ 个球放到 $M$ 个盒子里的经典问题。
+问题转化成 $n$ 个球放到 $M$ 个盒子里的经典问题。
 
-% 因此当长度为 $n$ 时序列的数量即为 ${n+M-1 \choose M-1}$
-% \end{frame}
+因此当长度为 $n$ 时序列的数量即为 ${n+M-1 \choose M-1}$
+\end{frame}
 
-% \begin{frame}[fragile]{例题：序列统计}
-% 最终结果即为
+\begin{frame}[fragile]{例题：序列统计}
+最终结果即为
 
-% $$
-% \begin{aligned}
-% \sum_{n=1}^{N} {n+M-1 \choose M-1} \pause
-% &= \sum_{n=M}^{N+M-1} {n \choose M-1} \\ \pause
-% &= \sum_{n=0}^{N+M-1} {n \choose M-1} - {M-1 \choose M-1} \\ \pause
-% &= {N+M \choose M} - 1
-% \end{aligned}
-% $$
-% \end{frame}
+$$
+\begin{aligned}
+\sum_{n=1}^{N} {n+M-1 \choose M-1} \pause
+&= \sum_{n=M}^{N+M-1} {n \choose M-1} \\ \pause
+&= \sum_{n=0}^{N+M-1} {n \choose M-1} - {M-1 \choose M-1} \\ \pause
+&= {N+M \choose M} - 1
+\end{aligned}
+$$
+\end{frame}
 
 \subsection[卢卡斯定理]{Lucas Theorem}
 
@@ -245,39 +245,39 @@ $$
 $1 \le n \le 10^6, 0 \le k \le n$
 \end{frame}
 
-% \begin{frame}[fragile]{例题：集合计数}
-% 令 $f(k)$ 为交集元素个数\textbf{刚好}为 $k$ 个时的方案数。
+\begin{frame}[fragile]{例题：集合计数}
+令 $f(k)$ 为交集元素个数\textbf{刚好}为 $k$ 个时的方案数。
 
-% 令 $g(k)$ 为交集元素个数\textbf{至少}为 $k$ 个时的方案数。
+令 $g(k)$ 为交集元素个数\textbf{至少}为 $k$ 个时的方案数。
 
-% 考虑如何计算 $g(k)$ 的值，可以先枚举选择了 $n$ 个元素中的哪 $k$ 个元素，接着在剩下的 $n-k$ 个元素构成的 $2^{n-k}$ 个子集中选取若干个来构成答案。
+考虑如何计算 $g(k)$ 的值，可以先枚举选择了 $n$ 个元素中的哪 $k$ 个元素，接着在剩下的 $n-k$ 个元素构成的 $2^{n-k}$ 个子集中选取若干个来构成答案。
 
-% $$
-% g(k) = {n \choose k} \left(2^{2^{n-k}}-1\right)
-% $$
-% \end{frame}
+$$
+g(k) = {n \choose k} \left(2^{2^{n-k}}-1\right)
+$$
+\end{frame}
 
-% \begin{frame}[fragile]{例题：集合计数}
-% 发现会有重复计算的情况，经过分析发现每个答案被重复计算的次数与其交集元素个数有关。具体来说，满足
+\begin{frame}[fragile]{例题：集合计数}
+发现会有重复计算的情况，经过分析发现每个答案被重复计算的次数与其交集元素个数有关。具体来说，满足
 
-% $$
-% g(k) = \sum_{i=k}^{n} {i \choose k} f(i)
-% $$
-% \end{frame}
+$$
+g(k) = \sum_{i=k}^{n} {i \choose k} f(i)
+$$
+\end{frame}
 
-% \begin{frame}[fragile]{例题：集合计数}
-% 利用二项式反演的形式四，可以得到
+\begin{frame}[fragile]{例题：集合计数}
+利用二项式反演的形式四，可以得到
 
-% $$
-% \begin{aligned}
-% g(k) = \sum_{i=k}^{n} {i \choose k} f(i) \Longleftrightarrow
-% f(k) &= \sum_{i=k}^{n} (-1)^{i-k} {i \choose k} g(i) \\ \pause
-% f(k) &= \sum_{i=k}^{n} (-1)^{i-k} {i \choose k} {n \choose i} \left(2^{2^{n-i}}-1\right) \\ \pause
-% f(k) &= {n \choose k} \sum_{i=k}^{n} (-1)^{i-k} {n - k \choose n - i} \left(2^{2^{n-i}}-1\right) \\ \pause
-% f(k) &= {n \choose k} \sum_{i=0}^{n-k} (-1)^{i} {n - k \choose i} \left(2^{2^{n-k-i}}-1\right) \\
-% \end{aligned}
-% $$
-% \end{frame}
+$$
+\begin{aligned}
+g(k) = \sum_{i=k}^{n} {i \choose k} f(i) \Longleftrightarrow
+f(k) &= \sum_{i=k}^{n} (-1)^{i-k} {i \choose k} g(i) \\ \pause
+f(k) &= \sum_{i=k}^{n} (-1)^{i-k} {i \choose k} {n \choose i} \left(2^{2^{n-i}}-1\right) \\ \pause
+f(k) &= {n \choose k} \sum_{i=k}^{n} (-1)^{i-k} {n - k \choose n - i} \left(2^{2^{n-i}}-1\right) \\ \pause
+f(k) &= {n \choose k} \sum_{i=0}^{n-k} (-1)^{i} {n - k \choose i} \left(2^{2^{n-k-i}}-1\right) \\
+\end{aligned}
+$$
+\end{frame}
 
 \subsection[计算方法]{Computation Method}
 
@@ -412,39 +412,39 @@ $$
 其中 $n \le 10^{10^6}$
 \end{frame}
 
-% \begin{frame}[fragile]{例题：undefined}
-% $$
-% \begin{aligned}
-% \sum_{i=0}^n {n \choose i} F_{i+1} &= \frac{1}{\sqrt{5}} \sum_{i=0}^n {n \choose i} \left[\left(\frac{1+\sqrt{5}}{2}\right)^{i+1} - \left(\frac{1-\sqrt{5}}{2}\right)^{i+1}\right] \\ \pause
-% &= \frac{1}{\sqrt{5}} \left[\sum_{i=0}^n {n \choose i} \left(\frac{1+\sqrt{5}}{2}\right)^{i+1} - \sum_{i=0}^n {n \choose i} \left(\frac{1-\sqrt{5}}{2}\right)^{i+1}\right] \\ \pause
-% &= \frac{1}{\sqrt{5}} \left[\left(\frac{1+\sqrt{5}}{2}\right)\left(1+\frac{1+\sqrt{5}}{2}\right)^n-\left(\frac{1-\sqrt{5}}{2}\right)\left(1+\frac{1-\sqrt{5}}{2}\right)^n\right] \\ \pause
-% &= \frac{1}{\sqrt{5}} \left[\frac{\left(1+\sqrt{5}\right)\left(3+\sqrt{5}\right)^n}{2^{n+1}}-\frac{\left(1-\sqrt{5}\right)\left(3-\sqrt{5}\right)^n}{2^{n+1}}\right] \\
-% \end{aligned}
-% $$
-% \end{frame}
+\begin{frame}[fragile]{例题：undefined}
+$$
+\begin{aligned}
+\sum_{i=0}^n {n \choose i} F_{i+1} &= \frac{1}{\sqrt{5}} \sum_{i=0}^n {n \choose i} \left[\left(\frac{1+\sqrt{5}}{2}\right)^{i+1} - \left(\frac{1-\sqrt{5}}{2}\right)^{i+1}\right] \\ \pause
+&= \frac{1}{\sqrt{5}} \left[\sum_{i=0}^n {n \choose i} \left(\frac{1+\sqrt{5}}{2}\right)^{i+1} - \sum_{i=0}^n {n \choose i} \left(\frac{1-\sqrt{5}}{2}\right)^{i+1}\right] \\ \pause
+&= \frac{1}{\sqrt{5}} \left[\left(\frac{1+\sqrt{5}}{2}\right)\left(1+\frac{1+\sqrt{5}}{2}\right)^n-\left(\frac{1-\sqrt{5}}{2}\right)\left(1+\frac{1-\sqrt{5}}{2}\right)^n\right] \\ \pause
+&= \frac{1}{\sqrt{5}} \left[\frac{\left(1+\sqrt{5}\right)\left(3+\sqrt{5}\right)^n}{2^{n+1}}-\frac{\left(1-\sqrt{5}\right)\left(3-\sqrt{5}\right)^n}{2^{n+1}}\right] \\
+\end{aligned}
+$$
+\end{frame}
 
-% \begin{frame}[fragile]{例题：undefined}
-% 观察到
+\begin{frame}[fragile]{例题：undefined}
+观察到
 
-% $$
-% \begin{aligned}
-% \left(1+\sqrt{5}\right)^2 = 6 + 2\sqrt{5} = 2\left(3 + \sqrt{5}\right) \\
-% \left(1-\sqrt{5}\right)^2 = 6 - 2\sqrt{5} = 2\left(3 - \sqrt{5}\right)
-% \end{aligned}
-% $$
-% \end{frame}
+$$
+\begin{aligned}
+\left(1+\sqrt{5}\right)^2 = 6 + 2\sqrt{5} = 2\left(3 + \sqrt{5}\right) \\
+\left(1-\sqrt{5}\right)^2 = 6 - 2\sqrt{5} = 2\left(3 - \sqrt{5}\right)
+\end{aligned}
+$$
+\end{frame}
 
-% \begin{frame}[fragile]{例题：undefined}
-% 代入得
+\begin{frame}[fragile]{例题：undefined}
+代入得
 
-% $$
-% \begin{aligned}
-% \sum_{i=0}^n {n \choose i} F_{i+1} &= \frac{1}{\sqrt{5}} \left[\frac{\left(1+\sqrt{5}\right)\left(\frac{\left(1+\sqrt{5}\right)^2}{2}\right)^n}{2^{n+1}}-\frac{\left(1-\sqrt{5}\right)\left(\frac{\left(1-\sqrt{5}\right)^2}{2}\right)^n}{2^{n+1}}\right] \\ \pause
-% &= \frac{1}{\sqrt{5}} \left[\left(\frac{1+\sqrt{5}}{2}\right)^{2n+1}-\left(\frac{1-\sqrt{5}}{2}\right)^{2n+1}\right] \\ \pause
-% &= F_{2n+1}
-% \end{aligned}
-% $$
-% \end{frame}
+$$
+\begin{aligned}
+\sum_{i=0}^n {n \choose i} F_{i+1} &= \frac{1}{\sqrt{5}} \left[\frac{\left(1+\sqrt{5}\right)\left(\frac{\left(1+\sqrt{5}\right)^2}{2}\right)^n}{2^{n+1}}-\frac{\left(1-\sqrt{5}\right)\left(\frac{\left(1-\sqrt{5}\right)^2}{2}\right)^n}{2^{n+1}}\right] \\ \pause
+&= \frac{1}{\sqrt{5}} \left[\left(\frac{1+\sqrt{5}}{2}\right)^{2n+1}-\left(\frac{1-\sqrt{5}}{2}\right)^{2n+1}\right] \\ \pause
+&= F_{2n+1}
+\end{aligned}
+$$
+\end{frame}
 
 \subsection[计算方法]{Computation Method}
 
@@ -737,31 +737,31 @@ $$
   $1 \le n, m \le 3000, 1 \le T \le 10^4$
 \end{frame}
 
-% \begin{frame}[fragile]{例题：Add or Multiply 1}
-%   首先可以发现结果是若干个加法块和乘法块交替的排列。
+\begin{frame}[fragile]{例题：Add or Multiply 1}
+  首先可以发现结果是若干个加法块和乘法块交替的排列。
 
-%   可以先枚举总共有多少个加法块和乘法块，再计算块中分配数字的方案数。
+  可以先枚举总共有多少个加法块和乘法块，再计算块中分配数字的方案数。
 
-%   如果当前枚举到有 $i$ 个加法块和 $j$ 个乘法块，那么就是求第二类斯特林数。
+  如果当前枚举到有 $i$ 个加法块和 $j$ 个乘法块，那么就是求第二类斯特林数。
 
-%   $$
-%   f(i, j) = i! \times S(n, i) \times j! \times S(m, j) 
-%   $$
+  $$
+  f(i, j) = i! \times S(n, i) \times j! \times S(m, j) 
+  $$
 
-%   这个函数可以 $O(n^2)$ 预处理，然后 $O(1)$ 求值。
-% \end{frame}
+  这个函数可以 $O(n^2)$ 预处理，然后 $O(1)$ 求值。
+\end{frame}
 
-% \begin{frame}[fragile]{例题：Add or Multiply 1}
-%   接着就是枚举加法块和乘法块的数量的问题了，我们可以直接枚举加法块的数量，然后乘法块的数量就只有可能是 $i-1, i, i+1$ 中的一种。
+\begin{frame}[fragile]{例题：Add or Multiply 1}
+  接着就是枚举加法块和乘法块的数量的问题了，我们可以直接枚举加法块的数量，然后乘法块的数量就只有可能是 $i-1, i, i+1$ 中的一种。
 
-%   当然对于 $j=i$ 的时候分为先乘后加和先加后乘两种方案，因此最终结果需要乘以二。
+  当然对于 $j=i$ 的时候分为先乘后加和先加后乘两种方案，因此最终结果需要乘以二。
 
-%   $$
-%   \sum_{i=0}^{n} [f(i, i-1) + 2 \times f(i, i) + f(i, i+1)]
-%   $$
+  $$
+  \sum_{i=0}^{n} [f(i, i-1) + 2 \times f(i, i) + f(i, i+1)]
+  $$
 
-%   单次求解的复杂度为 $O(n)$，总复杂度为 $O(n^2+Tn)$。
-% \end{frame}
+  单次求解的复杂度为 $O(n)$，总复杂度为 $O(n^2+Tn)$。
+\end{frame}
 
 \subsection[第一类斯特林数]{Stirling numbers of the first kind}
 
