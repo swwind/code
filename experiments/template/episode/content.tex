@@ -1,0 +1,115 @@
+\section{如何关注}
+
+只要打开 bilibili 就可以直接关注塔菲了喵。
+
+或者你可以点击链接 \url{https://space.bilibili.com/1265680561} 喵。
+
+\section{一些源代码}
+
+\subsection{有序列表}
+
+\begin{enumerate}
+  \item 这是第一条消息
+  \item 这是第二条消息
+\end{enumerate}
+
+\subsection{无序列表}
+
+\begin{itemize}
+  \item 这是第一条消息
+  \item 这是第二条消息
+\end{itemize}
+
+\subsection{数学公式}
+
+$$
+E = mc^2
+$$
+
+\begin{equation}
+  e^{i\pi} + 1 = 0
+\end{equation}
+
+\subsection{代码}
+
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
+int main() {
+  int *a = new int[5];
+  a[114514] = 1919810;
+}
+\end{minted}
+
+\subsection{表格}
+
+\begin{tabular}{ cccc } 
+  \hline
+  \hline
+  \textbf{数据重合率} & \textbf{快速排序(ns)} & \textbf{归并排序(ns)} & \textbf{标准库函数(ns)} \\
+  \hline
+  0\% & \text{113,787,967} & \text{132,552,729} & \text{61,206,861} \\
+  10\% & \text{104,529,922} & \text{128,420,548} & \text{61,190,284} \\
+  20\% & \text{94,748,819} & \text{122,322,196} & \text{61,071,256} \\
+  30\% & \text{84,586,610} & \text{116,958,921} & \text{60,506,152} \\
+  40\% & \text{74,765,245} & \text{110,547,765} & \text{58,479,907} \\
+  50\% & \text{64,486,606} & \text{103,639,161} & \text{55,395,024} \\
+  60\% & \text{54,051,475} & \text{96,579,543} & \text{52,050,725} \\
+  70\% & \text{43,410,469} & \text{89,873,605} & \text{47,790,281} \\
+  80\% & \text{32,603,312} & \text{81,816,375} & \text{43,602,837} \\
+  90\% & \text{22,192,894} & \text{73,799,616} & \text{37,933,618} \\
+  100\% & \text{12,468,227} & \text{52,878,853} & \text{12,069,074} \\
+  \hline
+\end{tabular}
+
+\subsection{画图}
+
+\pgfplotstableread{data.txt}{\table}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    xmin = 0, xmax = 100,
+    ymin = 0, ymax = 150,
+    width = 0.8\textwidth,
+    height = 0.5\textwidth,
+    xlabel = {\text{数据重合率 (\%)}},
+    ylabel = {\text{排序时间 (ms)}},
+  ]
+  \addplot[blue, mark = *] table [x = {x}, y = {y1}] {\table};
+  \addplot[red, mark = square] table [x = {x}, y = {y2}] {\table};
+  \addplot[green, mark = x] table [x = {x}, y = {y3}] {\table};
+  \legend{
+    快速排序,
+    归并排序,
+    标准库排序
+  }
+  \end{axis}
+\end{tikzpicture}
+
+\subsection{伪代码}
+
+\begin{algorithm}
+  \caption{快速排序算法}
+  \begin{algorithmic}[1]
+  \Procedure{QuickSort}{$array$}
+    \State $n \gets \text{length of } array$
+    \State $pivot \gets \text{random element of } array$
+    \If {$n < 2$} \Return
+    \EndIf
+    \State $l \gets 0, r \gets n$
+    \For {$i \gets 0 \text{ to } n-1$}
+      \If {$array[i] < pivot$}
+        \State $\text{swap } array[i] \text{ and } array[l]$
+        \State $l \gets l + 1$
+      \EndIf
+    \EndFor
+    \For {$i \gets n-1 \text{ to } 0$}
+      \If {$array[i] > pivot$}
+        \State $\text{swap } array[i] \text{ and } array[r - 1]$
+        \State $r \gets r - 1$
+      \EndIf
+    \EndFor
+    \State \Call{QuickSort}{$array[0..l]$}
+    \State \Call{QuickSort}{$array[r..n]$}
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
