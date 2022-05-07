@@ -1,0 +1,65 @@
+\section{算法描述}
+
+\begin{algorithm}
+  \caption{快速选择算法}
+  \begin{algorithmic}[1]
+  \Function{QuickSelect}{$array, k$}
+    \State $n \gets \text{length of } array$
+    \State $pivot \gets \text{random element of } array$
+    \State $l \gets 0, r \gets n$
+    \For {$i = 0 \text{ to } n-1$}
+      \If {$array[i] < pivot$}
+        \State $\text{swap } array[i] \text{ and } array[l]$
+        \State $l \gets l + 1$
+      \EndIf
+    \EndFor
+    \For {$i = n-1 \text{ to } 0$}
+      \If {$array[i] > pivot$}
+        \State $\text{swap } array[i] \text{ and } array[r - 1]$
+        \State $r \gets r - 1$
+      \EndIf
+    \EndFor
+    \If {$k < l$}
+      \State \Return \Call{QuickSelect}{$array[0..l], k$}
+    \ElsIf {$k >= r$}
+      \State \Return \Call{QuickSelect}{$array[r..n], k - r$}
+    \Else
+      \State \Return array[k]
+    \EndIf
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{分组选择算法}
+  \begin{algorithmic}[1]
+  \Function{GroupSelect}{$array$}
+    \State $n \gets \text{length of } array$
+    \If {$n < 6$}
+      \State $array \gets$ \Call{QuickSort}{$array$}
+      \State \Return array[k]
+    \EndIf
+    \For {$i \gets 0 \text{ to } n/5$}
+      \State $middle[i] \gets$ \Call{GroupSelect}{$array[5i .. 5i+5], 2$}
+    \EndFor
+    \State $pivot \gets$ \Call{GroupSelect}{$middle, n/10$}
+    \State $smaller \gets \phi, larger \gets \phi$
+    \For {$i \gets 0 \text{ to } n-1$}
+      \If {$array[i] < pivot$}
+        \State $smaller \gets smaller \cup array[i]$
+      \ElsIf {$array[i] > pivot$}
+        \State $larger \gets larger \cup array[i]$
+      \EndIf
+    \EndFor
+    \State $l \gets \text{length of } smaller$
+    \State $r \gets n - \text{length of } larger$
+    \If {$k < l$}
+      \State \Return \Call{QuickSelect}{$smaller, k$}
+    \ElsIf {$k >= r$}
+      \State \Return \Call{QuickSelect}{$larger, k - r$}
+    \Else
+      \State \Return $pivot$
+    \EndIf
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}

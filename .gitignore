@@ -24,7 +24,7 @@ a.out
 *.snm
 *.nav
 *.vrb
-_minted-slide
+_minted-*
 
 # Ignore `bin` dir
 temp/
