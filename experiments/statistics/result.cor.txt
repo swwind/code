@@ -46,92 +46,91 @@ x_shucked 0.8826171
 x_viscera 0.9076563
 x_shell   1.0000000
 > 
-> lm.sol <- lm(age ~ x_l + x_d + x_h + x_whole, data=database)
-> # lm.sol <- lm(age ~ x_l + x_d + x_h + x_whole, data=database)
+> lm.sol <- lm(age ~ x_l + x_d + x_h + x_whole + x_shucked + x_viscera
+ + x_shell, data=database)
 > summary(lm.sol)
 
 Call:
-lm(formula = age ~ x_l + x_d + x_h + x_whole, data = database)
+lm(formula = age ~ x_l + x_d + x_h + x_whole + x_shucked + x_viscera + 
+    x_shell, data = database)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--21.4435  -1.6112  -0.6160   0.9117  15.6598 
+-11.1632  -1.3613  -0.3885   0.9054  13.7440 
 
 Coefficients:
-             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   4.40861    0.30922  14.257  < 2e-16 ***
-x_l         -12.04857    2.10217  -5.731 1.07e-08 ***
-x_d          25.64381    2.57384   9.963  < 2e-16 ***
-x_h          20.24276    1.78180  11.361  < 2e-16 ***
-x_whole       0.06589    0.22557   0.292     0.77    
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   4.4852     0.2691  16.666  < 2e-16 ***
+x_l          -1.5719     1.8248  -0.861    0.389    
+x_d          13.3609     2.2371   5.972 2.53e-09 ***
+x_h          11.8261     1.5481   7.639 2.70e-14 ***
+x_whole       9.2474     0.7326  12.622  < 2e-16 ***
+x_shucked   -20.2139     0.8233 -24.552  < 2e-16 ***
+x_viscera    -9.8297     1.3040  -7.538 5.82e-14 ***
+x_shell       8.5762     1.1367   7.545 5.54e-14 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 2.59 on 4172 degrees of freedom
-Multiple R-squared:  0.3556,	Adjusted R-squared:  0.3549 
-F-statistic: 575.4 on 4 and 4172 DF,  p-value: < 2.2e-16
+Residual standard error: 2.218 on 4169 degrees of freedom
+Multiple R-squared:  0.5276,	Adjusted R-squared:  0.5268 
+F-statistic: 665.2 on 7 and 4169 DF,  p-value: < 2.2e-16
 
-> 
-> # library(leaps)
-> # leaps<-regsubsets(age ~ x_l + x_d + x_h + x_whole + x_shucked + x_viscera + x_shell, data=database, nbest=7)
-> # library(car)
-> # subsets(leaps,statistic = 'cp',main='Cp plot for all subsets regression')
-> # abline(1,1,lty=2,col='blue',y_max=5)
 > 
 > pdf("lm.sol.pdf")
 > plot(lm.sol)
 > 
 > lm.step = step(lm.sol)
-Start:  AIC=7953.6
-age ~ x_l + x_d + x_h + x_whole
+Start:  AIC=6662.1
+age ~ x_l + x_d + x_h + x_whole + x_shucked + x_viscera + x_shell
 
-          Df Sum of Sq   RSS    AIC
-- x_whole  1      0.57 27976 7951.7
-<none>                 27976 7953.6
-- x_l      1    220.28 28196 7984.4
-- x_d      1    665.64 28642 8049.8
-- x_h      1    865.49 28841 8078.9
+            Df Sum of Sq   RSS    AIC
+- x_l        1      3.65 20510 6660.8
+<none>                   20506 6662.1
+- x_d        1    175.45 20681 6695.7
+- x_viscera  1    279.49 20785 6716.6
+- x_shell    1    279.98 20786 6716.7
+- x_h        1    287.02 20793 6718.2
+- x_whole    1    783.61 21290 6816.7
+- x_shucked  1   2964.97 23471 7224.2
 
-Step:  AIC=7951.68
-age ~ x_l + x_d + x_h
+Step:  AIC=6660.85
+age ~ x_d + x_h + x_whole + x_shucked + x_viscera + x_shell
 
-       Df Sum of Sq   RSS    AIC
-<none>              27976 7951.7
-- x_l   1    224.04 28200 7983.0
-- x_d   1    690.28 28667 8051.5
-- x_h   1    920.72 28897 8084.9
+            Df Sum of Sq   RSS    AIC
+<none>                   20510 6660.8
+- x_shell    1    282.20 20792 6715.9
+- x_h        1    285.48 20795 6716.6
+- x_viscera  1    287.66 20797 6717.0
+- x_d        1    676.52 21186 6794.4
+- x_whole    1    785.25 21295 6815.8
+- x_shucked  1   3001.27 23511 7229.3
 > summary(lm.step)
 
 Call:
-lm(formula = age ~ x_l + x_d + x_h, data = database)
+lm(formula = age ~ x_d + x_h + x_whole + x_shucked + x_viscera + 
+    x_shell, data = database)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--21.5589  -1.6050  -0.6181   0.9083  15.6769 
+-11.1131  -1.3587  -0.3932   0.9040  13.7933 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   4.3365     0.1861  23.303  < 2e-16 ***
-x_l         -11.9327     2.0642  -5.781 7.97e-09 ***
-x_d          25.7661     2.5393  10.147  < 2e-16 ***
-x_h          20.3582     1.7372  11.719  < 2e-16 ***
+(Intercept)   4.3955     0.2482  17.709  < 2e-16 ***
+x_d          11.6337     0.9919  11.728  < 2e-16 ***
+x_h          11.7899     1.5475   7.619 3.15e-14 ***
+x_whole       9.2562     0.7326  12.636  < 2e-16 ***
+x_shucked   -20.2711     0.8206 -24.703  < 2e-16 ***
+x_viscera    -9.9313     1.2986  -7.648 2.53e-14 ***
+x_shell       8.6062     1.1362   7.575 4.41e-14 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 2.589 on 4173 degrees of freedom
-Multiple R-squared:  0.3555,	Adjusted R-squared:  0.3551 
-F-statistic: 767.4 on 3 and 4173 DF,  p-value: < 2.2e-16
+Residual standard error: 2.218 on 4170 degrees of freedom
+Multiple R-squared:  0.5275,	Adjusted R-squared:  0.5269 
+F-statistic:   776 on 6 and 4170 DF,  p-value: < 2.2e-16
 
 > 
 > pdf("lm.step.pdf")
 > plot(lm.step)
-> 
-> anova(lm.step,lm.sol)
-Analysis of Variance Table
-
-Model 1: age ~ x_l + x_d + x_h
-Model 2: age ~ x_l + x_d + x_h + x_whole
-  Res.Df   RSS Df Sum of Sq      F Pr(>F)
-1   4173 27976                           
-2   4172 27976  1   0.57212 0.0853 0.7702
 > 

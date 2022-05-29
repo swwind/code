@@ -3,7 +3,7 @@ create user tom with password 'Passw0rd';
 create database st owner tom;
 
 -- 2. 以 tom 用户连接数据库 ST
--- $ gsql -d st -U tom -P Passw0rd -p 26000 -h localhost -r
+-- $ gsql -d st -p 26000 -h localhost -U tom -W Passw0rd -r
 
 -- 3. 创建 SCHEMA
 create schema tom authorization tom;

@@ -1,0 +1,28 @@
+\section*{3.10}
+
+将背包变成二维即可。
+
+\begin{algorithm}[!htbp]
+  \caption{0-1 背包问题}
+  \begin{algorithmic}[1]
+  \Procedure{DP}{$n, v, w, c, W, V$}
+    \For {$i \gets 0 \text{ to } W$}
+      \For {$j \gets 0 \text{ to } V$}
+        \State $dp[i][j] \gets 0$
+        \State $s[i][j] \gets 0$
+      \EndFor
+    \EndFor
+
+    \For {$i \gets 1 \text{ to } n$}
+      \For {$j \gets W \text{ to } w_i$}
+        \For {$k \gets V \text{ to } c_i$}
+          \If {$dp[j - w_i][k - c_i] + v_i > dp[j][k] $}
+            \State $dp[j][k] \gets dp[j - w_i][k - c_i] + v_i$
+            \State $s[j][k] \gets i$
+          \EndIf
+        \EndFor
+      \EndFor
+    \EndFor
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}

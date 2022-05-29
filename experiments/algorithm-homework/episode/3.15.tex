@@ -1,0 +1,33 @@
+\section*{3.15}
+
+记录两个参数进行转移，$dp[i][j]$ 表示当前是第 $i$ 天，距离上一次机器维修过去了 $j$ 天的时候最大的加工数。
+
+转移的时候考虑当天是否进行维修，如果决定维修，则直接继承前一天的最大可能加工数，否则则从前一天的加工数并加上今日可以加工的数量。
+
+\begin{algorithm}[!htbp]
+  \caption{机器加工问题}
+  \begin{algorithmic}[1]
+  \Function{DP}{$n, x, s$}
+    \For {$i \gets 0 \text{ to } n$}
+      \State $dp[0][i] \gets 0$
+    \EndFor
+
+    \For {$i \gets 1 \text{ to } n$}
+      \State $m \gets 0$
+      \For {$j \gets 0 \text{ to } i-1$}
+        \State $m \gets \max\{m, dp[i-1][j]\}$
+      \EndFor
+      \State $dp[i][0] \gets m$
+      \For {$j \gets 1 \text{ to } i$}
+        \State $dp[i][j] \gets dp[i-1][j-1] + \min\{x_i, s_j\}$
+      \EndFor
+    \EndFor
+
+    \State $res \gets 0$
+    \For {$i \gets 0 \text{ to } n$}
+      \State $res \gets \max\{res, dp[n][i]\}$
+    \EndFor
+    \State \Return $res$
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}

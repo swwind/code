@@ -1,0 +1,63 @@
+\section*{5.1}
+
+
+\begin{algorithm}[!htbp]
+  \caption{求不定方程组}
+  \begin{algorithmic}[1]
+  \Procedure{DFS3}{$x_1, x_2$}
+    \For {$x_3 \gets 0 \text{ to } \left\lfloor \frac{12-3x_1-4x_2}{2} \right\rfloor$}
+      \State $\text{Output answer } (x_1, x_2, x_3)$
+    \EndFor
+  \EndProcedure
+  \Procedure{DFS2}{$x_1$}
+    \For {$x_2 \gets 0 \text{ to } \left\lfloor \frac{12-3x_1}{4} \right\rfloor$}
+      \State \Call{DFS3}{$x_1, x_2$}
+    \EndFor
+  \EndProcedure
+  \Procedure{DFS}{}
+    \For {$x_1 \gets 0 \text{ to } \frac{12}{3}$}
+      \State \Call{DFS2}{$x_1$}
+    \EndFor
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+最终的解为
+
+\begin{enumerate}
+  \item $x_1=0,x_2=0,x_3=0$
+  \item $x_1=0,x_2=0,x_3=1$
+  \item $x_1=0,x_2=0,x_3=2$
+  \item $x_1=0,x_2=0,x_3=3$
+  \item $x_1=0,x_2=0,x_3=4$
+  \item $x_1=0,x_2=0,x_3=5$
+  \item $x_1=0,x_2=0,x_3=6$
+  \item $x_1=0,x_2=1,x_3=0$
+  \item $x_1=0,x_2=1,x_3=1$
+  \item $x_1=0,x_2=1,x_3=2$
+  \item $x_1=0,x_2=1,x_3=3$
+  \item $x_1=0,x_2=1,x_3=4$
+  \item $x_1=0,x_2=2,x_3=0$
+  \item $x_1=0,x_2=2,x_3=1$
+  \item $x_1=0,x_2=2,x_3=2$
+  \item $x_1=0,x_2=3,x_3=0$
+  \item $x_1=1,x_2=0,x_3=0$
+  \item $x_1=1,x_2=0,x_3=1$
+  \item $x_1=1,x_2=0,x_3=2$
+  \item $x_1=1,x_2=0,x_3=3$
+  \item $x_1=1,x_2=0,x_3=4$
+  \item $x_1=1,x_2=1,x_3=0$
+  \item $x_1=1,x_2=1,x_3=1$
+  \item $x_1=1,x_2=1,x_3=2$
+  \item $x_1=1,x_2=2,x_3=0$
+  \item $x_1=2,x_2=0,x_3=0$
+  \item $x_1=2,x_2=0,x_3=1$
+  \item $x_1=2,x_2=0,x_3=2$
+  \item $x_1=2,x_2=0,x_3=3$
+  \item $x_1=2,x_2=1,x_3=0$
+  \item $x_1=2,x_2=1,x_3=1$
+  \item $x_1=3,x_2=0,x_3=0$
+  \item $x_1=3,x_2=0,x_3=1$
+  \item $x_1=4,x_2=0,x_3=0$
+\end{enumerate}
+

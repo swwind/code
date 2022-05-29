@@ -1,0 +1,55 @@
+\section*{3.5}
+
+\begin{algorithm}[!htbp]
+  \caption{硬币问题}
+  \begin{algorithmic}[1]
+  \Procedure{DP}{$n, v, w, y$}
+    \For {$i \gets 0 \text{ to } y$}
+      \State $dp[i] \gets \infty$
+      \State $s[i] \gets 0$
+    \EndFor
+
+    \State $dp[0] \gets 0$
+    \For {$i \gets 1 \text{ to } n$}
+      \For {$j \gets v_i \text{ to } y$}
+        \If {$dp[j - v_i] + w_i < dp[j] $}
+          \State $dp[j] \gets dp[j - v_i] + w_i$
+          \State $s[j] \gets i$
+        \EndIf
+      \EndFor
+    \EndFor
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  $i$ & $dp_{0}$ & $dp_{1}$ & $dp_{2}$ & $dp_{3}$ & $dp_{4}$ & $dp_{5}$ & $dp_{6}$ & $dp_{7}$ & $dp_{8}$ & $dp_{9}$ & $dp_{10}$ & $dp_{11}$ & $dp_{12}$ \\
+  \hline
+  $1$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ & $10$ & $11$ & $12$ \\
+  $2$ & $0$ & $1$ & $2$ & $3$ & $2$ & $3$ & $4$ & $5$ & $4$ & $5$ & $6$ & $7$ & $6$ \\
+  $3$ & $0$ & $1$ & $2$ & $3$ & $2$ & $3$ & $4$ & $5$ & $4$ & $5$ & $6$ & $7$ & $6$ \\
+  $4$ & $0$ & $1$ & $2$ & $3$ & $2$ & $3$ & $4$ & $5$ & $4$ & $5$ & $6$ & $7$ & $6$ \\
+  \hline
+\end{tabular}
+\caption{备忘录表}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  $i$ & $s_{0}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $s_{7}$ & $s_{8}$ & $s_{9}$ & $s_{10}$ & $s_{11}$ & $s_{12}$ \\
+  \hline
+  $1$ & $0$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ \\
+  $2$ & $0$ & $1$ & $1$ & $1$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ \\
+  $3$ & $0$ & $1$ & $1$ & $1$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ \\
+  $4$ & $0$ & $1$ & $1$ & $1$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ & $2$ \\
+  \hline
+\end{tabular}
+\caption{标记函数表}
+\end{table}
+
+因此最终的选择为 $3$ 枚价值为 $4$ 的硬币，总重量为 $6$。

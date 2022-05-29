@@ -1,0 +1,27 @@
+\section{数据集说明}
+
+本文所采用的数据集由加州大学海湾分校网站提供，下载地址为 \url{https://archive.ics.uci.edu/ml/datasets/Abalone}。
+
+\section{源代码一览}
+
+\begin{minted}{r}
+database <- read.csv('data.csv')
+head(database)
+cor(database)
+
+lm.sol <- lm(age ~ x_l + x_d + x_h + x_whole + x_shucked + x_viscera
+  + x_shell, data=database)
+# lm.sol <- lm(age ~ x_l + x_d + x_h + x_whole, data=database)
+summary(lm.sol)
+
+pdf("lm.sol.pdf")
+plot(lm.sol)
+
+lm.step = step(lm.sol)
+summary(lm.step)
+
+pdf("lm.step.pdf")
+plot(lm.step)
+\end{minted}
+
+\end{document}

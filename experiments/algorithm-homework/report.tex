@@ -1,0 +1,68 @@
+\documentclass[hyperref,UTF8,12pt,a4paper]{ctexart}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+\usepackage{geometry}
+\usepackage{tikz}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+%% make section title left aligned
+% \ctexset{section/format=\Large\bfseries}
+
+%% pseudo-code
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%% minted
+\usepackage{minted}
+
+%% plots
+\usepackage{pgfplots}
+\pgfplotsset{compat = newest}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black
+}
+\ctexset{abstractname=\zihao{2}摘\quad{}要}
+
+\usepackage{titling}
+\pretitle{\begin{center}\fontsize{30pt}{30pt}\selectfont}
+\posttitle{\end{center}}
+
+\usepackage{appendix}
+
+\usepackage{ulem}
+
+%% header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L]{0cm} % left extra length
+\fancyhfoffset[R]{0cm} % right extra length
+\chead{算法作业}
+\rhead{\thepage}
+\rfoot{}
+
+\title{算法作业}
+\author{罗江楠 2200830715}
+\date{\today}
+
+\begin{document}
+
+% title page
+\maketitle
+\newpage
+
+% 正文
+\include{episode/3.5}
+\include{episode/3.10}
+\include{episode/3.15}
+\include{episode/4.1}
+\include{episode/4.2}
+\include{episode/4.15}
+\include{episode/5.1}
+\include{episode/5.2}
+
+\end{document}

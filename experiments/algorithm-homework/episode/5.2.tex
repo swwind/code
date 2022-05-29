@@ -1,0 +1,44 @@
+\section*{5.2}
+
+$dfs(x, v, w)$ 表示递归选择第 $x$ 个配件，当前已经选择的价格为 $v$，总重量为 $w$。
+
+$V[i][j]$ 表示第 $j$ 家生产商的零件 $i$ 的销售价格。
+
+$W[i][j]$ 表示第 $j$ 家生产商的零件 $i$ 的重量。
+
+\begin{algorithm}[!htbp]
+  \caption{最小重量机器设计问题}
+  \begin{algorithmic}[1]
+  \Procedure{DFS}{$x, v, w$}
+    \If {$x = 5$}
+      \If {$v \le 120 \text{ and } w < Answer$}
+        \State $Answer \gets w$
+        \State $Result \gets \{a_1, a_2, a_3, a_4\}$
+      \EndIf
+      \State \Return
+    \EndIf
+
+    \For {$i \gets 1 \text{ to } 3$}
+      \State $a[x] \gets i$
+      \State \Call{DFS}{$x + 1, v + V[x][i], w + W[x][i]$}
+    \EndFor
+  \EndProcedure
+  \Procedure{MAIN}{}
+    \State $Answer \gets \infty$
+    \State $Result \gets \phi$
+    \State \Call{DFS}{$1, 0, 0$}
+    \State $\text{Output } Answer \text{ and } Result$
+  \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
+最终选择结果为：
+
+\begin{itemize}
+  \item 零件 $1$：供应商 $3$
+  \item 零件 $2$：供应商 $1$
+  \item 零件 $3$：供应商 $2$
+  \item 零件 $4$：供应商 $3$
+\end{itemize}
+
+总价格为 $119$，总重量为 $31$。

@@ -1,16 +1,22 @@
-const data = require('./data.json');
+const data = require('./data.i.json');
 
-const length = data.map(d => d.length);
-const diameter = data.map(d => d.diameter);
-const height = data.map(d => d.height);
+// const length = data.map(d => d.length);
+// const diameter = data.map(d => d.diameter);
+// const height = data.map(d => d.height);
 
-const whole_weight = data.map(d => d.whole_weight);
-const shucked_weight = data.map(d => d.shucked_weight);
-const viscera_weight = data.map(d => d.viscera_weight);
-const shell_weight = data.map(d => d.shell_weight);
+// const whole_weight = data.map(d => d.whole_weight);
+// const shucked_weight = data.map(d => d.shucked_weight);
+// const viscera_weight = data.map(d => d.viscera_weight);
+// const shell_weight = data.map(d => d.shell_weight);
 
-const age = data.map(d => d.rings + 1.5);
+// const age = data.map(d => d.rings + 1.5);
 
+console.log('age,x_l,x_d,x_h,x_whole,x_shucked,x_viscera,x_shell');
+console.log(data.map(({ rings, length, diameter, height, whole_weight, shucked_weight, viscera_weight, shell_weight }) =>
+  `${rings + 1.5},${length},${diameter},${height},${whole_weight},${shucked_weight},${viscera_weight},${shell_weight}`
+).join('\n'));
+
+/*
 console.log(`database <- data.frame(
   x_l = c(${length.join(',')}),
   x_d = c(${diameter.join(',')}),
@@ -24,7 +30,7 @@ console.log(`database <- data.frame(
   y = c(${age.join(',')})
 )
 
-lm.sol <- lm(y ~ x_l + x_d + x_h + x_whole, data = database)
+# lm.sol <- lm(y ~ x_l + x_d + x_h + x_whole, data = database)
 
 # pdf("length.pdf")
 # plot(y=database$y, x=database$x_l)
@@ -42,12 +48,22 @@ lm.sol <- lm(y ~ x_l + x_d + x_h + x_whole, data = database)
 # pdf("shell_weight.pdf")
 # plot(y=database$y, x=database$x_shell)
 
-summary(lm.sol)
-pdf("first.pdf")
-plot(lm.sol)
+# summary(lm.sol)
+# pdf("first.pdf")
+# plot(lm.sol)
 
-tstep <- step(lm.sol)
-summary(tstep)
-pdf("second.pdf")
-plot(tstep)
+# tstep <- step(lm.sol)
+# summary(tstep)
+# pdf("second.pdf")
+# plot(tstep)
+
+# database.pr <- princomp(database, cor=TRUE)
+# summary(database.pr, loadings=TRUE)
+# screeplot(database.pr)
+# predict(database.pr)
+
+cor(database)
+factanal(database, factors=1)
+
 `)
+*/
