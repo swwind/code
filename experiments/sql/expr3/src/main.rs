@@ -31,7 +31,7 @@ impl Database {
 
     client
       .batch_execute(
-        "
+        r#"
 CREATE TABLE IF NOT EXISTS Student (
   SNO    INT NOT NULL,
   SNAME  VARCHAR(255) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Student (
   CHECK (SSEX = 'M' or SSEX = 'F'),
   CHECK (SAGE > 0)
 )
-",
+"#,
       )
       .unwrap();
 

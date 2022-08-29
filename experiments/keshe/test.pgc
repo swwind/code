@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+EXEC SQL BEGIN DECLARE SECTION;
+int var_c1;
+char var_c2[21] = { 0x00 };
+EXEC SQL END DECLARE SECTION;
+
+int main(int argc, char* argv[])
+{
+  /* 步骤1: 建立连接 */
+  EXEC SQL WHENEVER SQLERROR SQLPRINT;   /* 声明异常发生时的处理动作统一为打印消息 */
+  EXEC SQL CONNECT TO postgres@localhost:5432 USER postgres / xxxx;   /* 指定连接的目标据库，用户名，密码 */  
+
+  /* 步骤2: 利用游标执行查询 */
+  EXEC SQL DECLARE foo_bar CURSOR FOR SELECT c1, c2 FROM tb1;    /* 声明一个游标使之用于执行SELECT文 */
+  EXEC SQL OPEN foo_bar;                                         /* 打开游标从而使SELECT文被执行 */
+  EXEC SQL FETCH foo_bar INTO :var_c1, :var_c2;                  /* 获取一行数据 */
+
+  printf("C1: %d, C2: %s\n", var_c1, var_c2);
+
+  EXEC SQL CLOSE foo_bar;                                        /* 关闭所打开的游标 */
+
+  /* 步骤3: 关闭连接 */
+  EXEC SQL DISCONNECT CURRENT;
+
+  return 0;
+}
