@@ -7,8 +7,11 @@ enum Regex {
   Or(Vec<Regex>),
   Concat(Vec<Regex>),
   Star(Box<Regex>),
-  Epsilon,
-  None,
+}
+
+impl Regex {
+  const NONE: Regex = Regex::Or(vec![]);
+  const EPSILON: Regex = Regex::Concat(vec![]);
 }
 
 impl Display for Regex {
@@ -33,16 +36,7 @@ impl Display for Regex {
         Regex::Or(_) | Regex::C0 | Regex::C1 => write!(f, "{rx}*"),
         _ => write!(f, "({rx})*"),
       },
-      Regex::None => unreachable!(),
-      Regex::Epsilon => unreachable!(),
     }
-  }
-}
-
-fn is_none(rx: &Regex) -> bool {
-  match rx {
-    Regex::None => true,
-    _ => false,
   }
 }
 
@@ -51,16 +45,11 @@ fn make_or(or: Vec<Regex>) -> Regex {
     .into_iter()
     .flat_map(|x| match x {
       Regex::Or(rx) => rx,
-      Regex::None => vec![],
       rx => vec![rx],
     })
     .collect::<Vec<_>>();
 
-  if vec.is_empty() {
-    Regex::None
-  } else if vec.iter().any(|x| x == &Regex::Epsilon) {
-    Regex::Epsilon
-  } else if vec.len() == 1 {
+  if vec.len() == 1 {
     vec.into_iter().next().unwrap()
   } else {
     Regex::Or(vec)
@@ -69,8 +58,7 @@ fn make_or(or: Vec<Regex>) -> Regex {
 
 fn make_star(regex: Regex) -> Regex {
   match regex {
-    Regex::None => Regex::Epsilon,
-    Regex::Epsilon => Regex::Epsilon,
+    Regex::Star
     Regex::Star(rx) => Regex::Star(rx),
     rx => Regex::Star(Box::new(rx)),
   }
