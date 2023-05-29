@@ -88,7 +88,7 @@ $$
 $$
 
 $$
-\sum_{i=0}^{n} {i \choose m} = {n+1 \choose m+1}
+\sum_{k=0}^{n} {k \choose m} = {n+1 \choose m+1}
 $$
 
 $$
@@ -180,7 +180,7 @@ $$
 
 $$
 \begin{aligned}
-  f(n) &= \sum_{i=0}^{n} (-1)^i {n \choose i} g(i) \\
+  RHS  &= \sum_{i=0}^{n} (-1)^i {n \choose i} g(i) \\
        &= \sum_{i=0}^{n} (-1)^i {n \choose i} \sum_{j=0}^{i} (-1)^j {i \choose j} f(j) \\ \pause
        &= \sum_{i=0}^{n} \sum_{j=0}^{i} (-1)^{i+j} {n \choose i} {i \choose j} f(j) \\ \pause
        &= \sum_{j=0}^{n} \sum_{i=j}^{n} (-1)^{i+j} {n \choose j} {n - j \choose n - i} f(j)
@@ -191,10 +191,10 @@ $$
 \begin{frame}[fragile]{二项式反演：证明}
 $$
 \begin{aligned}
-  f(n) &= \sum_{j=0}^{n} \sum_{i=j}^{n} (-1)^{i+j} {n \choose j} {n - j \choose n - i} f(j) \\
+  RHS  &= \sum_{j=0}^{n} \sum_{i=j}^{n} (-1)^{i+j} {n \choose j} {n - j \choose n - i} f(j) \\
        &= \sum_{j=0}^{n} {n \choose j} f(j) \sum_{i=j}^{n} (-1)^{i+j} {n - j \choose n - i} \\ \pause
        &= \sum_{j=0}^{n} {n \choose j} f(j) \sum_{i=0}^{n-j} (-1)^{i} {n - j \choose i} \\ \pause
-       &= \sum_{j=0}^{n} {n \choose j} f(j) [n = j] \pause = f(n)
+       &= \sum_{j=0}^{n} {n \choose j} f(j) [n = j] \pause = f(n) = LHS
 \end{aligned}
 $$
 
@@ -298,15 +298,15 @@ for (int i = 0; i < n; ++ i) {
 也可以 $O(n)$ 预处理出每个数的阶乘以及阶乘的逆元，之后每次 $O(1)$ 计算。
 
 \begin{minted}{cpp}
-for (int i = frac[0] = 1; i <= n; ++ i)
-  frac[i] = ((long long) frac[i - 1] * i) % mod;
+for (int i = fact[0] = 1; i <= n; ++ i)
+  fact[i] = ((long long) fact[i - 1] * i) % mod;
 // 费马小定理求逆元
-inv[n] = fast_pow(frac[n], mod - 2);
+inv[n] = fast_pow(fact[n], mod - 2);
 for (int i = n - 1; i >= 0; -- i)
   inv[i] = ((long long) inv[i + 1] * (i + 1)) % mod;
 // 计算二项式系数
 int c(int n, int m) {
-  return 1ll * frac[n] * inv[m] % mod * inv[n - m] % mod;
+  return 1ll * fact[n] * inv[m] % mod * inv[n - m] % mod;
 }
 \end{minted}
 \end{frame}
@@ -723,6 +723,8 @@ $$
 \begin{Bmatrix}n\\ k\end{Bmatrix} = \sum_{i=0}^{k} \frac{(-1)^{k-i} i^n}{i! (k-i)!}
 $$
 \end{frame}
+
+\subsection[例题：Add or Multiply 1]{Example: Add or Multiply 1}
 
 \begin{frame}[fragile]{例题：Add or Multiply 1}
   你有 $n$ 个不同的加法操作和 $m$ 个不同的乘法操作，求问能排列出多少种本质不同的计算式？
