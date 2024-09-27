@@ -49,7 +49,7 @@ int main() {
     int a = 0;
     for (int i = head[1]; i; i = nxt[i])
       if (to[i] != y)
-        a = max(a, dep[to[i]]);
+        a = max(a, dep[to[i]] + 1);
     int b = dep[x];
     int c = dep[y] - dep[x];
     // printf("%d %d %d\n", a, b, c);
